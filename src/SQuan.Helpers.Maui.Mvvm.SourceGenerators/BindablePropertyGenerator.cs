@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using SQuan.Helpers.Maui.Mvvm.SourceGenerators.Helpers;
 
 namespace SQuan.Helpers.Maui.Mvvm.SourceGenerators;
 
@@ -58,6 +59,7 @@ public class BindablePropertyGenerator : IIncrementalGenerator
 		context.RegisterSourceOutput(properties, (spc, propertySymbol) =>
 		{
 			var propertyAttributes = propertySymbol!.GetAttributes();
+			string defaultBindingMode = "OneWay";
 			var classSymbol = propertySymbol!.ContainingType;
 			var className = classSymbol.Name;
 			var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
@@ -96,6 +98,10 @@ public class BindablePropertyGenerator : IIncrementalGenerator
 			{
 				switch (attr.AttributeClass?.ToDisplayString())
 				{
+					case "SQuan.Helpers.Maui.Mvvm.BindablePropertyAttribute":
+						defaultBindingMode = attr.GetNamedArgumentsAttributeValueByNameAsString("DefaultBindingMode", "OneWay");
+						break;
+
 					case "SQuan.Helpers.Maui.Mvvm.NotifyPropertyChangedForAttribute":
 						foreach (var str in attr.ConstructorArguments.ToStringList())
 						{
@@ -137,6 +143,7 @@ partial class {className}
 	/// </summary>
 	{access} static readonly Microsoft.Maui.Controls.BindableProperty {propertyName}Property
 		= Microsoft.Maui.Controls.BindableProperty.Create(nameof({propertyName}), typeof({bareTypeName}), typeof({className}),
+			defaultBindingMode: Microsoft.Maui.Controls.BindingMode.{defaultBindingMode},
 			propertyChanging: (b,o,n) =>
 			{{
 				(({className})b).On{propertyName}Changing(({typeName})n);
