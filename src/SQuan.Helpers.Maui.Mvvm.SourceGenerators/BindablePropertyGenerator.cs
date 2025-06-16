@@ -135,8 +135,8 @@ partial class {className}
 	/// <summary>
 	/// Bindable property for <see cref=""{propertyName}""/>.
 	/// </summary>
-	{access} static readonly BindableProperty {propertyName}Property
-		= BindableProperty.Create(nameof({propertyName}), typeof({bareTypeName}), typeof({className}),
+	{access} static readonly Microsoft.Maui.Controls.BindableProperty {propertyName}Property
+		= Microsoft.Maui.Controls.BindableProperty.Create(nameof({propertyName}), typeof({bareTypeName}), typeof({className}),
 			propertyChanging: (b,o,n) =>
 			{{
 				(({className})b).On{propertyName}Changing(({typeName})n);

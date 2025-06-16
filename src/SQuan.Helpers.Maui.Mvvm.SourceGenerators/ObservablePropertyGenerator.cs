@@ -140,7 +140,7 @@ partial class {className}
 		{getModifiers} get => field;
 		{setModifiers} set
 		{{
-			if (!EqualityComparer<{typeName}>.Default.Equals(field, value))
+			if (!System.Collections.Generic.EqualityComparer<{typeName}>.Default.Equals(field, value))
 			{{
 				{typeName} oldValue = field;
 				On{propertyName}Changing(value);
