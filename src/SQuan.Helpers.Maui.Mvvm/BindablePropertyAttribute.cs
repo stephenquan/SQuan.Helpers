@@ -6,4 +6,6 @@
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 public class BindablePropertyAttribute : Attribute
 {
+	/// <summary>Gets or sets the default binding mode for the bindable property.</summary>
+	public string DefaultBindingMode { get; set; } = "OneWay";
 }
