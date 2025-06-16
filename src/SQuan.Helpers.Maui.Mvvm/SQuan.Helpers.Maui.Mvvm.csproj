@@ -11,10 +11,10 @@
     <ProductName>MVVM Helpers for .NET MAUI</ProductName>
     <Title>MVVM Helpers for .NET MAUI</Title>
     <Summary>MVVM Helpers for .NET MAUI</Summary>
-    <Description>MVVM Helpers for .NET MAUI</Description>
+    <Description>Provides .NET MAUI specific source generators for observable properties and bindable properties on bindable objects.</Description>
 
     <PackageId>SQuan.Helpers.Maui.Mvvm</PackageId>
-    <PackageDescription>MVVM Helpers for .NET MAUI</PackageDescription>
+    <PackageDescription>Provides .NET MAUI specific source generators for observable properties and bindable properties on bindable objects.</PackageDescription>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
