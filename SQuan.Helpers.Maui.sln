@@ -11,6 +11,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQuan.Helpers.Maui.Mvvm.Sou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQuan.Helpers.Maui.UnitTests", "src\SQuan.Helpers.Maui.UnitTests\SQuan.Helpers.Maui.UnitTests.csproj", "{9FE940E7-ED2B-4C19-83BC-AD0CA20B0A8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQuan.Helpers.Maui.Localization", "src\SQuan.Helpers.Maui.Localization\SQuan.Helpers.Maui.Localization.csproj", "{2A07E778-A365-4A70-9757-E8075991D133}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +42,10 @@ Global
 		{9FE940E7-ED2B-4C19-83BC-AD0CA20B0A8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FE940E7-ED2B-4C19-83BC-AD0CA20B0A8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FE940E7-ED2B-4C19-83BC-AD0CA20B0A8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A07E778-A365-4A70-9757-E8075991D133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A07E778-A365-4A70-9757-E8075991D133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A07E778-A365-4A70-9757-E8075991D133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A07E778-A365-4A70-9757-E8075991D133}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

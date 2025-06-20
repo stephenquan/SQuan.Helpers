@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.Logging;
+using SQuan.Helpers.Maui.Localization;
+using SQuan.Helpers.Maui.Sample.Resources.Strings;
 
 namespace SQuan.Helpers.Maui.Sample;
 
@@ -13,6 +15,7 @@ public static class MauiProgram
 			.UseMauiApp<App>()
 			.UseMauiCommunityToolkit()
 			.UseMauiCommunityToolkitMarkup()
+			.UseSQuanHelperMauiLocalization<AppStrings>()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
