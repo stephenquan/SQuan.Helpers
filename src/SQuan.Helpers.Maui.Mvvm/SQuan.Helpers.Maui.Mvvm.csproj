@@ -22,14 +22,14 @@
     <RepositoryUrl>https://github.com/stephenquan/SQuan.Helpers.Maui</RepositoryUrl>
     <PackageReleaseNotes>https://github.com/stephenquan/SQuan.Helpers.Maui/releases</PackageReleaseNotes>
     <PackageTags>dotnet,maui,mvvm,source generators</PackageTags>
-    <PackageLicenseFile>License.md</PackageLicenseFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Authors>Stephen Quan</Authors>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="icon.png" Pack="true" Visible="true" PackagePath="\" />
     <None Include="README.md" Pack="true" Visible="true" PackagePath="\" />
-    <None Include="License.md" Pack="true" Visible="true" PackagePath="\" />
+    <None Include="..\common\icon.png" Pack="true" Visible="true" PackagePath="\" />
+    <None Include="..\..\LICENSE" Pack="true" Visible="true" PackagePath="\" />
   </ItemGroup>
 
   <Target Name="PackageInfo" DependsOnTargets="GetVersion">

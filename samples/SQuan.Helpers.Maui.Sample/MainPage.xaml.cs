@@ -1,9 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using SQuan.Helpers.Maui.Localization;
 
 namespace SQuan.Helpers.Maui.Sample;
 
 public partial class MainPage : ContentPage
 {
+	public LocalizationManager LM { get; } = LocalizationManager.Current;
+
 	public MainPage()
 	{
 		BindingContext = this;
