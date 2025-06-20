@@ -3,6 +3,7 @@
     x:Class="SQuan.Helpers.Maui.Sample.LocalizePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:i18n="clr-namespace:SQuan.Helpers.Maui.Localization;assembly=SQuan.Helpers.Maui.Localization"
     xmlns:local="clr-namespace:SQuan.Helpers.Maui.Sample"
     Title="Localize Demo"
     x:DataType="local:LocalizePage">
@@ -17,17 +18,20 @@
             <Label
                 SemanticProperties.HeadingLevel="Level1"
                 Style="{StaticResource Headline}"
-                Text="{Binding [LBL_HELLO]}" />
+                Text="{i18n:Localize LBL_HELLO}" />
 
             <Label
                 SemanticProperties.Description="Welcome to dot net Multi platform App U I"
                 SemanticProperties.HeadingLevel="Level2"
                 Style="{StaticResource SubHeadline}"
-                Text="{Binding [LBL_WELCOME]}" />
+                Text="{i18n:Localize LBL_WELCOME}" />
 
-            <Button x:Name="CounterBtn" Command="{Binding IncrementCounterCommand}" />
+            <Button
+                x:Name="CounterBtn"
+                Command="{Binding IncrementCounterCommand}"
+                Text="Click me!" />
 
-            <Button Command="{Binding ChangeCultureCommand}" Text="{Binding CurrentCulture.Name}" />
+            <Button Command="{Binding ChangeUICultureCommand}" Text="{Binding LM.CurrentUICulture.Name}" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
