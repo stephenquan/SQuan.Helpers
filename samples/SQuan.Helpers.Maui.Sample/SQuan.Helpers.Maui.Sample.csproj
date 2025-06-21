@@ -65,14 +65,10 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
-	</ItemGroup>
-
-  <!--
-	<ItemGroup>
     <ProjectReference Include="..\..\src\SQuan.Helpers.Maui.Mvvm\SQuan.Helpers.Maui.Mvvm.csproj" />
     <ProjectReference Include="..\..\src\SQuan.Helpers.Maui.Mvvm.SourceGenerators\SQuan.Helpers.Maui.Mvvm.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
-  -->
+  
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\SQuan.Helpers.Maui.Localization\SQuan.Helpers.Maui.Localization.csproj" />

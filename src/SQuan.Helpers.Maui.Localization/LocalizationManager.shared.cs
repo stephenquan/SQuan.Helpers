@@ -1,6 +1,5 @@
-﻿using System.Globalization;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using System.ComponentModel;
+using System.Globalization;
 using Microsoft.Extensions.Localization;
 
 namespace SQuan.Helpers.Maui.Localization;
@@ -8,7 +7,7 @@ namespace SQuan.Helpers.Maui.Localization;
 /// <summary>
 /// Provides functionality for managing and accessing localized resources.
 /// </summary>
-public partial class LocalizationManager : ObservableObject
+public partial class LocalizationManager : INotifyPropertyChanged
 {
 	/// <summary>
 	/// Gets or sets the options for localization behavior in the application.
@@ -76,7 +75,7 @@ public partial class LocalizationManager : ObservableObject
 			_timer.Interval = TimeSpan.FromSeconds(1);
 			_timer.Tick += (s, e) =>
 			{
-				this.Poll(CultureFlags.All);
+				this.Poll();
 			};
 			_timer.Start();
 		}
@@ -119,8 +118,7 @@ public partial class LocalizationManager : ObservableObject
 			{
 				CultureInfo.CurrentCulture = value;
 				currentCultureName = value.Name;
-				OnPropertyChanged(nameof(CurrentCulture));
-				WeakReferenceMessenger.Default.Send(new CultureChangedMessage(CultureFlags.CurrentCulture));
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentCulture)));
 				CurrentCultureChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
@@ -140,8 +138,7 @@ public partial class LocalizationManager : ObservableObject
 			{
 				CultureInfo.CurrentUICulture = value;
 				currentUICultureName = value.Name;
-				OnPropertyChanged(nameof(CurrentUICulture));
-				WeakReferenceMessenger.Default.Send(new CultureChangedMessage(CultureFlags.CurrentUICulture));
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentUICulture)));
 				CurrentUICultureChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
@@ -150,55 +147,35 @@ public partial class LocalizationManager : ObservableObject
 	/// <summary>
 	/// Checks for changes in current culture settings.
 	/// </summary>
-	public void Poll(CultureFlags changingFlags = CultureFlags.All)
+	public void Poll()
 	{
-		CultureFlags changedFlags = CultureFlags.None;
-
-		if (changingFlags.HasFlag(CultureFlags.InstalledUICulture))
+		CultureInfo.InstalledUICulture.ClearCachedData();
+		if (installedUICultureName is null || installedUICultureName != CultureInfo.InstalledUICulture.Name)
 		{
-			CultureInfo.InstalledUICulture.ClearCachedData();
-			if (installedUICultureName is null || installedUICultureName != CultureInfo.InstalledUICulture.Name)
-			{
-				installedUICultureName = CultureInfo.InstalledUICulture.Name;
-				OnPropertyChanged(nameof(InstalledUICulture));
-				InstalledUICultureChanged?.Invoke(this, EventArgs.Empty);
-				changedFlags |= CultureFlags.InstalledUICulture;
+			installedUICultureName = CultureInfo.InstalledUICulture.Name;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(InstalledUICulture)));
+			InstalledUICultureChanged?.Invoke(this, EventArgs.Empty);
 
-				if (Options.FollowInstalledUICultureChanges)
-				{
-					CurrentUICulture = CultureInfo.InstalledUICulture;
-					changingFlags |= CultureFlags.CurrentUICulture;
-				}
+			if (Options.FollowInstalledUICultureChanges)
+			{
+				CurrentUICulture = CultureInfo.InstalledUICulture;
 			}
 		}
 
-		if (changingFlags.HasFlag(CultureFlags.CurrentCulture))
+		CultureInfo.CurrentCulture.ClearCachedData();
+		if (currentCultureName is null || currentCultureName != CultureInfo.CurrentCulture.Name)
 		{
-			CultureInfo.CurrentCulture.ClearCachedData();
-			if (currentCultureName is null || currentCultureName != CultureInfo.CurrentCulture.Name)
-			{
-				currentCultureName = CultureInfo.CurrentCulture.Name;
-				OnPropertyChanged(nameof(CurrentCulture));
-				CurrentCultureChanged?.Invoke(this, EventArgs.Empty);
-				changedFlags |= CultureFlags.CurrentCulture;
-			}
+			currentCultureName = CultureInfo.CurrentCulture.Name;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentCulture)));
+			CurrentCultureChanged?.Invoke(this, EventArgs.Empty);
 		}
 
-		if (changingFlags.HasFlag(CultureFlags.CurrentUICulture))
+		CultureInfo.CurrentUICulture.ClearCachedData();
+		if (currentUICultureName is null || currentUICultureName != CultureInfo.CurrentUICulture.Name)
 		{
-			CultureInfo.CurrentUICulture.ClearCachedData();
-			if (currentUICultureName is null || currentUICultureName != CultureInfo.CurrentUICulture.Name)
-			{
-				currentUICultureName = CultureInfo.CurrentUICulture.Name;
-				OnPropertyChanged(nameof(CurrentUICulture));
-				CurrentUICultureChanged?.Invoke(this, EventArgs.Empty);
-				changedFlags |= CultureFlags.CurrentUICulture;
-			}
-		}
-
-		if (changedFlags != CultureFlags.None)
-		{
-			WeakReferenceMessenger.Default.Send(new CultureChangedMessage(changedFlags));
+			currentUICultureName = CultureInfo.CurrentUICulture.Name;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentUICulture)));
+			CurrentUICultureChanged?.Invoke(this, EventArgs.Empty);
 		}
 	}
 
@@ -249,5 +226,10 @@ public partial class LocalizationManager : ObservableObject
 
 		return $"[{activeCulture.Name}] {key}";
 	}
+
+	/// <summary>
+	/// Occurs when a property value changes.
+	/// </summary>
+	public event PropertyChangedEventHandler? PropertyChanged;
 }
 
