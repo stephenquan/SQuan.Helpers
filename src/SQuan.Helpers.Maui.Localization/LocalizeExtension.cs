@@ -1,7 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using SQuan.Helpers.Maui.Mvvm;
-
-namespace SQuan.Helpers.Maui.Localization;
+﻿namespace SQuan.Helpers.Maui.Localization;
 
 /// <summary>
 /// A markup extension that provides localized strings based on a specified key.
@@ -11,25 +8,33 @@ namespace SQuan.Helpers.Maui.Localization;
 public partial class LocalizeExtension : BindableObject, IMarkupExtension<BindingBase>
 {
 	/// <summary>
+	/// Bindable proeprty for <see cref="Key"/>."/>
+	/// </summary>
+	public static readonly BindableProperty KeyProperty = BindableProperty.Create(nameof(Key), typeof(string), typeof(LocalizeExtension), string.Empty,
+		propertyChanged: (b, o, n) => ((LocalizeExtension)b).OnTranslatedValueChanged());
+
+	/// <summary>
 	/// Gets or sets the localization key for the string to be translated.
 	/// </summary>
-	[BindableProperty, NotifyPropertyChangedFor(nameof(TranslatedValue))]
-	public partial string Key { get; set; } = string.Empty;
+	public string Key
+	{
+		get => (string)GetValue(KeyProperty);
+		set => SetValue(KeyProperty, value);
+	}
 
 	/// <summary>
 	/// Gets the localized string for the specified key.
 	/// </summary>
 	public string TranslatedValue => LocalizationManager.Current.GetString(Key);
 
+	void OnTranslatedValueChanged() => OnPropertyChanged(nameof(TranslatedValue));
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="LocalizeExtension"/> class.
 	/// </summary>
 	public LocalizeExtension()
 	{
-		WeakReferenceMessenger.Default.Register<CultureChangedMessage>(this, (r, m) =>
-		{
-			OnPropertyChanged(nameof(TranslatedValue));
-		});
+		LocalizationManager.Current.CurrentUICultureChanged += (s, e) => OnTranslatedValueChanged();
 	}
 
 	/// <summary>
