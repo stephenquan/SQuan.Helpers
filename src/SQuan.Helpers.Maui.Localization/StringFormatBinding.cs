@@ -36,8 +36,15 @@ public static class StringFormatBinding
 			return formatBinding;
 		}
 
-		List<BindingBase> bindings = args.ToBindingList();
-		bindings.Insert(0, formatBinding);
+		List<BindingBase> bindings = [];
+		bindings.Add(formatBinding);
+		if (args is not null && args.Length > 0)
+		{
+			foreach (var arg in args)
+			{
+				bindings.Add((arg is BindingBase argBinding) ? argBinding : BindingBase.Create(static (object? o) => o, BindingMode.OneWay, source: arg));
+			}
+		}
 
 		return new MultiBinding
 		{
