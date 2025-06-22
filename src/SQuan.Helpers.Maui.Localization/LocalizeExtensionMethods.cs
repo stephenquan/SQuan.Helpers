@@ -33,7 +33,7 @@ public static class LocalizeExtensionMethods
 	/// <param name="args">Optional arguments to format the localized value. These arguments will be used to replace placeholders in the
 	/// localized string, if applicable.</param>
 	/// <returns>The <see cref="BindableObject"/> with the applied localized binding, allowing for method chaining.</returns>
-	public static BindableObject Localize(this BindableObject bindable, BindableProperty targetProperty, BindingBase keyBinding, params object?[]? args)
+	public static BindableObject Localize(this BindableObject bindable, BindableProperty targetProperty, BindingBase? keyBinding, params object?[]? args)
 	{
 		bindable.SetBinding(targetProperty, LocalizeBinding.Create(keyBinding, args));
 		return bindable;

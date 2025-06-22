@@ -14,6 +14,7 @@ public class FlowDirectionExtension : IMarkupExtension<BindingBase>
 	/// current UI culture. The binding uses one-way mode and applies a <see cref="RightToLeftToFlowDirectionConverter"/>.</returns>
 	public BindingBase ProvideValue(IServiceProvider serviceProvider)
 		=> FlowDirectionBinding.Create();
+
 	object IMarkupExtension.ProvideValue(IServiceProvider serviceProvider)
 		=> ProvideValue(serviceProvider);
 }
