@@ -61,6 +61,15 @@ namespace SQuan.Helpers.Maui.Sample.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clicked {0} time.
+        /// </summary>
+        internal static string BTN_CLICKED_1_TIME {
+            get {
+                return ResourceManager.GetString("BTN_CLICKED_1_TIME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clicked {0} times.
         /// </summary>
         internal static string BTN_CLICKED_N_TIMES {
@@ -84,6 +93,15 @@ namespace SQuan.Helpers.Maui.Sample.Resources.Strings {
         internal static string LBL_WELCOME {
             get {
                 return ResourceManager.GetString("LBL_WELCOME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Localize Demo.
+        /// </summary>
+        internal static string PAG_LOCALIZE_DEMO {
+            get {
+                return ResourceManager.GetString("PAG_LOCALIZE_DEMO", resourceCulture);
             }
         }
     }
