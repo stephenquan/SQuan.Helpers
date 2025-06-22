@@ -1,5 +1,4 @@
 using System.Globalization;
-using CommunityToolkit.Maui.Markup;
 using SQuan.Helpers.Maui.Localization;
 using SQuan.Helpers.Maui.Mvvm;
 using RelayCommandAttribute = CommunityToolkit.Mvvm.Input.RelayCommandAttribute;
@@ -15,6 +14,7 @@ public partial class LocalizePage : ContentPage
 		new CultureInfo("en-US"),
 		new CultureInfo("fr-FR"),
 		new CultureInfo("zh-CN"),
+		new CultureInfo("ar-AR"),
 	];
 
 	public int CultureIndex { get; set; } = 0;
@@ -25,18 +25,26 @@ public partial class LocalizePage : ContentPage
 	{
 		BindingContext = this;
 		InitializeComponent();
-		CounterBtn.Bind(
+		/*
+		CounterBtn.Localize(
 			Button.TextProperty,
-			binding1: LocalizeBinding.Create("BTN_CLICKED_N_TIMES"),
-			binding2: BindingBase.Create(static (LocalizePage m) => m.Count, BindingMode.OneWay, source: this),
-			convert: ((string? str, int count) v) => !string.IsNullOrEmpty(v.str) ? string.Format(v.str, v.count) : string.Empty);
+			"BTN_CLICKED_N_TIMES",
+			BindingBase.Create(static (LocalizePage m) => m.Count, BindingMode.OneWay, source: this));
+		*/
 	}
 
 	[RelayCommand]
 	void IncrementCounter()
 	{
 		Count++;
-		//CounterBtn.Localize(Button.TextProperty, "BTN_CLICKED_N_TIMES", Count);
+		if (Count == 1)
+		{
+			CounterBtn.Localize(Button.TextProperty, "BTN_CLICKED_1_TIME", Count);
+		}
+		else
+		{
+			CounterBtn.Localize(Button.TextProperty, "BTN_CLICKED_N_TIMES", Count);
+		}
 		SemanticScreenReader.Announce(CounterBtn.Text);
 	}
 

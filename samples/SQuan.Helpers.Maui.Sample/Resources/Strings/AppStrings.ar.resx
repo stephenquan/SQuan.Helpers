@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BTN_CLICKED_1_TIME" xml:space="preserve">
-    <value>已点击 {0} 次</value>
+    <value>تم النقر {0} مرة</value>
   </data>
   <data name="BTN_CLICKED_N_TIMES" xml:space="preserve">
-    <value>已点击 {0} 次</value>
+    <value>تم النقر {0} مرات</value>
   </data>
   <data name="LBL_HELLO" xml:space="preserve">
-    <value>你好，世界！</value>
+    <value>مرحبًا أيها العالم!</value>
   </data>
   <data name="LBL_WELCOME" xml:space="preserve">
-    <value>欢迎使用 .NET 跨平台应用界面</value>
+    <value>مرحبًا بك في واجهة تطبيق .NET متعددة المنصات</value>
   </data>
   <data name="PAG_LOCALIZE_DEMO" xml:space="preserve">
-    <value>本地化演示</value>
+    <value>عرض توضيحي للتعريب</value>
   </data>
 </root>

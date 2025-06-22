@@ -5,22 +5,28 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:i18n="clr-namespace:SQuan.Helpers.Maui.Localization;assembly=SQuan.Helpers.Maui.Localization"
     xmlns:local="clr-namespace:SQuan.Helpers.Maui.Sample"
-    Title="Localize Demo"
-    x:DataType="local:LocalizePage">
+    Title="{i18n:Localize 'PAG_LOCALIZE_DEMO'}"
+    x:DataType="local:LocalizePage"
+    FlowDirection="{i18n:FlowDirection}">
     <ScrollView>
         <VerticalStackLayout Padding="30,0" Spacing="25">
             <Image
                 Aspect="AspectFit"
                 HeightRequest="185"
+                HorizontalOptions="Start"
                 SemanticProperties.Description="dot net bot in a hovercraft number nine"
                 Source="dotnet_bot.png" />
 
             <Label
+                HorizontalOptions="Start"
+                HorizontalTextAlignment="Start"
                 SemanticProperties.HeadingLevel="Level1"
                 Style="{StaticResource Headline}"
                 Text="{i18n:Localize LBL_HELLO}" />
 
             <Label
+                HorizontalOptions="Start"
+                HorizontalTextAlignment="Start"
                 SemanticProperties.Description="Welcome to dot net Multi platform App U I"
                 SemanticProperties.HeadingLevel="Level2"
                 Style="{StaticResource SubHeadline}"
@@ -29,9 +35,13 @@
             <Button
                 x:Name="CounterBtn"
                 Command="{Binding IncrementCounterCommand}"
+                HorizontalOptions="Start"
                 Text="Click me!" />
 
-            <Button Command="{Binding ChangeUICultureCommand}" Text="{Binding LM.CurrentUICulture.Name}" />
+            <Button
+                Command="{Binding ChangeUICultureCommand}"
+                HorizontalOptions="Start"
+                Text="{Binding LM.CurrentUICulture.Name}" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
