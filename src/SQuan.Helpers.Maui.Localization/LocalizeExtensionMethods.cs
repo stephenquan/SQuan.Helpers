@@ -33,9 +33,32 @@ public static class LocalizeExtensionMethods
 	/// <param name="args">Optional arguments to format the localized value. These arguments will be used to replace placeholders in the
 	/// localized string, if applicable.</param>
 	/// <returns>The <see cref="BindableObject"/> with the applied localized binding, allowing for method chaining.</returns>
-	public static BindableObject Localize(this BindableObject bindable, BindableProperty targetProperty, BindingBase keyBinding, params object?[]? args)
+	public static BindableObject Localize(this BindableObject bindable, BindableProperty targetProperty, BindingBase? keyBinding, params object?[]? args)
 	{
 		bindable.SetBinding(targetProperty, LocalizeBinding.Create(keyBinding, args));
 		return bindable;
 	}
+
+	/// <summary>
+	/// Converts an array of objects into a list of <see cref="BindingBase"/> instances.
+	/// </summary>
+	/// <param name="args">An array of objects to be converted. Each element that is already a <see cref="BindingBase"/> is added directly to
+	/// the resulting list. Other elements are wrapped in a new <see cref="BindingBase"/> instance using a one-way binding
+	/// mode.</param>
+	/// <returns>A list of <see cref="BindingBase"/> instances. If <paramref name="args"/> is <see langword="null"/> or empty, an
+	/// empty list is returned.</returns>
+
+	public static List<BindingBase> ToBindingList(this object?[]? args)
+	{
+		List<BindingBase> bindings = [];
+		if (args is not null && args.Length > 0)
+		{
+			foreach (var arg in args)
+			{
+				bindings.Add((arg is BindingBase argBinding) ? argBinding : BindingBase.Create(static (object? o) => o, BindingMode.OneWay, source: arg));
+			}
+		}
+		return bindings;
+	}
+
 }

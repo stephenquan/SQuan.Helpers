@@ -38,6 +38,16 @@
                 HorizontalOptions="Start"
                 Text="Click me!" />
 
+            <!--
+            <Button
+                x:Name="CounterBtn"
+                Command="{Binding IncrementCounterCommand}"
+                HorizontalOptions="Start"
+                Text="{MultiBinding {i18n:Localize BTN_CLICKED_N_TIMES},
+                                    {Binding Count},
+                                    Converter={i18n:StringFormatConverter}}" />
+            -->
+
             <Button
                 Command="{Binding ChangeUICultureCommand}"
                 HorizontalOptions="Start"

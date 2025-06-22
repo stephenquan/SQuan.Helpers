@@ -24,7 +24,9 @@ public partial class LocalizePage : ContentPage
 	public LocalizePage()
 	{
 		BindingContext = this;
+
 		InitializeComponent();
+
 		/*
 		CounterBtn.Localize(
 			Button.TextProperty,
@@ -37,6 +39,7 @@ public partial class LocalizePage : ContentPage
 	void IncrementCounter()
 	{
 		Count++;
+
 		if (Count == 1)
 		{
 			CounterBtn.Localize(Button.TextProperty, "BTN_CLICKED_1_TIME", Count);
@@ -45,6 +48,7 @@ public partial class LocalizePage : ContentPage
 		{
 			CounterBtn.Localize(Button.TextProperty, "BTN_CLICKED_N_TIMES", Count);
 		}
+
 		SemanticScreenReader.Announce(CounterBtn.Text);
 	}
 
