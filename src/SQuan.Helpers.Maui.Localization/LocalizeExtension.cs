@@ -10,7 +10,7 @@ public partial class LocalizeExtension : BindableObject, IMarkupExtension<Bindin
 	/// <summary>
 	/// Bindable proeprty for <see cref="Key"/>."/>
 	/// </summary>
-	public static readonly BindableProperty KeyProperty = BindableProperty.Create(nameof(Key), typeof(string), typeof(LocalizeExtension), "ABC");
+	public static readonly BindableProperty KeyProperty = BindableProperty.Create(nameof(Key), typeof(string), typeof(LocalizeExtension), string.Empty);
 
 	/// <summary>
 	/// Gets or sets the localization key for the string to be translated.
