@@ -186,7 +186,7 @@ public partial class LocalizationManager : INotifyPropertyChanged
 	/// <param name="culture"></param>
 	/// <param name="args"></param>
 	/// <returns></returns>
-	public string GetString(string key, CultureInfo? culture = null, params object[] args)
+	public string GetString(string key, CultureInfo? culture = null, params object?[]? args)
 	{
 		CultureInfo? activeCulture = culture ?? CultureInfo.CurrentUICulture;
 		var services = IPlatformApplication.Current?.Services;
