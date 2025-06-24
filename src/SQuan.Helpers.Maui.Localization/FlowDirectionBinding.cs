@@ -13,9 +13,5 @@ public static class FlowDirectionBinding
 	/// <returns>A <see cref="BindingBase"/> instance configured to bind the flow direction to the right-to-left setting of the
 	/// current UI culture. The binding uses one-way mode and applies a <see cref="RightToLeftToFlowDirectionConverter"/>.</returns>
 	public static BindingBase Create()
-		=> BindingBase.Create(
-			static (LocalizationManager lm) => lm.CurrentUICulture.TextInfo.IsRightToLeft,
-			BindingMode.OneWay,
-			source: LocalizationManager.Current,
-			converter: new RightToLeftToFlowDirectionConverter());
+		=> RightToLeftBinding.Create(converter: new RightToLeftToFlowDirectionConverter());
 }

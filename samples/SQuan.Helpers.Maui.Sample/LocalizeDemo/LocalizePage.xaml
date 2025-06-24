@@ -14,6 +14,7 @@
                 Aspect="AspectFit"
                 HeightRequest="185"
                 HorizontalOptions="Start"
+                RotationY="{i18n:RotationY}"
                 SemanticProperties.Description="dot net bot in a hovercraft number nine"
                 Source="dotnet_bot.png" />
 
@@ -36,7 +37,18 @@
                 x:Name="CounterBtn"
                 Command="{Binding IncrementCounterCommand}"
                 HorizontalOptions="Start"
-                Text="Click me!" />
+                Text="{i18n:Localize BTN_CLICKED_N_TIMES,
+                                     X0={Binding Count}}" />
+
+            <!--
+            <Button
+                x:Name="CounterBtn"
+                Command="{Binding IncrementCounterCommand}"
+                HorizontalOptions="Start"
+                Text="{MultiBinding {i18n:Localize BTN_CLICKED_N_TIMES},
+                                    {Binding Count},
+                                    Converter={i18n:StringFormatConverter}}" />
+            -->
 
             <Button
                 Command="{Binding ChangeUICultureCommand}"

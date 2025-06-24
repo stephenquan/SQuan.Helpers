@@ -8,25 +8,11 @@ public static class LocalizeBinding
 	/// <summary>
 	/// Creates a binding for localized content using the specified key and arguments.
 	/// </summary>
-	/// <remarks>The binding is configured to use the current UI culture from the <see cref="LocalizationManager"/> 
-	/// and applies a <see cref="LocalizeConverter"/> to process the localization key and arguments.</remarks>
 	/// <param name="key">The localization key used to retrieve the localized content.</param>
 	/// <param name="args">An array of optional arguments to format the localized content. Can be null or empty if no arguments are required.</param>
 	/// <returns>A <see cref="BindingBase"/> instance configured for one-way binding to the localized content.</returns>
 	public static BindingBase Create(string key, params object?[]? args)
-	{
-		if (args is not null && args.Any(arg => arg is BindingBase))
-		{
-			return Create(BindingBase.Create(static (string k) => k, BindingMode.OneWay, source: key), args);
-		}
-
-		return BindingBase.Create(
-			static (LocalizationManager lm) => lm.CurrentUICulture,
-			BindingMode.OneWay,
-			source: LocalizationManager.Current,
-			converter: new LocalizeConverter(),
-			converterParameter: new object?[] { key, args });
-	}
+		=> Create(BindingBase.Create(static (string s) => s, BindingMode.OneWay, source: key), args);
 
 	/// <summary>
 	/// Creates a new <see cref="MultiBinding"/> that combines a key binding and a culture binding to enable localized
@@ -50,31 +36,18 @@ public static class LocalizeBinding
 			BindingMode.OneWay,
 			source: LocalizationManager.Current);
 
-		List<BindingBase> bindings = [
-			keyBinding,
-			cultureBinding
-		];
-
-		if (args is not null)
+		BindingBase strBinding = new MultiBinding
 		{
-			foreach (var arg in args)
-			{
-				if (arg is BindingBase argBinding)
-				{
-					bindings.Add(argBinding);
-				}
-				else
-				{
-					bindings.Add(BindingBase.Create(static (object o) => o, BindingMode.OneWay, source: arg));
-				}
-			}
+			Bindings = new List<BindingBase> { keyBinding, cultureBinding },
+			Mode = BindingMode.OneWay,
+			Converter = new LocalizeMultiConverter()
+		};
+
+		if (args is null || args.Length == 0)
+		{
+			return strBinding;
 		}
 
-		return new MultiBinding
-		{
-			Bindings = bindings,
-			Mode = BindingMode.OneWay,
-			Converter = new LocalizeMultiConverter(),
-		};
+		return StringFormatBinding.Create(strBinding, args);
 	}
 }

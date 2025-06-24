@@ -37,7 +37,5 @@ public class RightToLeftToFlowDirectionConverter : IValueConverter
 	/// <returns>The converted value, or <see langword="null"/> if the conversion is not implemented.</returns>
 	/// <exception cref="NotImplementedException">Always thrown, as this method is not implemented.</exception>
 	public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-	{
-		throw new NotImplementedException();
-	}
+		=> throw new NotImplementedException();
 }

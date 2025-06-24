@@ -55,24 +55,48 @@ You can use the Localize markup extension in XAML to assign localize string reso
 You can use the Localize extension method in C# to assign localize string resources to your text properties with parameters, e.g.
 
 ```c#
-Count++;
-CounterBtn.Localize(Button.TextProperty, "BTN_CLICKED_N_TIMES", Count);
-SemanticScreenReader.Announce(CounterBtn.Text);
+[RelayCommand]
+void IncrementCounter()
+{
+    Count++;
+    CounterBtn.Localize(Button.TextProperty, "BTN_CLICKED_N_TIMES", Count);
+    SemanticScreenReader.Announce(CounterBtn.Text);
+}
 ```
 
-## C# LocalizeBinding.Create example
+## C# Localize extension method with bindings
 
-You can use LocalizeBinding.Create method in C# to create multi bindings. You can use this with the CommunityToolkit.Maui.Markup bindable extensions to rapidly create bindings for your controls, e.g.
+You can use the Localize extension method in C# to assign localization string resources to your text properties with bindings.
 
 ```c#
-using SQuan.Helpers.Maui.Localization;
-using CommunityToolkit.Maui.Markup;
+public MainPage()
+{
+    BindingContext = this;
+    InitializeComponent();
+    CounterBtn.Localize(
+        Button.TextProperty,
+        "BTN_CLICKED_N_TIMES",
+        BindingBase.Create(static (LocalizePage m) => m.Count, BindingMode.OneWay, source: this));
+}
 
-CounterBtn.Bind(
-    Button.TextProperty,
-    binding1: LocalizeBinding.Create("BTN_CLICKED_N_TIMES"),
-    binding2: BindingBase.Create(static (LocalizePage m) => m.Count, BindingMode.OneWay, source: this),
-    convert: ((string? str, int count) v) => !string.IsNullOrEmpty(v.str) ? string.Format(v.str, v.count) : string.Empty);
+[RelayCommand]
+void IncrementCounter()
+{
+    Count++;
+    SemanticScreenReader.Announce(CounterBtn.Text);
+}
+```
+
+## XAML Localize markup extension with bindings
+
+You can use the Localize markup extension in XAML to assign localize string resources to your text properties with bindings.
+
+```xaml
+<Button
+    x:Name="CounterBtn"
+    Command="{Binding IncrementCounterCommand}"
+    HorizontalOptions="Start"
+    Text="{i18n:Localize BTN_CLICKED_N_TIMES, X0={Binding Count}}" />
 ```
 
 ## Further information
