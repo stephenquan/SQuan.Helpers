@@ -87,6 +87,18 @@ void IncrementCounter()
 }
 ```
 
+## XAML Localize markup extension with bindings
+
+You can use the Localize markup extension in XAML to assign localize string resources to your text properties with bindings.
+
+```xaml
+<Button
+    x:Name="CounterBtn"
+    Command="{Binding IncrementCounterCommand}"
+    HorizontalOptions="Start"
+    Text="{i18n:Localize BTN_CLICKED_N_TIMES, X0={Binding Count}}" />
+```
+
 ## Further information
 
 For more information please visit:
