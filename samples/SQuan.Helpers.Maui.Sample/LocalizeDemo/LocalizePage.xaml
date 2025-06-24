@@ -37,7 +37,8 @@
                 x:Name="CounterBtn"
                 Command="{Binding IncrementCounterCommand}"
                 HorizontalOptions="Start"
-                Text="Click me!" />
+                Text="{i18n:Localize BTN_CLICKED_N_TIMES,
+                                     X0={Binding Count}}" />
 
             <!--
             <Button

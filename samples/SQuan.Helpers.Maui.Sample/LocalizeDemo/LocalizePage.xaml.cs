@@ -40,6 +40,7 @@ public partial class LocalizePage : ContentPage
 	{
 		Count++;
 
+		/*
 		if (Count == 1)
 		{
 			CounterBtn.Localize(Button.TextProperty, "BTN_CLICKED_1_TIME", Count);
@@ -48,6 +49,7 @@ public partial class LocalizePage : ContentPage
 		{
 			CounterBtn.Localize(Button.TextProperty, "BTN_CLICKED_N_TIMES", Count);
 		}
+		*/
 
 		SemanticScreenReader.Announce(CounterBtn.Text);
 	}
