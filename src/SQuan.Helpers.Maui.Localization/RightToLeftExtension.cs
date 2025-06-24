@@ -7,7 +7,7 @@
 /// It implements the <see cref="IMarkupExtension{T}"/> interface to provide a binding instance.</remarks>
 [AcceptEmptyServiceProvider]
 [ContentProperty(nameof(Converter))]
-public class RightToLengthExtension : IMarkupExtension<BindingBase>
+public class RightToLeftExtension : IMarkupExtension<BindingBase>
 {
 	/// <summary>
 	/// Gets or sets the value converter used to transform data between the source and target bindings.
