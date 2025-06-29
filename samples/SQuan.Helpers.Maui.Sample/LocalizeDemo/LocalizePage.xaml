@@ -50,6 +50,10 @@
                                     Converter={i18n:StringFormatConverter}}" />
             -->
 
+            <Entry Text="{Binding Expression, Mode=TwoWay}" />
+
+            <Label Text="{i18n:Localize LBL_RESULT, X0={local:Eval Expression={Binding Expression}, X0={Binding Count}, X1='10'}}" />
+
             <Button
                 Command="{Binding ChangeUICultureCommand}"
                 HorizontalOptions="Start"

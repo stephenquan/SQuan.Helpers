@@ -5,7 +5,7 @@
 /// </summary>
 [ContentProperty(nameof(Key))]
 [RequireService([typeof(IReferenceProvider), typeof(IProvideValueTarget)])]
-public partial class LocalizeExtension : Element, IMarkupExtension<BindingBase>
+public partial class LocalizeExtension : BindableObject, IMarkupExtension<BindingBase>
 {
 	/// <summary>
 	/// Bindable proeprty for <see cref="Key"/>."/>
@@ -62,11 +62,11 @@ public partial class LocalizeExtension : Element, IMarkupExtension<BindingBase>
 	{
 		if (serviceProvider.GetService(typeof(IProvideValueTarget)) is IProvideValueTarget provideValueTarget)
 		{
-			if (provideValueTarget.TargetObject is Element targetElement)
+			if (provideValueTarget.TargetObject is BindableObject targetObject)
 			{
 				this.SetBinding(
-					Element.BindingContextProperty,
-					static (Element t) => t.BindingContext, BindingMode.OneWay, source: targetElement);
+					BindableObject.BindingContextProperty,
+					static (BindableObject t) => t.BindingContext, BindingMode.OneWay, source: targetObject);
 			}
 		}
 

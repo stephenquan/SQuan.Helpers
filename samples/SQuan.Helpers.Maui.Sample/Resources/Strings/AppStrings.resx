@@ -126,6 +126,9 @@
   <data name="LBL_HELLO" xml:space="preserve">
     <value>Hello, World!</value>
   </data>
+  <data name="LBL_RESULT" xml:space="preserve">
+    <value>Result: {0}</value>
+  </data>
   <data name="LBL_WELCOME" xml:space="preserve">
     <value>Welcome to .NET Multi-platform App UI</value>
   </data>
