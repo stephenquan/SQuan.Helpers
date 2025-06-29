@@ -9,6 +9,8 @@ public partial class LocalizePage : ContentPage
 {
 	[ObservableProperty] public partial int Count { get; set; } = 0;
 
+	[ObservableProperty] public partial double? X1 { get; set; } = 10.0;
+
 	[ObservableProperty] public partial string Expression { get; set; } = "x0 * x1";
 
 	public List<CultureInfo> SupportedCultures { get; } =

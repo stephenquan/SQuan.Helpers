@@ -52,7 +52,9 @@
 
             <Entry Text="{Binding Expression, Mode=TwoWay}" />
 
-            <Label Text="{i18n:Localize LBL_RESULT, X0={local:Eval Expression={Binding Expression}, X0={Binding Count}, X1='10'}}" />
+            <local:NumericEntry Value="{Binding X1, Mode=TwoWay}" />
+
+            <Label Text="{i18n:Localize LBL_RESULT, X0={local:Eval Expression={Binding Expression}, X0={Binding Count}, X1={Binding X1}}}" />
 
             <Button
                 Command="{Binding ChangeUICultureCommand}"
