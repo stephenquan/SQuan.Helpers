@@ -126,6 +126,9 @@
   <data name="LBL_HELLO" xml:space="preserve">
     <value>你好，世界！</value>
   </data>
+  <data name="LBL_RESULT" xml:space="preserve">
+    <value>结果：{0}</value>
+  </data>
   <data name="LBL_WELCOME" xml:space="preserve">
     <value>欢迎使用 .NET 跨平台应用界面</value>
   </data>

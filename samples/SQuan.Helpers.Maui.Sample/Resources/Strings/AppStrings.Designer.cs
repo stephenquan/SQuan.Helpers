@@ -88,6 +88,15 @@ namespace SQuan.Helpers.Maui.Sample.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Result: {0}.
+        /// </summary>
+        internal static string LBL_RESULT {
+            get {
+                return ResourceManager.GetString("LBL_RESULT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Welcome to .NET Multi-platform App UI.
         /// </summary>
         internal static string LBL_WELCOME {

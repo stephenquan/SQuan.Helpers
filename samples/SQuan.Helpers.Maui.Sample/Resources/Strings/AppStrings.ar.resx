@@ -126,6 +126,9 @@
   <data name="LBL_HELLO" xml:space="preserve">
     <value>مرحبًا أيها العالم!</value>
   </data>
+  <data name="LBL_RESULT" xml:space="preserve">
+    <value>النتيجة: {0}</value>
+  </data>
   <data name="LBL_WELCOME" xml:space="preserve">
     <value>مرحبًا بك في واجهة تطبيق .NET متعددة المنصات</value>
   </data>
