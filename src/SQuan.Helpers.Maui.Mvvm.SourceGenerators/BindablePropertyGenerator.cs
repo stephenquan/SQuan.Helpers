@@ -67,7 +67,12 @@ public class BindablePropertyGenerator : IIncrementalGenerator
 			var typeName = propertySymbol.Type.ToDisplayString();
 			var bareTypeName = typeName switch
 			{
+				"char?" => typeName,
+				"byte?" => typeName,
+				"short?" => typeName,
 				"int?" => typeName,
+				"long?" => typeName,
+				"float?" => typeName,
 				"double?" => typeName,
 				_ => typeName.Replace("?", "")
 			};
