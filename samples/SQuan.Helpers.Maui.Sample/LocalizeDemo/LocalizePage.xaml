@@ -52,9 +52,13 @@
 
             <Entry Text="{Binding Expression, Mode=TwoWay}" />
 
-            <local:NumericEntry Value="{Binding X1, Mode=TwoWay}" />
+            <local:MyNumericEntry Value="{Binding X1, Mode=TwoWay}" />
 
             <Label Text="{i18n:Localize LBL_RESULT, X0={local:Eval Expression={Binding Expression}, X0={Binding Count}, X1={Binding X1}}}" />
+
+            <local:MyDateTimePicker Value="{Binding Modified, Mode=TwoWay}" />
+
+            <Label Text="{Binding Modified, StringFormat='Modified: {0}'}" />
 
             <Button
                 Command="{Binding ChangeUICultureCommand}"
