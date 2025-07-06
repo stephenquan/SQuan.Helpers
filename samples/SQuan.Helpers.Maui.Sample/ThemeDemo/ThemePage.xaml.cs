@@ -9,11 +9,10 @@ public partial class ThemePage : ContentPage
 	{
 		InitializeComponent();
 
-		logoImage.SetBinding(
+		logoImage.SetAppTheme(
 			Image.SourceProperty,
-			AppThemeBinding.Create(
-				BindingBase.Create(static (string s) => s, BindingMode.OneWay, source: Sun),
-				BindingBase.Create(static (string s) => s, BindingMode.OneWay, source: Moon)));
+			BindingBase.Create(static (string s) => s, BindingMode.OneWay, source: Sun),
+			BindingBase.Create(static (string s) => s, BindingMode.OneWay, source: Moon));
 	}
 
 	void OnToggleTheme(object sender, EventArgs e)
