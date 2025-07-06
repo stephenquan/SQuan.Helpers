@@ -1,0 +1,82 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<ProductName>Helpers for .NET MAUI</ProductName>
+		<Title>Helpers for .NET MAUI</Title>
+		<Summary>Helpers for .NET MAUI</Summary>
+		<Description>Provides controls, converters, markup/method extensions for .NET MAUI.</Description>
+
+		<PackageId>SQuan.Helpers.Maui</PackageId>
+		<PackageDescription>Provides controls, converters, markup/method extensions for .NET MAUI.</PackageDescription>
+		<PackageIcon>icon.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageProjectUrl>https://github.com/stephenquan/SQuan.Helpers.Maui</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/stephenquan/SQuan.Helpers.Maui</RepositoryUrl>
+		<PackageReleaseNotes>https://github.com/stephenquan/SQuan.Helpers.Maui/releases</PackageReleaseNotes>
+		<PackageTags>dotnet,maui,controls,converters,markup extensions,method extensions</PackageTags>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<Authors>Stephen Quan</Authors>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" Visible="true" PackagePath="\" />
+		<None Include="..\common\icon.png" Pack="true" Visible="true" PackagePath="\" />
+		<None Include="..\..\LICENSE" Pack="true" Visible="true" PackagePath="\" />
+	</ItemGroup>
+
+	<Target Name="PackageInfo" DependsOnTargets="GetVersion">
+		<Message Text="-- PackageInfo: $(PackageId) --" Importance="high" />
+
+		<PropertyGroup>
+			<PackageFileName>$(PackageId).$(GitVersion_SemVer).nupkg</PackageFileName>
+			<PackageFilePath>$(PackageOutputPath)$(PackageId).$(GitVersion_SemVer).nupkg</PackageFilePath>
+			<PackageCache>$(NuGetPackageRoot)$(PackageId)\$(GitVersion_SemVer)</PackageCache>
+			<PackageReleaseNotes>https://github.com/stephenquan/SQuan.Helpers.Maui/releases/$(GitVersion_MajorMinorPatch)</PackageReleaseNotes>
+		</PropertyGroup>
+
+		<Message Text="TargetFramework: $(TargetFramework)" Importance="high" />
+		<Message Text="Version: $(Version)" Importance="high" />
+		<Message Text="PackageVersion: $(PackageVersion)" Importance="high" />
+		<Message Text="InformationalVersion: $(GitVersion_InformationalVersion)" Importance="high" />
+		<Message Text="PackageFilePath: $(PackageFilePath)" Importance="high" />
+		<Message Text="PackageCache: $(PackageCache)" Importance="high" />
+		<Message Text="LocalPackagesFolder: $(LocalPackagesFolder)" Importance="high" />
+	</Target>
+
+	<ItemGroup Label="Package">
+		<PackageReference Include="GitVersion.MsBuild" Version="5.12.0" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Folder Include="Platforms\Android\" />
+		<Folder Include="Platforms\iOS\" />
+		<Folder Include="Platforms\MacCatalyst\" />
+		<Folder Include="Platforms\Tizen\" />
+		<Folder Include="Platforms\Windows\" />
+	</ItemGroup>
+
+</Project>

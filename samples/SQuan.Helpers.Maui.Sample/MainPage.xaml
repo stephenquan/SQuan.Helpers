@@ -29,6 +29,10 @@
             Command="{Binding NavigateCommand}"
             CommandParameter="LocalizePage"
             Text="Localize Demo" />
+        <Button
+            Command="{Binding NavigateCommand}"
+            CommandParameter="ThemePage"
+            Text="Theme Demo" />
     </VerticalStackLayout>
 
 </ContentPage>

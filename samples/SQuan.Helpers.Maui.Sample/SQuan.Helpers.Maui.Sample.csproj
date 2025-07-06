@@ -19,7 +19,7 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+		<GenerateDocumentationFile>false</GenerateDocumentationFile>
 
 		<!-- Display name -->
 		<ApplicationTitle>SQuan.Helpers.Maui.Sample</ApplicationTitle>
@@ -65,28 +65,28 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
-    <ProjectReference Include="..\..\src\SQuan.Helpers.Maui.Mvvm\SQuan.Helpers.Maui.Mvvm.csproj" />
-    <ProjectReference Include="..\..\src\SQuan.Helpers.Maui.Mvvm.SourceGenerators\SQuan.Helpers.Maui.Mvvm.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-  </ItemGroup>
-  
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\SQuan.Helpers.Maui.Localization\SQuan.Helpers.Maui.Localization.csproj" />
-  </ItemGroup>
-
-    <ItemGroup>
-	  <Compile Update="Resources\Strings\AppStrings.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>AppStrings.resx</DependentUpon>
-	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Update="Resources\Strings\AppStrings.resx">
-	    <Generator>ResXFileCodeGenerator</Generator>
-	    <LastGenOutput>AppStrings.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
+		<ProjectReference Include="..\..\src\SQuan.Helpers.Maui.Mvvm\SQuan.Helpers.Maui.Mvvm.csproj" />
+		<ProjectReference Include="..\..\src\SQuan.Helpers.Maui.Mvvm.SourceGenerators\SQuan.Helpers.Maui.Mvvm.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\..\src\SQuan.Helpers.Maui.Localization\SQuan.Helpers.Maui.Localization.csproj" />
+		<ProjectReference Include="..\..\src\SQuan.Helpers.Maui\SQuan.Helpers.Maui.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Resources\Strings\AppStrings.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>AppStrings.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Resources\Strings\AppStrings.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>AppStrings.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
 	</ItemGroup>
 
 </Project>
