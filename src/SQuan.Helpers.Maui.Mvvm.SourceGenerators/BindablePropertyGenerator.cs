@@ -65,17 +65,8 @@ public class BindablePropertyGenerator : IIncrementalGenerator
 			var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
 			var propertyName = propertySymbol.Name;
 			var typeName = propertySymbol.Type.ToDisplayString();
-			var bareTypeName = typeName switch
-			{
-				"char?" => typeName,
-				"byte?" => typeName,
-				"short?" => typeName,
-				"int?" => typeName,
-				"long?" => typeName,
-				"float?" => typeName,
-				"double?" => typeName,
-				_ => typeName.Replace("?", "")
-			};
+			bool isValueType = propertySymbol.Type.IsValueType;
+			var bareTypeName = isValueType ? typeName : typeName.Replace("?", "");
 			PropertyDeclarationSyntax propertySyntax = (propertySymbol.DeclaringSyntaxReferences[0].GetSyntax() as PropertyDeclarationSyntax)!;
 
 			var propertyModifiers = propertySyntax.Modifiers

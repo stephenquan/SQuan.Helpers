@@ -2,32 +2,32 @@ using SQuan.Helpers.Maui.Mvvm;
 
 namespace SQuan.Helpers.Maui.Sample;
 
-public partial class NumericEntry : Entry
+public partial class MyNumericEntry : Entry
 {
 	[BindableProperty] public partial double? Value { get; set; } = null;
 
-	int Lock { get; set; } = 0;
+	int changing = 0;
 
-	public NumericEntry()
+	public MyNumericEntry()
 	{
 		PropertyChanged += (sender, e) =>
 		{
 			switch (e.PropertyName)
 			{
 				case nameof(Text):
-					if (Lock == 0)
+					if (changing == 0)
 					{
-						Lock++;
+						changing++;
 						Value = (!string.IsNullOrEmpty(Text) && double.TryParse(Text, out double parsedValue)) ? parsedValue : null;
-						Lock--;
+						changing--;
 					}
 					break;
 				case nameof(Value):
-					if (Lock == 0)
+					if (changing == 0)
 					{
-						Lock++;
+						changing++;
 						Text = (Value is null) ? string.Empty : Value.ToString();
-						Lock--;
+						changing--;
 					}
 					break;
 			}

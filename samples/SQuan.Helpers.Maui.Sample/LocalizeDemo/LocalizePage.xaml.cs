@@ -13,6 +13,8 @@ public partial class LocalizePage : ContentPage
 
 	[ObservableProperty] public partial string Expression { get; set; } = "x0 * x1";
 
+	[ObservableProperty] public partial DateTime? Modified { get; set; }
+
 	public List<CultureInfo> SupportedCultures { get; } =
 	[
 		new CultureInfo("en-US"),
