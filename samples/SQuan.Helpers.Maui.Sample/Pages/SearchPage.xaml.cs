@@ -4,6 +4,7 @@ using SQuan.Helpers.Maui.Mvvm;
 
 namespace SQuan.Helpers.Maui.Sample;
 
+
 public partial class SearchPage : ContentPage
 {
 	public static Type DictionaryType { get; } = typeof(IDictionary<string, object?>);
@@ -11,7 +12,6 @@ public partial class SearchPage : ContentPage
 	[BindableProperty] public partial string SearchText { get; set; } = "Statue of Liberty";
 	[BindableProperty, NotifyPropertyChangedFor(nameof(IsNotSearching))] public partial bool IsSearching { get; internal set; } = false;
 	public bool IsNotSearching => !IsSearching;
-
 	public ObservableCollection<object> Results { get; } = [];
 
 	public SearchPage()
@@ -36,7 +36,7 @@ public partial class SearchPage : ContentPage
 			{
 				var client = new HttpClient();
 				dynamic response = await HttpClientHelper.GetAsync(client, "https://www.arcgis.com/sharing/rest/search", FormDataHelper.EncodeFormData(query));
-				System.Diagnostics.Trace.WriteLine($"Found {response.results.Count} results, next start: {response.nextStart}");
+				System.Diagnostics.Trace.WriteLine($"Search: start:{response.start}, results:{response.results.Count}, nextStart:{response.nextStart}");
 				foreach (var result in response.results)
 				{
 					Results.Add(result);
