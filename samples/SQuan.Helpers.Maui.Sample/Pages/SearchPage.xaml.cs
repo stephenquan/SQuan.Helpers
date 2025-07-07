@@ -6,6 +6,8 @@ namespace SQuan.Helpers.Maui.Sample;
 
 public partial class SearchPage : ContentPage
 {
+	public static Type DictionaryType { get; } = typeof(IDictionary<string, object?>);
+
 	[BindableProperty] public partial string SearchText { get; set; } = "Statue of Liberty";
 	[BindableProperty, NotifyPropertyChangedFor(nameof(IsNotSearching))] public partial bool IsSearching { get; internal set; } = false;
 	public bool IsNotSearching => !IsSearching;

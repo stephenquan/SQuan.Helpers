@@ -26,6 +26,19 @@ public partial class SearchCard : ContentView
 		}
 	}
 
+	public DateTime? ModifiedDate
+	{
+		get
+		{
+			if (Modified is long modified)
+			{
+				return DateTimeOffset.FromUnixTimeMilliseconds(modified).DateTime;
+			}
+
+			return null;
+		}
+	}
+
 	public SearchCard()
 	{
 		InitializeComponent();
@@ -37,6 +50,10 @@ public partial class SearchCard : ContentView
 				case nameof(ItemId):
 				case nameof(Thumbnail):
 					OnPropertyChanged(nameof(ThumbnailSource));
+					break;
+
+				case nameof(Modified):
+					OnPropertyChanged(nameof(ModifiedDate));
 					break;
 			}
 		};
