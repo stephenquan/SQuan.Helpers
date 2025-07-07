@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:SQuan.Helpers.Maui.Sample"
-    xmlns:sqhm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
+    xmlns:sq="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
     Title="Dynamic Demo"
     x:DataType="local:DynamicPage">
 
@@ -12,8 +12,8 @@
         <ScrollView>
             <VerticalStackLayout
                 Padding="30,0"
-                x:DataType="sqhm:DynamicProperties"
-                BindingContext="{Binding Properties, Converter={sqhm:DynamicPropertiesConverter}}"
+                x:DataType="sq:DynamicProperties"
+                BindingContext="{Binding Properties, Converter={sq:DynamicPropertiesConverter}}"
                 Spacing="25">
 
                 <Image

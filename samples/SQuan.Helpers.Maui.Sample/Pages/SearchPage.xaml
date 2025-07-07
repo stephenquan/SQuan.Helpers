@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:SQuan.Helpers.Maui.Sample"
-    xmlns:sqhm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
+    xmlns:sq="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
     Title="SearchPage"
     x:DataType="local:SearchPage">
     <Grid RowDefinitions="Auto,*">
@@ -23,8 +23,8 @@
                         <Grid>
                             <Grid
                                 Padding="0,5,30,5"
-                                x:DataType="sqhm:DynamicProperties"
-                                BindingContext="{Binding Converter={sqhm:DynamicPropertiesConverter}}">
+                                x:DataType="sq:DynamicProperties"
+                                BindingContext="{Binding Converter={sq:DynamicPropertiesConverter}}">
                                 <local:SearchCard
                                     Title="{Binding [title]}"
                                     Description="{Binding [description]}"
