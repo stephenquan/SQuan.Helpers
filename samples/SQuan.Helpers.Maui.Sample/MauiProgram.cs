@@ -31,6 +31,7 @@ public static class MauiProgram
 		Routing.RegisterRoute(nameof(BalancePage), typeof(BalancePage));
 		Routing.RegisterRoute(nameof(LocalizePage), typeof(LocalizePage));
 		Routing.RegisterRoute(nameof(ThemePage), typeof(ThemePage));
+		Routing.RegisterRoute(nameof(SearchPage), typeof(SearchPage));
 
 		return builder.Build();
 	}
