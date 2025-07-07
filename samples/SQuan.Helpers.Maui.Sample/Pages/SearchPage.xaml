@@ -9,18 +9,35 @@
     <Grid RowDefinitions="Auto,*">
         <VerticalStackLayout Padding="30,30,30,30" Spacing="25">
             <Entry Text="{Binding SearchText, Mode=TwoWay}" />
-            <Button Clicked="OnSearchClicked" Text="Search" />
+            <Button
+                Clicked="OnSearchClicked"
+                IsEnabled="{Binding IsNotSearching}"
+                Text="Search" />
+            <Label IsVisible="{Binding Results.Count}" Text="{Binding Results.Count}" />
         </VerticalStackLayout>
         <Grid Grid.Row="1" Padding="30,0,30,30">
             <CollectionView ItemsSource="{Binding Results}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="{x:Null}">
-                        <Grid Padding="0,5,0,5">
-                            <Label Text="{Binding [title]}" />
+                        <Grid Padding="0,5,30,5">
+                            <local:SearchCard
+                                Title="{Binding [title]}"
+                                Description="{Binding [description]}"
+                                ItemId="{Binding [id]}"
+                                ItemType="{Binding [type]}"
+                                Modified="{Binding [modified]}"
+                                Owner="{Binding [owner]}"
+                                Snippet="{Binding [snippet]}"
+                                Thumbnail="{Binding [thumbnail]}" />
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                IsRunning="{Binding IsSearching}"
+                IsVisible="{Binding IsSearching}"
+                VerticalOptions="Center" />
         </Grid>
     </Grid>
 </ContentPage>
