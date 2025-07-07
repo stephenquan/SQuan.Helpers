@@ -6,11 +6,11 @@ namespace SQuan.Helpers.Maui;
 /// Represents a wrapper around an <see cref="IDictionary{TKey, TValue}"/> that provides convenient access to its
 /// elements and supports additional functionality such as property change notifications.
 /// </summary>
-/// <remarks>The <see cref="DictionaryWrapper"/> class allows interaction with an underlying dictionary using
+/// <remarks>The <see cref="DynamicProperties"/> class allows interaction with an underlying dictionary using
 /// string keys. It provides indexed access to dictionary elements and supports dynamic updates to the dictionary. This
 /// class is particularly useful for scenarios where dictionary manipulation needs to be combined with additional
 /// behaviors, such as notifying changes to bound UI elements.</remarks>
-public partial class DictionaryWrapper : INotifyPropertyChanged
+public partial class DynamicProperties : INotifyPropertyChanged
 {
 	IDictionary<string, object?>? internalDict { get; set; }
 
@@ -77,12 +77,12 @@ public partial class DictionaryWrapper : INotifyPropertyChanged
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="DictionaryWrapper"/> class, wrapping the specified dictionary.
+	/// Initializes a new instance of the <see cref="DynamicProperties"/> class, wrapping the specified dictionary.
 	/// </summary>
-	/// <remarks>The <see cref="DictionaryWrapper"/> provides a convenient way to interact with an underlying  <see
+	/// <remarks>The <see cref="DynamicProperties"/> provides a convenient way to interact with an underlying  <see
 	/// cref="IDictionary{TKey, TValue}"/> while potentially adding additional functionality or constraints.</remarks>
 	/// <param name="dictionary">The dictionary to wrap. This must not be null.</param>
-	public DictionaryWrapper(IDictionary<string, object?> dictionary)
+	public DynamicProperties(IDictionary<string, object?> dictionary)
 	{
 		internalDict = dictionary;
 

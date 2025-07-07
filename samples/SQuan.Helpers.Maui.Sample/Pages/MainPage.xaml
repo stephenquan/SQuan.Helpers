@@ -4,39 +4,29 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:SQuan.Helpers.Maui.Sample"
+    x:Name="mainPage"
     x:DataType="local:MainPage">
-    <VerticalStackLayout
-        Padding="30"
-        Spacing="30"
-        VerticalOptions="Center">
-        <Label
-            FontSize="32"
-            HorizontalOptions="Center"
-            Text="Welcome to SQuan.Helpers.Maui!" />
-        <Button
-            Command="{Binding NavigateCommand}"
-            CommandParameter="CountPage"
-            Text="Count Demo" />
-        <Button
-            Command="{Binding NavigateCommand}"
-            CommandParameter="CardPage"
-            Text="Card Demo" />
-        <Button
-            Command="{Binding NavigateCommand}"
-            CommandParameter="BalancePage"
-            Text="Balance Demo" />
-        <Button
-            Command="{Binding NavigateCommand}"
-            CommandParameter="LocalizePage"
-            Text="Localize Demo" />
-        <Button
-            Command="{Binding NavigateCommand}"
-            CommandParameter="ThemePage"
-            Text="Theme Demo" />
-        <Button
-            Command="{Binding NavigateCommand}"
-            CommandParameter="SearchPage"
-            Text="Search Demo" />
-    </VerticalStackLayout>
-
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30"
+            Spacing="30"
+            VerticalOptions="Center">
+            <Label
+                FontSize="32"
+                HorizontalOptions="Center"
+                Text="Welcome to SQuan.Helpers.Maui!" />
+            <CollectionView ItemsSource="{Binding Samples, x:DataType='local:SamplesHelper', Source={x:Static local:SamplesHelper.Current}}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="local:Sample">
+                        <Grid Padding="5">
+                            <Button
+                                Command="{Binding NavigateCommand, x:DataType='local:MainPage', Source={Reference mainPage}}"
+                                CommandParameter="{Binding PageRoute}"
+                                Text="{Binding Name}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

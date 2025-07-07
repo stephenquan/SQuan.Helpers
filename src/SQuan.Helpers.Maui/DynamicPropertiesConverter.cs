@@ -3,12 +3,12 @@
 namespace SQuan.Helpers.Maui;
 
 /// <summary>
-/// Provides conversion between a dictionary of string keys and object values and a <see cref="DictionaryWrapper"/>.
+/// Provides conversion between a dictionary of string keys and object values and a <see cref="DynamicProperties"/>.
 /// </summary>
 /// <remarks>This converter is typically used in scenarios where a dictionary needs to be wrapped in a <see
-/// cref="DictionaryWrapper"/> for easier manipulation or access. The <see cref="Convert"/> method performs the
+/// cref="DynamicProperties"/> for easier manipulation or access. The <see cref="Convert"/> method performs the
 /// wrapping, while the <see cref="ConvertBack"/> method is not implemented.</remarks>
-public class DictionaryWrapperConverter : IValueConverter
+public class DynamicPropertiesConverter : IValueConverter
 {
 	/// <summary>
 	/// Converts the specified value into a wrapped dictionary if it is a dictionary of string keys and nullable object
@@ -25,7 +25,7 @@ public class DictionaryWrapperConverter : IValueConverter
 	{
 		if (value is IDictionary<string, object?> dict)
 		{
-			return new DictionaryWrapper(dict);
+			return new DynamicProperties(dict);
 		}
 		return null;
 	}

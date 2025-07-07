@@ -23,8 +23,8 @@
                         <Grid>
                             <Grid
                                 Padding="0,5,30,5"
-                                x:DataType="sqhm:DictionaryWrapper"
-                                BindingContext="{Binding Converter={sqhm:DictionaryWrapperConverter}}">
+                                x:DataType="sqhm:DynamicProperties"
+                                BindingContext="{Binding Converter={sqhm:DynamicPropertiesConverter}}">
                                 <local:SearchCard
                                     Title="{Binding [title]}"
                                     Description="{Binding [description]}"
