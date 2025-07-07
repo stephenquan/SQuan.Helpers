@@ -33,6 +33,10 @@
             Command="{Binding NavigateCommand}"
             CommandParameter="ThemePage"
             Text="Theme Demo" />
+        <Button
+            Command="{Binding NavigateCommand}"
+            CommandParameter="SearchPage"
+            Text="Search Demo" />
     </VerticalStackLayout>
 
 </ContentPage>
