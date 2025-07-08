@@ -6,8 +6,9 @@ public partial class MyImage : Image
 {
 	[BindableProperty] public partial string? SourceUrl { get; set; }
 
-	bool changing = false;
-	long changeTime = 0;
+	bool changing = false; // indicates if the image source is currently being changed
+	long changeTime = 0; // milliseconds since epoch
+	long changeInterval = 500; // milliseconds
 
 	public MyImage()
 	{
@@ -23,7 +24,7 @@ public partial class MyImage : Image
 						this.Dispatcher.Dispatch(async () =>
 						{
 							this.Source = null;
-							while (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() < changeTime + 500)
+							while (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() < changeTime + changeInterval)
 							{
 								await Task.Delay(50);
 							}
