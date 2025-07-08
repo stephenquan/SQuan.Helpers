@@ -6,18 +6,27 @@
     xmlns:dynamic="clr-namespace:System.Dynamic;assembly=System.Linq.Expressions"
     xmlns:local="clr-namespace:SQuan.Helpers.Maui.Sample"
     xmlns:sq="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
-    Title="SearchPage"
+    Title="Search Demo"
     x:DataType="local:SearchPage">
-    <Grid RowDefinitions="Auto,*">
-        <VerticalStackLayout Padding="30,30,30,30" Spacing="25">
-            <Entry Text="{Binding SearchText, Mode=TwoWay}" />
-            <Button
-                Clicked="OnSearchClicked"
-                IsEnabled="{Binding IsNotSearching}"
-                Text="Search" />
+    <Grid BackgroundColor="#F7F7F7" RowDefinitions="Auto,Auto,*">
+        <Grid Padding="30,30,30,30">
+            <Border>
+                <VerticalStackLayout
+                    Padding="10"
+                    BackgroundColor="White"
+                    Spacing="25">
+                    <Entry Text="{Binding SearchText, Mode=TwoWay}" />
+                    <Button
+                        Clicked="OnSearchClicked"
+                        IsEnabled="{Binding IsNotSearching}"
+                        Text="Search" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+        <Grid Grid.Row="1" Padding="30,15,30,15">
             <Label IsVisible="{Binding Results.Count}" Text="{Binding Results.Count}" />
-        </VerticalStackLayout>
-        <Grid Grid.Row="1" Padding="30,0,30,30">
+        </Grid>
+        <Grid Grid.Row="2" Padding="30,0,30,30">
             <CollectionView ItemsSource="{Binding Results}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
@@ -30,6 +39,7 @@
                                 BindingContext="{Binding Converter={sq:DynamicPropertiesConverter}}">
                                 <local:SearchCard
                                     Title="{Binding [title]}"
+                                    BackgroundColor="White"
                                     Description="{Binding [description]}"
                                     ItemId="{Binding [id]}"
                                     ItemType="{Binding [type]}"

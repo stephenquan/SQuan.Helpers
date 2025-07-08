@@ -35,7 +35,7 @@ public partial class SearchPage : ContentPage
 			while (true)
 			{
 				var client = new HttpClient();
-				dynamic response = await HttpClientHelper.GetAsync(client, "https://www.arcgis.com/sharing/rest/search", FormDataHelper.EncodeFormData(query));
+				dynamic response = await client.PostApiAsync("https://www.arcgis.com/sharing/rest/search", (ExpandoObject)query);
 				System.Diagnostics.Trace.WriteLine($"Search: start:{response.start}, results:{response.results.Count}, nextStart:{response.nextStart}");
 				foreach (var result in response.results)
 				{
