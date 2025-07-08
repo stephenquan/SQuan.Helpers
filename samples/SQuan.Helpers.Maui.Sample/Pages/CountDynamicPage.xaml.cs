@@ -3,14 +3,12 @@ using System.Text.Json;
 
 namespace SQuan.Helpers.Maui.Sample;
 
-public partial class DynamicPage : ContentPage
+public partial class CountDynamicPage : ContentPage
 {
 	public dynamic Properties { get; } = new ExpandoObject();
+	public string Json => JsonSerializer.Serialize(Properties, new JsonSerializerOptions() { WriteIndented = true });
 
-	public string Json
-		=> JsonSerializer.Serialize(Properties, new JsonSerializerOptions() { WriteIndented = true });
-
-	public DynamicPage()
+	public CountDynamicPage()
 	{
 		Properties.Count = 0;
 		Properties.Hello = "Hello, World!";

@@ -27,8 +27,8 @@ public static class MauiProgram
 #endif
 
 		SamplesHelper.RegisterSample("Count Demo", nameof(CountPage), typeof(CountPage));
+		SamplesHelper.RegisterSample("Count Dynamic Demo", nameof(CountDynamicPage), typeof(CountDynamicPage));
 		SamplesHelper.RegisterSample("Card Demo", nameof(CardPage), typeof(CardPage));
-		SamplesHelper.RegisterSample("Dynamic Demo", nameof(DynamicPage), typeof(DynamicPage));
 		SamplesHelper.RegisterSample("Balance Demo", nameof(BalancePage), typeof(BalancePage));
 		SamplesHelper.RegisterSample("Localization Demo", nameof(LocalizePage), typeof(LocalizePage));
 		SamplesHelper.RegisterSample("Theme Demo", nameof(ThemePage), typeof(ThemePage));
