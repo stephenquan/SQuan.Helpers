@@ -7,23 +7,13 @@ public partial class SamplesHelper
 	static SamplesHelper? instance;
 
 	public static SamplesHelper Current
-	{
-		get
-		{
-			if (instance is null)
-			{
-				instance = new SamplesHelper();
-			}
-			return instance;
-		}
-	}
+		=> instance ??= new SamplesHelper();
 
-	public ObservableCollection<Sample> Samples { get; } = new();
+	public ObservableCollection<Sample> Samples { get; } = [];
 
 	public static Sample RegisterSample(string name, string routePage, Type routeType)
 	{
 		Routing.RegisterRoute(routePage, routeType);
-
 		var sample = new Sample(name, routePage, routeType);
 		Current.Samples.Add(sample);
 		return sample;
