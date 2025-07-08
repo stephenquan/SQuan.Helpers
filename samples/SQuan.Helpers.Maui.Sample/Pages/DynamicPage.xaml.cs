@@ -8,17 +8,7 @@ public partial class DynamicPage : ContentPage
 	public dynamic Properties { get; } = new ExpandoObject();
 
 	public string Json
-	{
-		get
-		{
-			return JsonSerializer.Serialize(Properties, new JsonSerializerOptions()
-			{
-				WriteIndented = true,
-				PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-				DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
-			});
-		}
-	}
+		=> JsonSerializer.Serialize(Properties, new JsonSerializerOptions() { WriteIndented = true });
 
 	public DynamicPage()
 	{
