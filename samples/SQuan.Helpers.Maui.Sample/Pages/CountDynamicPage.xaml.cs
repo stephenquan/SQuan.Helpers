@@ -5,7 +5,7 @@ namespace SQuan.Helpers.Maui.Sample;
 
 public partial class CountDynamicPage : ContentPage
 {
-	public dynamic Properties { get; } = new ExpandoObject();
+	public dynamic Properties { get; } = new BindableDynamic(new ExpandoObject());
 	public string Json => JsonSerializer.Serialize(Properties, new JsonSerializerOptions() { WriteIndented = true });
 
 	public CountDynamicPage()

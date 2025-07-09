@@ -12,8 +12,8 @@
         <ScrollView>
             <VerticalStackLayout
                 Padding="30,0"
-                x:DataType="sq:DynamicProperties"
-                BindingContext="{Binding Properties, Converter={sq:DynamicPropertiesConverter}}"
+                x:DataType="sq:BindableDynamic"
+                BindingContext="{Binding Properties}"
                 Spacing="25">
 
                 <Image

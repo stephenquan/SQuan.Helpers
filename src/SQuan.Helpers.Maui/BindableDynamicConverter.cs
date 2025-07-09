@@ -3,12 +3,14 @@
 namespace SQuan.Helpers.Maui;
 
 /// <summary>
-/// Provides conversion between a dictionary of string keys and object values and a <see cref="DynamicProperties"/>.
+/// Provides a value converter that transforms dictionaries with string keys and nullable object values into a wrapped
+/// dictionary suitable for data binding scenarios.
 /// </summary>
-/// <remarks>This converter is typically used in scenarios where a dictionary needs to be wrapped in a <see
-/// cref="DynamicProperties"/> for easier manipulation or access. The <see cref="Convert"/> method performs the
-/// wrapping, while the <see cref="ConvertBack"/> method is not implemented.</remarks>
-public class DynamicPropertiesConverter : IValueConverter
+/// <remarks>This class implements the <see cref="IValueConverter"/> interface, enabling it to be used in XAML 
+/// data binding operations. The <see cref="Convert"/> method wraps dictionaries into a <c>BindableDynamic</c>  object,
+/// while the <see cref="ConvertBack"/> method is not implemented and will throw a  <see
+/// cref="NotImplementedException"/>.</remarks>
+public class BindableDynamicConverter : IValueConverter
 {
 	/// <summary>
 	/// Converts the specified value into a wrapped dictionary if it is a dictionary of string keys and nullable object
@@ -25,7 +27,7 @@ public class DynamicPropertiesConverter : IValueConverter
 	{
 		if (value is IDictionary<string, object?> dict)
 		{
-			return new DynamicProperties(dict);
+			return new BindableDynamic(dict);
 		}
 		return null;
 	}

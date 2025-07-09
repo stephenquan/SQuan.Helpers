@@ -35,8 +35,8 @@
                             <!--  child element needed to change wrap the ExpandoObject with a concrete DynamicProperties object  -->
                             <Grid
                                 Padding="0,5,30,5"
-                                x:DataType="sq:DynamicProperties"
-                                BindingContext="{Binding Converter={sq:DynamicPropertiesConverter}}">
+                                x:DataType="sq:BindableDynamic"
+                                BindingContext="{Binding Converter={sq:BindableDynamicConverter}}">
                                 <local:SearchCard
                                     Title="{Binding [title]}"
                                     BackgroundColor="White"
