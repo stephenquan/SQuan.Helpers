@@ -8,23 +8,26 @@
     <Border x:DataType="local:SearchCard" BindingContext="{Reference searchCard}">
         <VerticalStackLayout Spacing="10">
             <Grid
-                Padding="10"
+                Padding="20"
                 ColumnDefinitions="*,Auto"
                 ColumnSpacing="10">
                 <VerticalStackLayout Spacing="10">
-                    <Label FontAttributes="Bold" Text="{Binding Title}" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="Medium"
+                        Text="{Binding Title}" />
                     <Label Text="{Binding Snippet}" />
                     <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="5">
                         <Label Text="{Binding ItemType}" />
                         <Label Grid.Column="1" Text="|" />
-                        <Label Grid.Column="2" Text="{Binding Modified, StringFormat='Item updated: {0}'}" />
+                        <Label Grid.Column="2" Text="{Binding ModifiedDate, StringFormat='Item updated: {0:D}'}" />
                     </Grid>
                 </VerticalStackLayout>
                 <Grid Grid.Column="1">
                     <Border Padding="2">
-                        <Image
+                        <local:MyImage
                             HeightRequest="67"
-                            Source="{Binding ThumbnailSource}"
+                            SourceUrl="{Binding ThumbnailUrl}"
                             WidthRequest="100" />
                     </Border>
                 </Grid>

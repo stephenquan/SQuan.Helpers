@@ -3,32 +3,58 @@
     x:Class="SQuan.Helpers.Maui.Sample.SearchPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:dynamic="clr-namespace:System.Dynamic;assembly=System.Linq.Expressions"
     xmlns:local="clr-namespace:SQuan.Helpers.Maui.Sample"
-    Title="SearchPage"
+    xmlns:sq="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
+    Title="Search Demo"
     x:DataType="local:SearchPage">
-    <Grid RowDefinitions="Auto,*">
-        <VerticalStackLayout Padding="30,30,30,30" Spacing="25">
-            <Entry Text="{Binding SearchText, Mode=TwoWay}" />
-            <Button
-                Clicked="OnSearchClicked"
-                IsEnabled="{Binding IsNotSearching}"
-                Text="Search" />
-            <Label IsVisible="{Binding Results.Count}" Text="{Binding Results.Count}" />
-        </VerticalStackLayout>
-        <Grid Grid.Row="1" Padding="30,0,30,30">
+    <Grid BackgroundColor="#F7F7F7" RowDefinitions="Auto,Auto,*">
+        <Grid Padding="30,30,30,30">
+            <Border>
+                <VerticalStackLayout
+                    Padding="10"
+                    BackgroundColor="White"
+                    Spacing="25">
+                    <Entry Text="{Binding SearchText, Mode=TwoWay}" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button
+                            Clicked="OnSearchClicked"
+                            IsEnabled="{Binding IsNotSearching}"
+                            Text="Search" />
+                        <Button
+                            Grid.Column="1"
+                            Clicked="OnCancelClicked"
+                            IsEnabled="{Binding IsSearching}"
+                            Text="Cancel" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+        <Grid Grid.Row="1" Padding="30,15,30,15">
+            <Label Text="{Binding Results.Count}" />
+        </Grid>
+        <Grid Grid.Row="2" Padding="30,0,30,30">
             <CollectionView ItemsSource="{Binding Results}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="{x:Null}">
-                        <Grid Padding="0,5,30,5">
-                            <local:SearchCard
-                                Title="{Binding [title]}"
-                                Description="{Binding [description]}"
-                                ItemId="{Binding [id]}"
-                                ItemType="{Binding [type]}"
-                                Modified="{Binding [modified]}"
-                                Owner="{Binding [owner]}"
-                                Snippet="{Binding [snippet]}"
-                                Thumbnail="{Binding [thumbnail]}" />
+                    <DataTemplate>
+                        <!--  parent element is needed to realize the ExpandoObject BindingContext  -->
+                        <Grid x:DataType="dynamic:ExpandoObject">
+                            <!--  child element needed to change wrap the ExpandoObject with a concrete DynamicProperties object  -->
+                            <Grid
+                                Padding="0,5,30,5"
+                                x:DataType="sq:ObservableIndexer"
+                                BindingContext="{Binding Converter={sq:ObservableIndexerConverter}}">
+                                <local:SearchCard
+                                    Title="{Binding [title]}"
+                                    BackgroundColor="White"
+                                    Description="{Binding [description]}"
+                                    ItemId="{Binding [id]}"
+                                    ItemType="{Binding [type]}"
+                                    Modified="{Binding [modified]}"
+                                    Owner="{Binding [owner]}"
+                                    Snippet="{Binding [snippet]}"
+                                    Thumbnail="{Binding [thumbnail]}" />
+                            </Grid>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

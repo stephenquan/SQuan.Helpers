@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.Dynamic;
 using SQuan.Helpers.Maui.Mvvm;
 
@@ -9,19 +8,31 @@ public partial class SearchPage : ContentPage
 	[BindableProperty] public partial string SearchText { get; set; } = "Statue of Liberty";
 	[BindableProperty, NotifyPropertyChangedFor(nameof(IsNotSearching))] public partial bool IsSearching { get; internal set; } = false;
 	public bool IsNotSearching => !IsSearching;
-
-	public ObservableCollection<object> Results { get; } = [];
+	public ObservableList<object> Results { get; } = [];
+	CancellationTokenSource? cts;
 
 	public SearchPage()
 	{
 		BindingContext = this;
 
 		InitializeComponent();
+
+		this.Disappearing += (s, e) =>
+		{
+			if (cts is not null)
+			{
+				if (!cts.IsCancellationRequested)
+				{
+					cts.Cancel();
+				}
+			}
+		};
 	}
 
 	async void OnSearchClicked(object sender, EventArgs e)
 	{
 		IsSearching = true;
+		cts = new CancellationTokenSource();
 		try
 		{
 			dynamic query = new ExpandoObject();
@@ -30,21 +41,17 @@ public partial class SearchPage : ContentPage
 			query.start = 1;
 			query.num = 50;
 			Results.Clear();
-			while (true)
+			while (query.start != -1)
 			{
 				var client = new HttpClient();
-				dynamic response = await HttpClientHelper.GetAsync(client, "https://www.arcgis.com/sharing/rest/search", FormDataHelper.EncodeFormData(query));
-				System.Diagnostics.Trace.WriteLine($"Found {response.results.Count} results, next start: {response.nextStart}");
-				foreach (var result in response.results)
-				{
-					Results.Add(result);
-				}
-				if (response.nextStart == -1)
-				{
-					break;
-				}
+				dynamic response = await client.PostApiAsync("https://www.arcgis.com/sharing/rest/search", (ExpandoObject)query, cts?.Token);
+				System.Diagnostics.Trace.WriteLine($"Search: start:{response.start}, results:{response.results.Count}, nextStart:{response.nextStart}");
+				Results.AddRange(response.results);
 				query.start = response.nextStart;
 			}
+		}
+		catch (OperationCanceledException)
+		{
 		}
 		catch (Exception ex)
 		{
@@ -53,6 +60,19 @@ public partial class SearchPage : ContentPage
 		finally
 		{
 			IsSearching = false;
+			cts.Dispose();
+			cts = null;
+		}
+	}
+
+	void OnCancelClicked(object sender, EventArgs e)
+	{
+		if (cts is not null)
+		{
+			if (!cts.IsCancellationRequested)
+			{
+				cts.Cancel();
+			}
 		}
 	}
 }

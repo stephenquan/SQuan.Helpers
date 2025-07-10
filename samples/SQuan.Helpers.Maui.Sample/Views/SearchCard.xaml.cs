@@ -13,7 +13,7 @@ public partial class SearchCard : ContentView
 	[BindableProperty] public partial long? Modified { get; set; }
 	[BindableProperty] public partial string? Thumbnail { get; set; }
 
-	public ImageSource? ThumbnailSource
+	public string? ThumbnailUrl
 	{
 		get
 		{
@@ -22,7 +22,20 @@ public partial class SearchCard : ContentView
 				return null;
 			}
 
-			return ImageSource.FromUri(new Uri($"https://www.arcgis.com/sharing/rest/content/items/{ItemId}/info/{Thumbnail}"));
+			return $"https://www.arcgis.com/sharing/rest/content/items/{ItemId}/info/{Thumbnail}?w=100";
+		}
+	}
+
+	public DateTime? ModifiedDate
+	{
+		get
+		{
+			if (Modified is long modified)
+			{
+				return DateTimeOffset.FromUnixTimeMilliseconds(modified).DateTime;
+			}
+
+			return null;
 		}
 	}
 
@@ -36,7 +49,11 @@ public partial class SearchCard : ContentView
 			{
 				case nameof(ItemId):
 				case nameof(Thumbnail):
-					OnPropertyChanged(nameof(ThumbnailSource));
+					OnPropertyChanged(nameof(ThumbnailUrl));
+					break;
+
+				case nameof(Modified):
+					OnPropertyChanged(nameof(ModifiedDate));
 					break;
 			}
 		};
