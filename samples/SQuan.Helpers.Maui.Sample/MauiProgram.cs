@@ -26,12 +26,13 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 
-		Routing.RegisterRoute(nameof(CountPage), typeof(CountPage));
-		Routing.RegisterRoute(nameof(CardPage), typeof(CardPage));
-		Routing.RegisterRoute(nameof(BalancePage), typeof(BalancePage));
-		Routing.RegisterRoute(nameof(LocalizePage), typeof(LocalizePage));
-		Routing.RegisterRoute(nameof(ThemePage), typeof(ThemePage));
-		Routing.RegisterRoute(nameof(SearchPage), typeof(SearchPage));
+		SamplesHelper.RegisterSample("Count Demo", nameof(CountPage), typeof(CountPage));
+		SamplesHelper.RegisterSample("Count Dynamic Demo", nameof(CountDynamicPage), typeof(CountDynamicPage));
+		SamplesHelper.RegisterSample("Card Demo", nameof(CardPage), typeof(CardPage));
+		SamplesHelper.RegisterSample("Balance Demo", nameof(BalancePage), typeof(BalancePage));
+		SamplesHelper.RegisterSample("Localization Demo", nameof(LocalizePage), typeof(LocalizePage));
+		SamplesHelper.RegisterSample("Theme Demo", nameof(ThemePage), typeof(ThemePage));
+		SamplesHelper.RegisterSample("Search Demo", nameof(SearchPage), typeof(SearchPage));
 
 		return builder.Build();
 	}
