@@ -9,6 +9,7 @@ public partial class SearchPage : ContentPage
 	[BindableProperty, NotifyPropertyChangedFor(nameof(IsNotSearching))] public partial bool IsSearching { get; internal set; } = false;
 	public bool IsNotSearching => !IsSearching;
 	public ObservableList<object> Results { get; } = [];
+	CancellationTokenSource? cts;
 
 	public SearchPage()
 	{
@@ -20,6 +21,7 @@ public partial class SearchPage : ContentPage
 	async void OnSearchClicked(object sender, EventArgs e)
 	{
 		IsSearching = true;
+		cts = new CancellationTokenSource();
 		try
 		{
 			dynamic query = new ExpandoObject();
@@ -28,25 +30,17 @@ public partial class SearchPage : ContentPage
 			query.start = 1;
 			query.num = 50;
 			Results.Clear();
-			while (true)
+			while (query.start != -1)
 			{
-				await Task.Run(async () =>
-				{
-					var client = new HttpClient();
-					dynamic response = await client.PostApiAsync("https://www.arcgis.com/sharing/rest/search", (ExpandoObject)query);
-					System.Diagnostics.Trace.WriteLine($"Search: start:{response.start}, results:{response.results.Count}, nextStart:{response.nextStart}");
-					foreach (var result in response.results)
-					{
-						Results.Add(result);
-					}
-					query.start = response.nextStart;
-				});
-				Results.InvokeCollectionReset();
-				if (query.start == -1)
-				{
-					break;
-				}
+				var client = new HttpClient();
+				dynamic response = await client.PostApiAsync("https://www.arcgis.com/sharing/rest/search", (ExpandoObject)query, cts?.Token);
+				System.Diagnostics.Trace.WriteLine($"Search: start:{response.start}, results:{response.results.Count}, nextStart:{response.nextStart}");
+				Results.AddRange(response.results);
+				query.start = response.nextStart;
 			}
+		}
+		catch (OperationCanceledException)
+		{
 		}
 		catch (Exception ex)
 		{
@@ -55,6 +49,19 @@ public partial class SearchPage : ContentPage
 		finally
 		{
 			IsSearching = false;
+			cts.Dispose();
+			cts = null;
+		}
+	}
+
+	void OnCancelClicked(object sender, EventArgs e)
+	{
+		if (cts is not null)
+		{
+			if (!cts.IsCancellationRequested)
+			{
+				cts.Cancel();
+			}
 		}
 	}
 }

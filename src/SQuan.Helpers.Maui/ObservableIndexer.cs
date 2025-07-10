@@ -179,124 +179,146 @@ public partial class ObservableIndexer : DynamicObject, IDictionary<string, obje
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	/// <summary>
-	/// 
+	/// Adds the specified key-value pair to the collection.
 	/// </summary>
-	/// <param name="key"></param>
-	/// <param name="value"></param>
-	/// <exception cref="NotImplementedException"></exception>
+	/// <remarks>If the specified <paramref name="key"/> already exists in the collection, an exception will be
+	/// thrown.</remarks>
+	/// <param name="key">The key associated with the value to add. Cannot be <see langword="null"/> or empty.</param>
+	/// <param name="value">The value to associate with the specified key. Can be <see langword="null"/>.</param>
 	public void Add(string key, object? value)
-	{
-		internalDict.Add(key, value);
-	}
+		=> internalDict.Add(key, value);
 
 	/// <summary>
-	/// 
+	/// Determines whether the dictionary contains the specified key.
 	/// </summary>
-	/// <param name="key"></param>
-	/// <returns></returns>
+	/// <param name="key">The key to locate in the dictionary. Cannot be <see langword="null"/>.</param>
+	/// <returns><see langword="true"/> if the dictionary contains an element with the specified key;  otherwise, <see
+	/// langword="false"/>.</returns>
 	public bool ContainsKey(string key)
 		=> internalDict.ContainsKey(key);
 
 	/// <summary>
-	/// 
+	/// Removes the element with the specified key from the collection.
 	/// </summary>
-	/// <param name="key"></param>
-	/// <returns></returns>
+	/// <param name="key">The key of the element to remove. Cannot be <see langword="null"/> or empty.</param>
+	/// <returns><see langword="true"/> if the element is successfully removed; otherwise, <see langword="false"/>.  This method
+	/// also returns <see langword="false"/> if the key was not found in the collection.</returns>
 	public bool Remove(string key)
 		=> internalDict.Remove(key);
 
 	/// <summary>
-	/// 
+	/// Attempts to retrieve the value associated with the specified key.
 	/// </summary>
-	/// <param name="key"></param>
-	/// <param name="value"></param>
-	/// <returns></returns>
+	/// <remarks>This method does not throw an exception if the key is not found. Use this method to safely check
+	/// for the existence  of a key and retrieve its value in one operation.</remarks>
+	/// <param name="key">The key whose associated value is to be retrieved. Cannot be <see langword="null"/>.</param>
+	/// <param name="value">When this method returns, contains the value associated with the specified key if the key is found;  otherwise, the
+	/// default value for the type of the <paramref name="value"/> parameter. This parameter is passed uninitialized.</param>
+	/// <returns><see langword="true"/> if the key exists in the dictionary and the value is successfully retrieved;  otherwise,
+	/// <see langword="false"/>.</returns>
 	public bool TryGetValue(string key, [MaybeNullWhen(false)] out object? value)
 		=> internalDict.TryGetValue(key, out value);
 
 	/// <summary>
-	/// 
+	/// Gets a collection containing the keys in the dictionary.
 	/// </summary>
 	public ICollection<string> Keys
 		=> internalDict.Keys;
 
 	/// <summary>
-	/// 
+	/// Gets a collection containing all the values in the dictionary.
 	/// </summary>
+	/// <remarks>The returned collection is read-only and provides a snapshot of the values in the dictionary at the
+	/// time of access. Iterating over the collection is thread-safe as long as the dictionary is not modified
+	/// concurrently.</remarks>
 	public ICollection<object?> Values
 		=> internalDict.Values;
 
 	/// <summary>
-	/// 
+	/// Adds the specified key-value pair to the collection.
 	/// </summary>
-	/// <param name="item"></param>
+	/// <remarks>The method ensures that the key is unique within the collection. If the key already exists,  an
+	/// exception is thrown.</remarks>
+	/// <param name="item">The key-value pair to add to the collection. The key must be a non-null string.</param>
 	/// <exception cref="NotImplementedException"></exception>
 	public void Add(KeyValuePair<string, object?> item)
-	{
-		throw new NotImplementedException();
-	}
+		=> throw new NotImplementedException();
 
 	/// <summary>
-	/// 
+	/// Removes all elements from the collection.
 	/// </summary>
-	/// <exception cref="NotImplementedException"></exception>
+	/// <remarks>After calling this method, the collection will be empty. Any references to previously stored
+	/// elements will be invalid.</remarks>
 	public void Clear()
 		=> internalDict.Clear();
 
 	/// <summary>
-	/// 
+	/// Determines whether the collection contains the specified key-value pair.
 	/// </summary>
-	/// <param name="item"></param>
-	/// <returns></returns>
+	/// <remarks>This method checks both the key and the associated value for equality when determining if the
+	/// key-value pair exists.</remarks>
+	/// <param name="item">The key-value pair to locate in the collection. The key is a string, and the value can be null.</param>
+	/// <returns><see langword="true"/> if the specified key-value pair is found in the collection; otherwise, <see
+	/// langword="false"/>.</returns>
 	/// <exception cref="NotImplementedException"></exception>
 	public bool Contains(KeyValuePair<string, object?> item)
-	{
-		throw new NotImplementedException();
-	}
+		=> throw new NotImplementedException();
 
 	/// <summary>
-	/// 
+	/// This is a placeholder method that is not implemented in this class.
 	/// </summary>
 	/// <param name="array"></param>
 	/// <param name="arrayIndex"></param>
 	/// <exception cref="NotImplementedException"></exception>
 	public void CopyTo(KeyValuePair<string, object?>[] array, int arrayIndex)
-	{
-		throw new NotImplementedException();
-	}
+		=> throw new NotImplementedException();
 
 	/// <summary>
-	/// 
+	/// Removes the specified key-value pair from the collection.
 	/// </summary>
+	/// <param name="item">The key-value pair to remove. The key must exist in the collection, and the value must match the  associated value
+	/// in the collection.</param>
+	/// <returns><see langword="true"/> if the key-value pair was successfully removed; otherwise, <see langword="false"/>.</returns>
+	/// <exception cref="NotImplementedException">This method is not yet implemented.</exception>
 	public bool Remove(KeyValuePair<string, object?> item)
-	{
-		throw new NotImplementedException();
-	}
+		=> throw new NotImplementedException();
 
 	/// <summary>
-	/// 
+	/// Gets the number of elements contained in the collection.
+	/// Note that this Count property is different if the dynamic object also contains a "Count" property.
+	/// To avoid confusion it's recommended to not define a "Count" property in the dynamic object.
 	/// </summary>
 	[JsonIgnore]
 	public int Count
 	{
-		get => GetValue(nameof(Count)) is int count ? count : 0;
-		set => SetValue(nameof(Count), value);
+		get => internalDict.Count;
+		set => throw new NotImplementedException("Count is read-only and cannot be set directly.");
 	}
 
 	/// <summary>
-	/// 
+	/// Gets a value indicating whether the current instance is read-only.
 	/// </summary>
 	public bool IsReadOnly
 		=> false;
 
 	/// <summary>
-	/// 
+	/// Returns an enumerator that iterates through the collection of key-value pairs.
 	/// </summary>
-	/// <returns></returns>
-	/// <exception cref="NotImplementedException"></exception>
+	/// <remarks>Use this method to enumerate the key-value pairs in the collection. The enumerator provides
+	/// read-only access to the elements and maintains the order of iteration as defined by the underlying
+	/// dictionary.</remarks>
+	/// <returns>An enumerator for the collection, where each element is a <see cref="KeyValuePair{TKey, TValue}"/> containing a
+	/// string key and an associated nullable object value.</returns>
 	public IEnumerator<KeyValuePair<string, object?>> GetEnumerator()
 		=> internalDict.GetEnumerator();
 
+	/// <summary>
+	/// Returns an enumerator that iterates through the collection.
+	/// </summary>
+	/// <remarks>This method is an explicit implementation of the <see cref="IEnumerable.GetEnumerator"/> method. It
+	/// delegates to the strongly-typed <see cref="GetEnumerator"/> method of the collection. Use this method when working
+	/// with non-generic collections.</remarks>
+	/// <returns>An <see cref="IEnumerator"/> that can be used to iterate through the collection.</returns>
 	IEnumerator IEnumerable.GetEnumerator()
 		=> GetEnumerator();
 }

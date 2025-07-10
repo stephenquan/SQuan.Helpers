@@ -18,7 +18,8 @@ public partial class CountDynamicPage : ContentPage
 
 		BindingContext = this;
 		InitializeComponent();
-		CounterBtn.SetBinding(Button.TextProperty, new Binding("[Count]", BindingMode.OneWay, stringFormat: "Clicked {0} times"));
+		//CounterBtn.SetBinding(Button.TextProperty, new Binding("[Count]", BindingMode.OneWay, stringFormat: "Clicked {0} times"));
+		CounterBtn.SetBinding(Button.TextProperty, BindingBase.Create(static (ObservableIndexer i) => i["Count"], BindingMode.OneWay, stringFormat: "Clicked {0} times"));
 	}
 
 	void OnCounterClicked(object sender, EventArgs e)

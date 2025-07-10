@@ -16,15 +16,22 @@
                     BackgroundColor="White"
                     Spacing="25">
                     <Entry Text="{Binding SearchText, Mode=TwoWay}" />
-                    <Button
-                        Clicked="OnSearchClicked"
-                        IsEnabled="{Binding IsNotSearching}"
-                        Text="Search" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button
+                            Clicked="OnSearchClicked"
+                            IsEnabled="{Binding IsNotSearching}"
+                            Text="Search" />
+                        <Button
+                            Grid.Column="1"
+                            Clicked="OnCancelClicked"
+                            IsEnabled="{Binding IsSearching}"
+                            Text="Cancel" />
+                    </Grid>
                 </VerticalStackLayout>
             </Border>
         </Grid>
         <Grid Grid.Row="1" Padding="30,15,30,15">
-            <Label IsVisible="{Binding Results.Count}" Text="{Binding Results.Count}" />
+            <Label Text="{Binding Results.Count}" />
         </Grid>
         <Grid Grid.Row="2" Padding="30,0,30,30">
             <CollectionView ItemsSource="{Binding Results}">
