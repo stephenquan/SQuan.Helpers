@@ -13,6 +13,20 @@ namespace SQuan.Helpers.Maui;
 public class ObservableList<T> : List<T>, INotifyCollectionChanged, INotifyPropertyChanged
 {
 	/// <summary>
+	/// Adds an item to the collection and raises the appropriate events.
+	/// </summary>
+	/// <remarks>This method adds the specified item to the collection and triggers events to notify listeners of
+	/// the change. The <see cref="OnCollectionAdd"/> method is invoked with the added item and its index, and the <see
+	/// cref="OnPropertyChanged"/> method is called to signal property changes.</remarks>
+	/// <param name="item">The item to add to the collection. Cannot be null.</param>
+	public new void Add(T item)
+	{
+		base.Add(item);
+		OnCollectionAdd(new List<T> { item }, Count - 1);
+		OnPropertyChanged(string.Empty);
+	}
+
+	/// <summary>
 	/// Adds the elements of the specified collection to the current collection.
 	/// </summary>
 	/// <remarks>Each element in the specified collection is added individually to the current collection. If the
@@ -25,13 +39,15 @@ public class ObservableList<T> : List<T>, INotifyCollectionChanged, INotifyPrope
 			return;
 		}
 
+		int startIndex = Count;
+
 		foreach (var item in collection)
 		{
-			Add(item);
+			base.Add(item);
 		}
 
-		InvokeCollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, collection.ToList()));
-		InvokePropertyChanged(this, new PropertyChangedEventArgs(string.Empty));
+		OnCollectionAdd(collection, startIndex);
+		OnPropertyChanged(string.Empty);
 	}
 
 	/// <summary>
@@ -39,14 +55,14 @@ public class ObservableList<T> : List<T>, INotifyCollectionChanged, INotifyPrope
 	/// </summary>
 	public new void Clear()
 	{
-		if (this.Count == 0)
+		if (Count != 0)
 		{
 			return;
 		}
 
 		base.Clear();
-		InvokeCollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-		InvokePropertyChanged(this, new PropertyChangedEventArgs(string.Empty));
+		OnCollectionReset();
+		OnPropertyChanged(string.Empty);
 	}
 
 	/// <summary>
@@ -58,33 +74,47 @@ public class ObservableList<T> : List<T>, INotifyCollectionChanged, INotifyPrope
 	/// It is typically used to notify observers that the entire collection should be refreshed.</remarks>
 	public void Invalidate()
 	{
-		InvokeCollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-		InvokePropertyChanged(this, new PropertyChangedEventArgs(string.Empty));
+		OnCollectionReset();
+		OnPropertyChanged(string.Empty);
 	}
 
 	/// <summary>
-	/// Raises the <see cref="CollectionChanged"/> event with the specified sender and event data.
+	/// Raises the <see cref="CollectionChanged"/> event to notify subscribers that the collection has been reset.
 	/// </summary>
-	/// <remarks>This method invokes the <see cref="CollectionChanged"/> event, allowing subscribers to respond to
-	/// changes in the collection. Ensure that <paramref name="e"/> is properly initialized with the details of the
-	/// collection change before calling this method.</remarks>
-	/// <param name="sender">The source of the event. This can be <see langword="null"/> if the sender is not specified.</param>
-	/// <param name="e">The event data containing information about the collection change. Must not be <see langword="null"/>.</param>
-	public void InvokeCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+	/// <remarks>This method triggers a reset action, indicating that the entire collection has changed. Subscribers
+	/// should handle this event to update their state accordingly.</remarks>
+	public void OnCollectionReset()
 	{
-		CollectionChanged?.Invoke(sender, e);
+		CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 	}
 
 	/// <summary>
-	/// Raises the <see cref="PropertyChanged"/> event to notify subscribers of a property change.
+	/// Handles the addition of items to the collection and raises the <see cref="CollectionChanged"/> event.
 	/// </summary>
-	/// <remarks>This method invokes the <see cref="PropertyChanged"/> event if there are any subscribers. Ensure
-	/// that <paramref name="e"/> is not <see langword="null"/> and contains a valid property name.</remarks>
-	/// <param name="sender">The source of the event, typically the object whose property has changed. Can be <see langword="null"/>.</param>
-	/// <param name="e">An instance of <see cref="PropertyChangedEventArgs"/> containing the name of the property that changed.</param>
-	public void InvokePropertyChanged(object? sender, PropertyChangedEventArgs e)
+	/// <remarks>This method invokes the <see cref="CollectionChanged"/> event with an <see
+	/// cref="NotifyCollectionChangedEventArgs"/>  indicating the <see cref="NotifyCollectionChangedAction.Add"/> action.
+	/// If <paramref name="changedItems"/> is <see langword="null"/> or empty, the method does nothing.</remarks>
+	/// <param name="changedItems">The list of items that were added to the collection. Cannot be <see langword="null"/> and must contain at least one
+	/// item.</param>
+	/// <param name="startIndex">The index in the collection at which the items were added.</param>
+	public void OnCollectionAdd(IList<T> changedItems, int startIndex)
 	{
-		PropertyChanged?.Invoke(sender, e);
+		if (changedItems is null || changedItems.Count == 0)
+		{
+			return;
+		}
+
+		CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, (System.Collections.IList)changedItems, startIndex));
+	}
+
+	/// <summary>
+	/// Raises the <see cref="PropertyChanged"/> event to notify subscribers that a property value has changed.
+	/// </summary>
+	/// <param name="propertyName">The name of the property that changed. This value can be <see langword="null"/> or empty to indicate that all
+	/// properties have changed.</param>
+	public void OnPropertyChanged(string? propertyName)
+	{
+		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 
 	/// <summary>
