@@ -10,7 +10,7 @@ namespace SQuan.Helpers.Maui;
 /// data binding operations. The <see cref="Convert"/> method wraps dictionaries into a <c>BindableDynamic</c>  object,
 /// while the <see cref="ConvertBack"/> method is not implemented and will throw a  <see
 /// cref="NotImplementedException"/>.</remarks>
-public class BindableDynamicConverter : IValueConverter
+public class ObservableIndexerConverter : IValueConverter
 {
 	/// <summary>
 	/// Converts the specified value into a wrapped dictionary if it is a dictionary of string keys and nullable object
@@ -27,7 +27,12 @@ public class BindableDynamicConverter : IValueConverter
 	{
 		if (value is IDictionary<string, object?> dict)
 		{
-			return new BindableDynamic(dict);
+			if (parameter is string keys)
+			{
+				return new ObservableIndexer(dict, keys);
+			}
+
+			return new ObservableIndexer(dict);
 		}
 		return null;
 	}

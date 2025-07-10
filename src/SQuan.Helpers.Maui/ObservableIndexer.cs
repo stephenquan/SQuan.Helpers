@@ -7,12 +7,14 @@ using System.Text.Json.Serialization;
 namespace SQuan.Helpers.Maui;
 
 /// <summary>
-/// This is a wrapper class that provides a bindable interface to an underlying dictionary object that typically backs a dynamic object.
+/// Providers an indexer wrapper for a dictionary that supports dynamic member access and property change notifications.
 /// </summary>
-/// <remarks>The <see cref="BindableDynamic"/> class provides a convenient way to interact with an underlying <see
-/// cref="IDictionary{TKey, TValue}"/>  while supporting property change notifications via the <see
-/// cref="INotifyPropertyChanged"/> interface. This makes it suitable for use in .NET MAUI data-binding contexts.</remarks>
-public partial class BindableDynamic : DynamicObject, IDictionary<string, object?>, INotifyPropertyChanged
+/// <remarks>The <see cref="ObservableIndexer"/> class provides functionality for dynamically binding to
+/// dictionary structures and raising property change notifications when values are added, updated, or removed. It
+/// supports dynamic member access and implements <see cref="IDictionary{TKey, TValue}"/> for standard dictionary
+/// operations.  This class is particularly useful in scenarios where dynamic data binding is required, such as in UI
+/// frameworks that rely on <see cref="INotifyPropertyChanged"/> for updating bound controls.</remarks>
+public partial class ObservableIndexer : DynamicObject, IDictionary<string, object?>, INotifyPropertyChanged
 {
 	IDictionary<string, object?> internalDict { get; set; }
 
@@ -20,7 +22,7 @@ public partial class BindableDynamic : DynamicObject, IDictionary<string, object
 	/// Retrieves the value associated with the specified key.
 	/// </summary>
 	/// <param name="key">The key whose associated value is to be retrieved. Cannot be null.</param>
-	/// <returns>The value associated with the specified key, or <see langword="null"/> if the key does not exist  or the dictionary
+	/// <returns>The value associated with the specified key, or <see langword="null"/> if the key does not exist or the dictionary
 	/// is not initialized.</returns>
 	public object? GetValue(string key)
 	{
@@ -99,13 +101,35 @@ public partial class BindableDynamic : DynamicObject, IDictionary<string, object
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="BindableDynamic"/> class, wrapping the specified dictionary.
+	/// Initializes a new instance of the <see cref="ObservableIndexer"/> class, allowing dynamic binding to nested
+	/// dictionary structures.
 	/// </summary>
-	/// <remarks>The <see cref="BindableDynamic"/> provides a convenient way to interact with an underlying  <see
-	/// cref="IDictionary{TKey, TValue}"/> while potentially adding additional functionality or constraints.</remarks>
-	/// <param name="dictionary">The dictionary to wrap. This must not be null.</param>
-	public BindableDynamic(IDictionary<string, object?> dictionary)
+	/// <remarks>This class supports dynamic binding to dictionary structures and raises property change
+	/// notifications for nested dictionaries that implement <see cref="INotifyPropertyChanged"/>. If the <paramref
+	/// name="path"/> parameter is provided, the constructor attempts to traverse the dictionary hierarchy using the keys
+	/// specified in the path. If a key does not exist or the value is not a dictionary, the traversal stops.</remarks>
+	/// <param name="dictionary">The root dictionary containing key-value pairs to bind to. Cannot be null.</param>
+	/// <param name="path">An optional dot-separated string representing the path to a nested dictionary within the root dictionary. If
+	/// specified, the constructor navigates through the keys in the path to locate the target dictionary.</param>
+	public ObservableIndexer(IDictionary<string, object?> dictionary, string? path = null)
 	{
+		string prefix = "";
+		string delimiter = "";
+		if (path is string _path)
+		{
+			var keys = _path.Split(".");
+			foreach (var key in keys)
+			{
+				if (!dictionary.TryGetValue(key, out var value) || value is not IDictionary<string, object?> subDict)
+				{
+					throw new ArgumentException($"Key '{prefix}{delimiter}{key}' does not exist or is not a dictionary");
+				}
+				dictionary = subDict;
+				prefix += delimiter + key;
+				delimiter = ".";
+			}
+		}
+
 		internalDict = dictionary;
 
 		if (dictionary is INotifyPropertyChanged notifyPropertyChanged)

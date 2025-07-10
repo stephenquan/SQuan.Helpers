@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.Dynamic;
 using SQuan.Helpers.Maui.Mvvm;
 
@@ -9,7 +8,7 @@ public partial class SearchPage : ContentPage
 	[BindableProperty] public partial string SearchText { get; set; } = "Statue of Liberty";
 	[BindableProperty, NotifyPropertyChangedFor(nameof(IsNotSearching))] public partial bool IsSearching { get; internal set; } = false;
 	public bool IsNotSearching => !IsSearching;
-	public ObservableCollection<object> Results { get; } = [];
+	public ObservableList<object> Results { get; } = [];
 
 	public SearchPage()
 	{
@@ -31,18 +30,22 @@ public partial class SearchPage : ContentPage
 			Results.Clear();
 			while (true)
 			{
-				var client = new HttpClient();
-				dynamic response = await client.PostApiAsync("https://www.arcgis.com/sharing/rest/search", (ExpandoObject)query);
-				System.Diagnostics.Trace.WriteLine($"Search: start:{response.start}, results:{response.results.Count}, nextStart:{response.nextStart}");
-				foreach (var result in response.results)
+				await Task.Run(async () =>
 				{
-					Results.Add(result);
-				}
-				if (response.nextStart == -1)
+					var client = new HttpClient();
+					dynamic response = await client.PostApiAsync("https://www.arcgis.com/sharing/rest/search", (ExpandoObject)query);
+					System.Diagnostics.Trace.WriteLine($"Search: start:{response.start}, results:{response.results.Count}, nextStart:{response.nextStart}");
+					foreach (var result in response.results)
+					{
+						Results.Add(result);
+					}
+					query.start = response.nextStart;
+				});
+				Results.InvokeCollectionReset();
+				if (query.start == -1)
 				{
 					break;
 				}
-				query.start = response.nextStart;
 			}
 		}
 		catch (Exception ex)

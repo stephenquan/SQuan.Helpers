@@ -12,8 +12,8 @@
         <ScrollView>
             <VerticalStackLayout
                 Padding="30,0"
-                x:DataType="sq:BindableDynamic"
-                BindingContext="{Binding Properties}"
+                x:DataType="sq:ObservableIndexer"
+                BindingContext="{Binding Properties, Converter={sq:ObservableIndexerConverter}, ConverterParameter='Data'}"
                 Spacing="25">
 
                 <Image

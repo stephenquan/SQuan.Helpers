@@ -5,14 +5,17 @@ namespace SQuan.Helpers.Maui.Sample;
 
 public partial class CountDynamicPage : ContentPage
 {
-	public dynamic Properties { get; } = new BindableDynamic(new ExpandoObject());
+	public dynamic Properties { get; }
 	public string Json => JsonSerializer.Serialize(Properties, new JsonSerializerOptions() { WriteIndented = true });
 
 	public CountDynamicPage()
 	{
-		Properties.Count = 0;
-		Properties.Hello = "Hello, World!";
-		Properties.Welcome = "Welcome to \n.NET Multi-platform App UI";
+		Properties = new ExpandoObject();
+		Properties.Data = new ExpandoObject();
+		Properties.Data.Count = 0;
+		Properties.Data.Hello = "Hello, World!";
+		Properties.Data.Welcome = "Welcome to \n.NET Multi-platform App UI";
+
 		BindingContext = this;
 		InitializeComponent();
 		CounterBtn.SetBinding(Button.TextProperty, new Binding("[Count]", BindingMode.OneWay, stringFormat: "Clicked {0} times"));
@@ -20,9 +23,9 @@ public partial class CountDynamicPage : ContentPage
 
 	void OnCounterClicked(object sender, EventArgs e)
 	{
-		Properties.Count++;
-		Properties.Hello += "!";
-		Properties.Welcome += "!";
+		Properties.Data.Count++;
+		Properties.Data.Hello += "!";
+		Properties.Data.Welcome += "!";
 		OnPropertyChanged(nameof(Json));
 	}
 }
