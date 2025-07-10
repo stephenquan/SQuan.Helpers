@@ -16,6 +16,17 @@ public partial class SearchPage : ContentPage
 		BindingContext = this;
 
 		InitializeComponent();
+
+		this.Disappearing += (s, e) =>
+		{
+			if (cts is not null)
+			{
+				if (!cts.IsCancellationRequested)
+				{
+					cts.Cancel();
+				}
+			}
+		};
 	}
 
 	async void OnSearchClicked(object sender, EventArgs e)
