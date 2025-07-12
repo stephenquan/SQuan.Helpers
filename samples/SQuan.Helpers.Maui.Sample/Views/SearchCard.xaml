@@ -20,7 +20,7 @@
                     <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="5">
                         <Label Text="{Binding ItemType}" />
                         <Label Grid.Column="1" Text="|" />
-                        <Label Grid.Column="2" Text="{Binding ModifiedDate, StringFormat='Item updated: {0:D}'}" />
+                        <Label Grid.Column="2" Text="{Binding Modified, StringFormat='Item updated: {0:F}', Converter={local:UnixTimeToDateTimeConverter}}" />
                     </Grid>
                 </VerticalStackLayout>
                 <Grid Grid.Column="1">
