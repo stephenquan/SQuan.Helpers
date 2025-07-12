@@ -11,6 +11,7 @@
     <Grid ColumnDefinitions="2*,*">
         <ScrollView>
             <VerticalStackLayout
+                x:Name="vsl"
                 Padding="30,0"
                 x:DataType="sq:ObservableIndexer"
                 BindingContext="{Binding Properties, Converter={sq:ObservableIndexerConverter}, ConverterParameter='Data'}"
@@ -34,6 +35,12 @@
                     Text="{Binding [Welcome]}" />
 
                 <Button x:Name="CounterBtn" Clicked="OnCounterClicked" />
+
+                <local:MyNumericEntry Value="{Binding [Count], Mode=TwoWay}" />
+
+                <local:MyTextEntry Value="{Binding [Hello], Mode=TwoWay}" />
+
+                <local:MyTextEntry Value="{Binding [Welcome], Mode=TwoWay}" />
             </VerticalStackLayout>
         </ScrollView>
         <ScrollView Grid.Column="1">
