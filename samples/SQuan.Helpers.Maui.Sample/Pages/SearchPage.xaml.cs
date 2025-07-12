@@ -47,7 +47,6 @@ public partial class SearchPage : ContentPage
 			{
 				var client = new HttpClient();
 				dynamic response = await client.PostApiAsync("https://www.arcgis.com/sharing/rest/search", (ExpandoObject)query, cts?.Token);
-				response.test = "one two three";
 				System.Diagnostics.Trace.WriteLine($"Search: start:{response.start}, results:{response.results.Count}, nextStart:{response.nextStart}");
 				int startIndex = Results.Count;
 				List<SearchResult> changedItems = [];
