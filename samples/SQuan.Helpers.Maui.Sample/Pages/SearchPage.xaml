@@ -40,20 +40,17 @@
                         <!--  parent element is needed to realize the ExpandoObject BindingContext  -->
                         <Grid x:DataType="dynamic:ExpandoObject">
                             <!--  child element needed to change wrap the ExpandoObject with a concrete DynamicProperties object  -->
-                            <Grid
-                                Padding="0,5,30,5"
-                                x:DataType="sq:ObservableIndexer"
-                                BindingContext="{Binding Converter={sq:ObservableIndexerConverter}}">
+                            <Grid Padding="0,5,30,5" x:DataType="local:SearchResult">
                                 <local:SearchCard
-                                    Title="{Binding [title]}"
+                                    Title="{Binding Title}"
                                     BackgroundColor="White"
-                                    Description="{Binding [description]}"
-                                    ItemId="{Binding [id]}"
-                                    ItemType="{Binding [type]}"
-                                    Modified="{Binding [modified]}"
-                                    Owner="{Binding [owner]}"
-                                    Snippet="{Binding [snippet]}"
-                                    Thumbnail="{Binding [thumbnail]}" />
+                                    Description="{Binding Description}"
+                                    ItemId="{Binding ItemId}"
+                                    ItemType="{Binding ItemType}"
+                                    Modified="{Binding Modified}"
+                                    Owner="{Binding Owner}"
+                                    Snippet="{Binding Snippet}"
+                                    ThumbnailImage="{Binding ThumbnailImage}" />
                             </Grid>
                         </Grid>
                     </DataTemplate>
