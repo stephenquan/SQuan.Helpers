@@ -13,20 +13,6 @@ namespace SQuan.Helpers.Maui;
 public class ObservableList<T> : List<T>, INotifyCollectionChanged, INotifyPropertyChanged
 {
 	/// <summary>
-	/// Adds an item to the collection and raises the appropriate events.
-	/// </summary>
-	/// <remarks>This method adds the specified item to the collection and triggers events to notify listeners of
-	/// the change. The <see cref="OnCollectionAdd"/> method is invoked with the added item and its index, and the <see
-	/// cref="OnPropertyChanged"/> method is called to signal property changes.</remarks>
-	/// <param name="item">The item to add to the collection. Cannot be null.</param>
-	public new void Add(T item)
-	{
-		base.Add(item);
-		OnCollectionAdd(new List<T> { item }, Count - 1);
-		OnPropertyChanged(string.Empty);
-	}
-
-	/// <summary>
 	/// Adds the elements of the specified collection to the current collection.
 	/// </summary>
 	/// <remarks>Each element in the specified collection is added individually to the current collection. If the
@@ -47,22 +33,7 @@ public class ObservableList<T> : List<T>, INotifyCollectionChanged, INotifyPrope
 		}
 
 		OnCollectionAdd(collection, startIndex);
-		OnPropertyChanged(string.Empty);
-	}
-
-	/// <summary>
-	/// Removes all items from the collection and raises the appropriate change notifications.
-	/// </summary>
-	public new void Clear()
-	{
-		if (Count != 0)
-		{
-			return;
-		}
-
-		base.Clear();
-		OnCollectionReset();
-		OnPropertyChanged(string.Empty);
+		OnCountChanged();
 	}
 
 	/// <summary>
@@ -115,6 +86,16 @@ public class ObservableList<T> : List<T>, INotifyCollectionChanged, INotifyPrope
 	public void OnPropertyChanged(string? propertyName)
 	{
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+	}
+
+	/// <summary>
+	/// Notifies listeners that the value of the Count property has changed.
+	/// </summary>
+	/// <remarks>This method raises the <see cref="INotifyPropertyChanged.PropertyChanged"/> event for the
+	/// Count property.</remarks>
+	public void OnCountChanged()
+	{
+		OnPropertyChanged(nameof(Count));
 	}
 
 	/// <summary>

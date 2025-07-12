@@ -11,20 +11,7 @@ public partial class SearchCard : ContentView
 	[BindableProperty] public partial string? ItemType { get; set; }
 	[BindableProperty] public partial string? Owner { get; set; }
 	[BindableProperty] public partial long? Modified { get; set; }
-	[BindableProperty] public partial string? Thumbnail { get; set; }
-
-	public string? ThumbnailUrl
-	{
-		get
-		{
-			if (string.IsNullOrEmpty(ItemId) || string.IsNullOrEmpty(Thumbnail))
-			{
-				return null;
-			}
-
-			return $"https://www.arcgis.com/sharing/rest/content/items/{ItemId}/info/{Thumbnail}?w=100";
-		}
-	}
+	[BindableProperty] public partial ImageSource? ThumbnailImage { get; set; }
 
 	public DateTime? ModifiedDate
 	{
@@ -47,11 +34,6 @@ public partial class SearchCard : ContentView
 		{
 			switch (e.PropertyName)
 			{
-				case nameof(ItemId):
-				case nameof(Thumbnail):
-					OnPropertyChanged(nameof(ThumbnailUrl));
-					break;
-
 				case nameof(Modified):
 					OnPropertyChanged(nameof(ModifiedDate));
 					break;

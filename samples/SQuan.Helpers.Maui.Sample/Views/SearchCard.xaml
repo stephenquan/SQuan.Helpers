@@ -25,9 +25,9 @@
                 </VerticalStackLayout>
                 <Grid Grid.Column="1">
                     <Border Padding="2">
-                        <local:MyImage
+                        <Image
                             HeightRequest="67"
-                            SourceUrl="{Binding ThumbnailUrl}"
+                            Source="{Binding ThumbnailImage}"
                             WidthRequest="100" />
                     </Border>
                 </Grid>
