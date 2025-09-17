@@ -199,7 +199,7 @@ partial class {className}
 	partial void On{propertyName}Changed({typeName} oldValue, {typeName} newValue);
 }}
 ";
-			spc.AddSource($"{className}_{propertyName}_BindableProperty.g.cs", SourceText.From(source, Encoding.UTF8));
+			spc.AddSource($"{namespaceName}_{className}_{propertyName}_BindableProperty.g.cs", SourceText.From(source, Encoding.UTF8));
 		});
 	}
 }
