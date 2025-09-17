@@ -44,7 +44,8 @@ public class BindablePropertyGenerator : IIncrementalGenerator
 					bool hasAttribute = false;
 					foreach (var attr in propertySymbol.GetAttributes())
 					{
-						if (attr.AttributeClass?.Name == "SQuan.Helpers.Maui.Mvvm.BindablePropertyAttribute" ||
+						if (attr.AttributeClass?.Name == "BindableProperty" ||
+							attr.AttributeClass?.Name == "SQuan.Helpers.Maui.Mvvm.BindablePropertyAttribute" ||
 							attr.AttributeClass?.ToDisplayString() == "SQuan.Helpers.Maui.Mvvm.BindablePropertyAttribute")
 						{
 							hasAttribute = true;
@@ -60,13 +61,19 @@ public class BindablePropertyGenerator : IIncrementalGenerator
 		{
 			var propertyAttributes = propertySymbol!.GetAttributes();
 			string defaultBindingMode = "OneWay";
+			var isClassGeneric = propertySymbol.ContainingType.IsGenericType;
 			var classSymbol = propertySymbol!.ContainingType;
 			var className = classSymbol.Name;
+			var bareClassName = classSymbol.Name;
 			var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
 			var propertyName = propertySymbol.Name;
 			var typeName = propertySymbol.Type.ToDisplayString();
 			bool isValueType = propertySymbol.Type.IsValueType;
 			var bareTypeName = isValueType ? typeName : typeName.Replace("?", "");
+			if (isClassGeneric)
+			{
+				className = className + "<T>";
+			}
 			PropertyDeclarationSyntax propertySyntax = (propertySymbol.DeclaringSyntaxReferences[0].GetSyntax() as PropertyDeclarationSyntax)!;
 
 			var propertyModifiers = propertySyntax.Modifiers
@@ -199,7 +206,7 @@ partial class {className}
 	partial void On{propertyName}Changed({typeName} oldValue, {typeName} newValue);
 }}
 ";
-			spc.AddSource($"{namespaceName}_{className}_{propertyName}_BindableProperty.g.cs", SourceText.From(source, Encoding.UTF8));
+			spc.AddSource($"{namespaceName}_{bareClassName}_{propertyName}_BindableProperty.g.cs", SourceText.From(source, Encoding.UTF8));
 		});
 	}
 }
