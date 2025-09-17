@@ -19,6 +19,11 @@ public partial class ObservableIndexer : DynamicObject, IDictionary<string, obje
 	IDictionary<string, object?> internalDict { get; set; }
 
 	/// <summary>
+	/// Gets or sets a value indicating whether null values should be removed during processing.
+	/// </summary>
+	public bool RemoveNulls { get; set; } = true;
+
+	/// <summary>
 	/// Retrieves the value associated with the specified key.
 	/// </summary>
 	/// <param name="key">The key whose associated value is to be retrieved. Cannot be null.</param>
@@ -54,7 +59,20 @@ public partial class ObservableIndexer : DynamicObject, IDictionary<string, obje
 			{
 				if (dict.ContainsKey(key))
 				{
-					dict.Remove(key);
+					if (RemoveNulls)
+					{
+						dict.Remove(key);
+						OnPropertyChanged($"Item[{key}]");
+					}
+					else if (dict[key] is not null)
+					{
+						dict[key] = null;
+						OnPropertyChanged($"Item[{key}]");
+					}
+				}
+				else if (!RemoveNulls)
+				{
+					dict.Add(key, null);
 					OnPropertyChanged($"Item[{key}]");
 				}
 				return;
