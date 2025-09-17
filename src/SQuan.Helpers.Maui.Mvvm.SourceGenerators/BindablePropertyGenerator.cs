@@ -44,8 +44,7 @@ public class BindablePropertyGenerator : IIncrementalGenerator
 					bool hasAttribute = false;
 					foreach (var attr in propertySymbol.GetAttributes())
 					{
-						if (attr.AttributeClass?.Name == "BindableProperty" ||
-							attr.AttributeClass?.Name == "SQuan.Helpers.Maui.Mvvm.BindablePropertyAttribute" ||
+						if (attr.AttributeClass?.Name == "SQuan.Helpers.Maui.Mvvm.BindablePropertyAttribute" ||
 							attr.AttributeClass?.ToDisplayString() == "SQuan.Helpers.Maui.Mvvm.BindablePropertyAttribute")
 						{
 							hasAttribute = true;
