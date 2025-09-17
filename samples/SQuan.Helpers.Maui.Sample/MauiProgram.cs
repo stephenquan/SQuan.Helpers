@@ -33,6 +33,7 @@ public static class MauiProgram
 		SamplesHelper.RegisterSample("Localization Demo", nameof(LocalizePage), typeof(LocalizePage));
 		SamplesHelper.RegisterSample("Theme Demo", nameof(ThemePage), typeof(ThemePage));
 		SamplesHelper.RegisterSample("Search Demo", nameof(SearchPage), typeof(SearchPage));
+		SamplesHelper.RegisterSample("Popup Demo", nameof(PopupPage), typeof(PopupPage));
 
 		return builder.Build();
 	}
