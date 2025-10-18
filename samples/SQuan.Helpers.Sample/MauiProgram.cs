@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.Logging;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 using SQuan.Helpers.Maui.Localization;
 using SQuan.Helpers.Sample.Resources.Strings;
 
@@ -15,6 +16,7 @@ public static class MauiProgram
 			.UseMauiApp<App>()
 			.UseMauiCommunityToolkit()
 			.UseMauiCommunityToolkitMarkup()
+			.UseSkiaSharp()
 			.UseSQuanHelperMauiLocalization<AppStrings>()
 			.ConfigureFonts(fonts =>
 			{
@@ -34,6 +36,7 @@ public static class MauiProgram
 		SamplesHelper.RegisterSample("Theme Demo", nameof(ThemePage), typeof(ThemePage));
 		SamplesHelper.RegisterSample("Search Demo", nameof(SearchPage), typeof(SearchPage));
 		SamplesHelper.RegisterSample("Popup Demo", nameof(PopupPage), typeof(PopupPage));
+		SamplesHelper.RegisterSample("Spatial Demo", nameof(SpatialPage), typeof(SpatialPage));
 
 		return builder.Build();
 	}
