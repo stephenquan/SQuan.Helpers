@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SQuan.Helpers.Sample.SpatialPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
+    Title="Spatial Demo">
+    <Grid>
+        <skia:SKCanvasView x:Name="canvasView" PaintSurface="canvasView_PaintSurface">
+            <skia:SKCanvasView.GestureRecognizers>
+                <PointerGestureRecognizer PointerPressed="OnMapPressed" />
+            </skia:SKCanvasView.GestureRecognizers>
+        </skia:SKCanvasView>
+        <Grid
+            Margin="40"
+            HorizontalOptions="End"
+            VerticalOptions="Center">
+            <VerticalStackLayout Spacing="10">
+                <Button Clicked="OnReset" Text="O" />
+                <Button Clicked="OnZoomIn" Text="+" />
+                <Button Clicked="OnZoomOut" Text="-" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+</ContentPage>
