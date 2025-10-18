@@ -1,3 +1,5 @@
+// SpatialPage.xaml.cs
+
 using CsvHelper;
 using SkiaSharp;
 using SQLite;
@@ -38,8 +40,9 @@ public partial class SpatialPage : ContentPage
 		string? centroid_at_16_13 = db.ExecuteScalar<string?>("SELECT ST_Centroid('POLYGON((10 10,20 10,20 20,10 10))')");
 		string? circle_buffer = db.ExecuteScalar<string?>("SELECT ST_Buffer('POINT(10 10)', 5)");
 		double? distance_5_units = db.ExecuteScalar<double?>("SELECT ST_Distance('POINT(0 0)', 'POINT(3 4)')");
+		double? area_100_units = db.ExecuteScalar<double?>("SELECT ST_Area(ST_Envelope(ST_Buffer('POINT(10 10)', 5)))");
 
-		// Order the dataset with distances from Los Angeles.
+		// Retrieve cities in order of distance, starting with those nearest to Los Angeles.
 		var results = db.Query<SpatialData>("SELECT * FROM UsaCities ORDER BY ST_Distance(Geometry, 'POINT(-118.243683 34.052235)')");
 		foreach (var result in results)
 		{
