@@ -103,5 +103,5 @@ You can use the Localize markup extension in XAML to assign localize string reso
 
 For more information please visit:
 
- - Documentation: https://github.com/stephenquan/SQuan.Helpers.Maui/wiki/Localization
- - GitHub repository: https://github.com/stephenquan/SQuan.Helpers.Maui
+ - Documentation: https://github.com/stephenquan/SQuan.Helpers/wiki/Localization
+ - GitHub repository: https://github.com/stephenquan/SQuan.Helpers

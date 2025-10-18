@@ -30,9 +30,9 @@
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<PackageProjectUrl>https://github.com/stephenquan/SQuan.Helpers.Maui</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/stephenquan/SQuan.Helpers.Maui</RepositoryUrl>
-		<PackageReleaseNotes>https://github.com/stephenquan/SQuan.Helpers.Maui/releases</PackageReleaseNotes>
+		<PackageProjectUrl>https://github.com/stephenquan/SQuan.Helpers</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/stephenquan/SQuan.Helpers</RepositoryUrl>
+		<PackageReleaseNotes>https://github.com/stephenquan/SQuan.Helpers/releases</PackageReleaseNotes>
 		<PackageTags>dotnet,maui,controls,converters,markup extensions,method extensions</PackageTags>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<Authors>Stephen Quan</Authors>
