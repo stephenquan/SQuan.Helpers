@@ -43,6 +43,7 @@ class SQLiteSpatialExtensions
 		SQLitePCL.raw.sqlite3_create_function(db.Handle, "ST_IsSimple", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, ST_IsSimple);
 		SQLitePCL.raw.sqlite3_create_function(db.Handle, "ST_IsValid", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, ST_IsValid);
 		SQLitePCL.raw.sqlite3_create_function(db.Handle, "ST_Length", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, ST_Length);
+		SQLitePCL.raw.sqlite3_create_function(db.Handle, "ST_Point", 2, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, ST_Point);
 		SQLitePCL.raw.sqlite3_create_function(db.Handle, "ST_Reverse", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, ST_Reverse);
 		SQLitePCL.raw.sqlite3_create_function(db.Handle, "ST_SetSRID", 2, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, ST_SetSRID);
 		SQLitePCL.raw.sqlite3_create_function(db.Handle, "ST_SRID", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, ST_SRID);
@@ -295,6 +296,27 @@ class SQLiteSpatialExtensions
 	/// <param name="args"></param>
 	static void ST_Length(sqlite3_context ctx, object user_data, sqlite3_value[] args)
 		=> ST_GeometryFunction<double?>(ctx, user_data, args, (g) => g?.Length);
+
+	/// <summary>
+	/// Implements the ST_Point function for SQLite.
+	/// </summary>
+	/// <param name="ctx"></param>
+	/// <param name="user_data"></param>
+	/// <param name="args"></param>
+	static void ST_Point(sqlite3_context ctx, object user_data, sqlite3_value[] args)
+	{
+		try
+		{
+			double x = raw.sqlite3_value_double(args[0]);
+			double y = raw.sqlite3_value_double(args[1]);
+			var geometry = new NetTopologySuite.Geometries.Point(x, y);
+			SetResult(ctx, geometry.AsText());
+		}
+		catch (Exception ex)
+		{
+			SetResultError(ctx, ex);
+		}
+	}
 
 	/// <summary>
 	/// Implements the ST_Reverse function for SQLite.

@@ -72,6 +72,7 @@
 		<ProjectReference Include="..\..\src\SQuan.Helpers.Maui.Mvvm.SourceGenerators\SQuan.Helpers.Maui.Mvvm.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\..\src\SQuan.Helpers.Maui.Localization\SQuan.Helpers.Maui.Localization.csproj" />
 		<ProjectReference Include="..\..\src\SQuan.Helpers.Maui\SQuan.Helpers.Maui.csproj" />
+		<ProjectReference Include="..\..\src\SQuan.Helpers.SQLiteSpatial\SQuan.Helpers.SQLiteSpatial.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
