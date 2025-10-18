@@ -1,4 +1,7 @@
-﻿using NetTopologySuite.Geometries;
+﻿// SQLiteSpatialExtension.cs
+
+using System.Runtime.Caching;
+using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using SQLite;
 using SQLitePCL;
@@ -8,13 +11,67 @@ namespace SQuan.Helpers.SQLiteSpatial;
 /// <summary>
 /// Provides extension methods for enabling spatial functions in SQLite connections.
 /// </summary>
-class SQLiteSpatialExtensions
+public static class SQLiteSpatialExtensions
 {
+	static readonly MemoryCache wktGeometryCache = new MemoryCache("WKTGeometryCache");
+	static readonly MemoryCache wktFrequencyCache = new MemoryCache("WKTFrequencyCache");
+	static readonly WKTReader wktReader = new WKTReader();
+
+	/// <summary>
+	/// Gets or sets the threshold for promoting WKT strings from frequency cache to geometry cache.
+	/// </summary>
+	public static int WKTFrequencyPromotionThreshold { get; set; } = 5;
+
+	/// <summary>
+	/// Gets or sets the expiration time for entries in the WKT frequency cache.
+	/// </summary>
+	public static int WKTFrequencyCacheExpirationSeconds { get; set; } = 5;
+
+	/// <summary>
+	/// Gets or sets the expiration time for entries in the WKT geometry cache.
+	/// </summary>
+	public static int WKTGeometryCacheExpirationSeconds { get; set; } = 60;
+
+	/// <summary>
+	/// Obtains a Geometry object from its WKT representation, utilizing caching for performance.
+	/// </summary>
+	/// <param name="wkt">The WKT representation of the geometry.</param>
+	/// <returns>The Geometry object or null.</returns>
+	public static Geometry? ToGeometry(this string wkt)
+	{
+		if (string.IsNullOrWhiteSpace(wkt))
+		{
+			return null;
+		}
+
+		// Check long-term cache first
+		if (wktGeometryCache.Contains(wkt))
+		{
+			return (Geometry)wktGeometryCache.Get(wkt);
+		}
+
+		// Count frequency in short-term cache
+		int count = (wktFrequencyCache.Get(wkt) as int?) ?? 0;
+		count++;
+		wktFrequencyCache.Set(wkt, count, DateTimeOffset.Now.AddSeconds(WKTFrequencyCacheExpirationSeconds));
+
+		// Promote if threshold reached
+		if (count >= WKTFrequencyPromotionThreshold)
+		{
+			var geometry = wktReader.Read(wkt);
+			wktGeometryCache.Set(wkt, geometry, DateTimeOffset.Now.AddSeconds(WKTGeometryCacheExpirationSeconds));
+			return geometry;
+		}
+
+		// Otherwise, deserialize without caching
+		return wktReader.Read(wkt);
+	}
+
 	/// <summary>
 	/// Applies spatial extensions to the given SQLite connection.
 	/// </summary>
 	/// <param name="db"></param>
-	internal static void EnableSpatialExtensions(SQLiteConnection db)
+	public static void EnableSpatialExtensions(this SQLiteConnection db)
 	{
 		var dbHandle = db.Handle;
 		SQLitePCL.raw.sqlite3_create_function(db.Handle, "ST_Area", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, ST_Area);
@@ -414,9 +471,7 @@ class SQLiteSpatialExtensions
 	{
 		try
 		{
-			string wkt = raw.sqlite3_value_text(args[0]).utf8_to_string();
-			WKTReader reader = new();
-			var geometry = reader.Read(wkt);
+			var geometry = ToGeometry(raw.sqlite3_value_text(args[0]).utf8_to_string());
 			SetResult(ctx, func(geometry));
 		}
 		catch (Exception ex)
@@ -436,10 +491,8 @@ class SQLiteSpatialExtensions
 	{
 		try
 		{
-			string wkt = raw.sqlite3_value_text(args[0]).utf8_to_string();
+			var geometry = ToGeometry(raw.sqlite3_value_text(args[0]).utf8_to_string());
 			double d = raw.sqlite3_value_double(args[1]);
-			WKTReader reader = new();
-			var geometry = reader.Read(wkt);
 			SetResult(ctx, func(geometry, d));
 		}
 		catch (Exception ex)
@@ -460,11 +513,8 @@ class SQLiteSpatialExtensions
 	{
 		try
 		{
-			string wkt = raw.sqlite3_value_text(args[0]).utf8_to_string();
-			string wkt2 = raw.sqlite3_value_text(args[1]).utf8_to_string();
-			WKTReader reader = new();
-			var geometry = reader.Read(wkt);
-			var geometry2 = reader.Read(wkt2);
+			var geometry = ToGeometry(raw.sqlite3_value_text(args[0]).utf8_to_string());
+			var geometry2 = ToGeometry(raw.sqlite3_value_text(args[1]).utf8_to_string());
 			SetResult(ctx, func(geometry, geometry2));
 		}
 		catch (Exception ex)
@@ -484,10 +534,9 @@ class SQLiteSpatialExtensions
 	{
 		try
 		{
-			string wkt = raw.sqlite3_value_text(args[0]).utf8_to_string();
+			var geometry = ToGeometry(raw.sqlite3_value_text(args[0]).utf8_to_string());
 			int i = raw.sqlite3_value_int(args[1]);
 			WKTReader reader = new();
-			var geometry = reader.Read(wkt);
 			SetResult(ctx, func(geometry, i));
 		}
 		catch (Exception ex)
