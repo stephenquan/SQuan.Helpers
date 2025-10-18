@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SQuan.Helpers.Sample.SearchPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:dynamic="clr-namespace:System.Dynamic;assembly=System.Linq.Expressions"
+    xmlns:local="clr-namespace:SQuan.Helpers.Sample"
+    xmlns:sq="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
+    Title="Search Demo"
+    x:DataType="local:SearchPage">
+    <Grid BackgroundColor="#F7F7F7" RowDefinitions="Auto,Auto,*">
+        <Grid Padding="30,30,30,30">
+            <Border>
+                <VerticalStackLayout
+                    Padding="10"
+                    BackgroundColor="White"
+                    Spacing="25">
+                    <Entry Text="{Binding SearchText, Mode=TwoWay}" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button
+                            Clicked="OnSearchClicked"
+                            IsEnabled="{Binding IsNotSearching}"
+                            Text="Search" />
+                        <Button
+                            Grid.Column="1"
+                            Clicked="OnCancelClicked"
+                            IsEnabled="{Binding IsSearching}"
+                            Text="Cancel" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+        <Grid Grid.Row="1" Padding="30,15,30,15">
+            <Label Text="{Binding Results.Count}" />
+        </Grid>
+        <Grid Grid.Row="2" Padding="30,0,30,30">
+            <CollectionView ItemsSource="{Binding Results}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <!--  parent element is needed to realize the ExpandoObject BindingContext  -->
+                        <Grid x:DataType="dynamic:ExpandoObject">
+                            <!--  child element needed to change wrap the ExpandoObject with a concrete DynamicProperties object  -->
+                            <Grid Padding="0,5,30,5" x:DataType="local:SearchResult">
+                                <local:SearchCard
+                                    Title="{Binding Title}"
+                                    BackgroundColor="White"
+                                    Description="{Binding Description}"
+                                    ItemId="{Binding ItemId}"
+                                    ItemType="{Binding ItemType}"
+                                    Modified="{Binding Modified}"
+                                    Owner="{Binding Owner}"
+                                    Snippet="{Binding Snippet}"
+                                    ThumbnailImage="{Binding ThumbnailImage}" />
+                            </Grid>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                IsRunning="{Binding IsSearching}"
+                IsVisible="{Binding IsSearching}"
+                VerticalOptions="Center" />
+        </Grid>
+    </Grid>
+</ContentPage>
