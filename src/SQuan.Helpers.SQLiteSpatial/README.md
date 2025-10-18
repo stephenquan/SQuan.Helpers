@@ -15,5 +15,5 @@ string? circle_buffer = db.ExecuteScalar<string>("SELECT ST_Buffer('POINT(10 10)
 
 For more information please visit:
 
- - Documentation: https://github.com/stephenquan/SQuan.Helpers.Maui/wiki
- - GitHub repository: https://github.com/stephenquan/SQuan.Helpers.Maui
+ - Documentation: https://github.com/stephenquan/SQuan.Helpers/wiki/SQLiteSpatial
+ - GitHub repository: https://github.com/stephenquan/SQuan.Helpers

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SQuan.Helpers.Sample.CardPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SQuan.Helpers.Sample"
+    Title="Card Demo"
+    x:DataType="local:CardPage">
+    <Grid RowDefinitions="*,Auto">
+        <CollectionView
+            ItemsSource="{Binding Cards}"
+            SelectedItem="{Binding SelectedCard, Mode=TwoWay}"
+            SelectionMode="Single">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="local:CardInfo">
+                    <local:CardView
+                        BorderColor="DarkGray"
+                        CardDescription="{Binding CardDescription}"
+                        CardTitle="{Binding CardTitle}"
+                        IconBackgroundColor="SlateGray"
+                        IconImageSource="user.png"
+                        IsSelected="{Binding IsSelected}" />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Button
+            x:Name="ClearSelectionBtn"
+            Grid.Row="1"
+            Command="{Binding ClearSelectionCommand}"
+            Text="Clear Selection" />
+    </Grid>
+</ContentPage>

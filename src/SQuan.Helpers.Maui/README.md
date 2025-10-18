@@ -6,5 +6,5 @@ The `SQuan.Helpers.Maui` contains .NET MAUI components, converters, markup exten
 
 For more information please visit:
 
- - Documentation: https://github.com/stephenquan/SQuan.Helpers.Maui/wiki
- - GitHub repository: https://github.com/stephenquan/SQuan.Helpers.Maui
+ - Documentation: https://github.com/stephenquan/SQuan.Helpers/wiki
+ - GitHub repository: https://github.com/stephenquan/SQuan.Helpers

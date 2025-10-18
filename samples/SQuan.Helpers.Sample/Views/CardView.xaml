@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="SQuan.Helpers.Sample.CardView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SQuan.Helpers.Sample"
+    ControlTemplate="{StaticResource CardViewCompressed}">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <ControlTemplate x:Key="CardViewDefault">
+                <Grid
+                    Padding="0,5,0,5"
+                    x:DataType="local:CardView"
+                    BindingContext="{Binding x:DataType='local:CardView', Source={RelativeSource TemplatedParent}}">
+                    <Border
+                        Padding="10"
+                        BackgroundColor="{Binding CardColor}"
+                        Stroke="{Binding BorderColor}"
+                        StrokeShape="RoundRectangle 5,5,5,5"
+                        StrokeThickness="2">
+                        <VerticalStackLayout Spacing="10">
+                            <HorizontalStackLayout Spacing="10">
+                                <Grid BackgroundColor="{Binding IconBackgroundColor, FallbackValue='Grey'}">
+                                    <Image
+                                        HeightRequest="64"
+                                        Source="{Binding IconImageSource}"
+                                        WidthRequest="64" />
+                                    <Grid.Clip>
+                                        <EllipseGeometry
+                                            Center="32,32"
+                                            RadiusX="32"
+                                            RadiusY="32" />
+                                    </Grid.Clip>
+                                </Grid>
+                                <Label
+                                    FontSize="Medium"
+                                    Text="{Binding CardTitle, FallbackValue='Card Title'}"
+                                    VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                            <BoxView BackgroundColor="{Binding BorderColor, FallbackValue='Black'}" HeightRequest="4" />
+                            <Label Text="{Binding CardDescription, FallbackValue='Card description text.'}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+            </ControlTemplate>
+            <ControlTemplate x:Key="CardViewCompressed">
+                <Grid
+                    Padding="0,5,0,5"
+                    x:DataType="local:CardView"
+                    BindingContext="{Binding x:DataType='local:CardView', Source={RelativeSource TemplatedParent}}"
+                    ColumnDefinitions="Auto,*"
+                    ColumnSpacing="5">
+                    <Grid BackgroundColor="{Binding IconBackgroundColor, FallbackValue='Grey'}">
+                        <Image
+                            HeightRequest="128"
+                            Source="{Binding IconImageSource}"
+                            WidthRequest="128" />
+                    </Grid>
+                    <VerticalStackLayout Grid.Column="1" Spacing="10">
+                        <Label FontAttributes="Bold" Text="{Binding CardTitle, FallbackValue='Card Title'}" />
+                        <Label Text="{Binding CardDescription, FallbackValue='Card description text.'}" />
+                    </VerticalStackLayout>
+                </Grid>
+            </ControlTemplate>
+        </ResourceDictionary>
+    </ContentView.Resources>
+</ContentView>

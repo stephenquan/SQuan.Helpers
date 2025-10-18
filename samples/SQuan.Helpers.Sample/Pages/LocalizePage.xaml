@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SQuan.Helpers.Sample.LocalizePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:i18n="clr-namespace:SQuan.Helpers.Maui.Localization;assembly=SQuan.Helpers.Maui.Localization"
+    xmlns:local="clr-namespace:SQuan.Helpers.Sample"
+    Title="{i18n:Localize 'PAG_LOCALIZE_DEMO'}"
+    x:DataType="local:LocalizePage"
+    FlowDirection="{i18n:FlowDirection}">
+    <ScrollView>
+        <VerticalStackLayout Padding="30,0" Spacing="25">
+            <Image
+                Aspect="AspectFit"
+                HeightRequest="185"
+                HorizontalOptions="Start"
+                RotationY="{i18n:RotationY}"
+                SemanticProperties.Description="dot net bot in a hovercraft number nine"
+                Source="dotnet_bot.png" />
+
+            <Label
+                HorizontalOptions="Start"
+                HorizontalTextAlignment="Start"
+                SemanticProperties.HeadingLevel="Level1"
+                Style="{StaticResource Headline}"
+                Text="{i18n:Localize LBL_HELLO}" />
+
+            <Label
+                HorizontalOptions="Start"
+                HorizontalTextAlignment="Start"
+                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
+                SemanticProperties.HeadingLevel="Level2"
+                Style="{StaticResource SubHeadline}"
+                Text="{i18n:Localize LBL_WELCOME}" />
+
+            <Button
+                x:Name="CounterBtn"
+                Command="{Binding IncrementCounterCommand}"
+                HorizontalOptions="Start"
+                Text="{i18n:Localize BTN_CLICKED_N_TIMES,
+                                     X0={Binding Count}}" />
+
+            <!--
+            <Button
+                x:Name="CounterBtn"
+                Command="{Binding IncrementCounterCommand}"
+                HorizontalOptions="Start"
+                Text="{MultiBinding {i18n:Localize BTN_CLICKED_N_TIMES},
+                                    {Binding Count},
+                                    Converter={i18n:StringFormatConverter}}" />
+            -->
+
+            <Entry Text="{Binding Expression, Mode=TwoWay}" />
+
+            <local:MyNumericEntry Value="{Binding X1, Mode=TwoWay}" />
+
+            <Label Text="{i18n:Localize LBL_RESULT, X0={local:Eval Expression={Binding Expression}, X0={Binding Count}, X1={Binding X1}}}" />
+
+            <local:MyDateTimePicker Value="{Binding Modified, Mode=TwoWay}" />
+
+            <Label Text="{Binding Modified, StringFormat='Modified: {0}'}" />
+
+            <Button
+                Command="{Binding ChangeUICultureCommand}"
+                HorizontalOptions="Start"
+                Text="{Binding LM.CurrentUICulture.Name}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
