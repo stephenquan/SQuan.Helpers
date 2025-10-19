@@ -32,9 +32,13 @@ public partial class SpatialPage : ContentPage
 		await LoadFromCsv<UsaCities>(db, "usa_cities.csv"); // some US cities
 
 		// Experiment with creating spatial indexes.
-		db.Execute("CREATE INDEX IX_UsaStates_Name ON UsaStates (Name)");
-		db.Execute("CREATE INDEX IX_UsaStates_Geometry ON UsaStates (SP_S(Geometry) DESC, SP_Y(Geometry), SP_X(Geometry), SP_H2(Geometry), SP_W2(Geometry))");
-		db.Execute("CREATE INDEX IX_UsaCities_Geometry ON UsaCities (SP_Y(Geometry), SP_X(Geometry))");
+		db.Execute("CREATE INDEX IX_UsaCities_Id ON UsaCities (Id)");
+		db.Execute("CREATE VIRTUAL TABLE UsaCitiesIndex USING rtree(Id, XMin, XMax, YMin, YMax)");
+		db.Execute("INSERT INTO UsaCitiesIndex SELECT Id, SP_XMin(Geometry), SP_XMax(Geometry), SP_YMin(Geometry), SP_YMax(Geometry) FROM UsaCities");
+
+		db.Execute("CREATE INDEX IX_UsaStates_Id ON UsaStates (Id)");
+		db.Execute("CREATE VIRTUAL TABLE UsaStatesIndex USING rtree(Id, XMin, XMax, YMin, YMax)");
+		db.Execute("INSERT INTO UsaStatesIndex SELECT Id, SP_XMin(Geometry), SP_XMax(Geometry), SP_YMin(Geometry), SP_YMax(Geometry) FROM UsaStates");
 
 		// Do some test spatial queries
 		double? area_50_units = db.ExecuteScalar<double?>("SELECT ST_Area('POLYGON((10 10,20 10,20 20,10 10))')");
@@ -50,25 +54,28 @@ public partial class SpatialPage : ContentPage
 			System.Diagnostics.Trace.WriteLine("City (spatial sort): " + result.Name);
 		}
 
-		// Search UsaCities using IX_UsaCities_Geometry spatial index.
+		// Search UsaCities using the rtree spatial index.
 		results = db.Query<SpatialData>("""
 SELECT *
-FROM   UsaCities
-WHERE  SP_Y(Geometry) BETWEEN   32.534231 AND   42.009659
-AND    SP_X(Geometry) BETWEEN -124.410607 AND -114.134458
+FROM   UsaCities c,
+       UsaCitiesIndex ix
+WHERE  ix.YMin <= 42.009659   AND ix.YMax >= 32.534231
+AND    ix.XMin <= -114.134458 AND ix.XMax >= -124.410607
+AND    c.Id = ix.Id
 """);
 		foreach (var result in results)
 		{
 			System.Diagnostics.Trace.WriteLine("City (spatial index): " + result.Name);
 		}
 
-		// Search UsaStates forcing the use of IX_UsaStates_Geometry spatial index.
+		// Search UsaStates using the rtree spatial index.
 		results = db.Query<SpatialData>("""
-SELECT  *
-FROM    UsaStates
-INDEXED BY IX_UsaStates_Geometry
-WHERE   SP_Y(Geometry) BETWEEN   32.534231 - SP_H2(Geometry) AND   42.009659 + SP_H2(Geometry)
-AND     SP_X(Geometry) BETWEEN -124.410607 - SP_W2(Geometry) AND -114.134458 + SP_W2(Geometry)
+SELECT s.*
+FROM   UsaStates s,
+       UsaStatesIndex ix
+WHERE  ix.YMin <= 42.009659   AND ix.YMax >= 32.534231
+AND    ix.XMin <= -114.134458 AND ix.XMax >= -124.410607
+AND    s.Id = ix.Id
 """);
 		foreach (var result in results)
 		{
