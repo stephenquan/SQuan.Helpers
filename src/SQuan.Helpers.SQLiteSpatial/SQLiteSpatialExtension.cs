@@ -110,6 +110,9 @@ public static class SQLiteSpatialExtensions
 		SQLitePCL.raw.sqlite3_create_function(db.Handle, "ST_Within", 2, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, ST_Within);
 		SQLitePCL.raw.sqlite3_create_function(db.Handle, "ST_X", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, ST_X);
 		SQLitePCL.raw.sqlite3_create_function(db.Handle, "ST_Y", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, ST_Y);
+		SQLitePCL.raw.sqlite3_create_function(db.Handle, "SP_S", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, SP_S);
+		SQLitePCL.raw.sqlite3_create_function(db.Handle, "SP_X", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, SP_X);
+		SQLitePCL.raw.sqlite3_create_function(db.Handle, "SP_Y", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, SP_Y);
 	}
 
 	/// <summary>
@@ -459,6 +462,70 @@ public static class SQLiteSpatialExtensions
 	/// <param name="args"></param>
 	static void ST_Y(sqlite3_context ctx, object user_data, sqlite3_value[] args)
 		=> ST_GeometryFunction<double?>(ctx, user_data, args, (g) => g is null ? null : g.Envelope.Centroid.Y);
+
+	/// <summary>
+	/// Implements the SP_S spatial index function for SQLite.
+	/// </summary>
+	/// <param name="ctx"></param>
+	/// <param name="user_data"></param>
+	/// <param name="args"></param>
+	static void SP_S(sqlite3_context ctx, object user_data, sqlite3_value[] args)
+		=> ST_GeometryFunction<double?>(ctx, user_data, args,
+			(g) =>
+			{
+				if (g is NetTopologySuite.Geometries.Point p)
+				{
+					return 0.0;
+				}
+				if (g?.Envelope is NetTopologySuite.Geometries.Geometry e && e.Coordinates.Length == 5)
+				{
+					double d = Math.Max(e.Coordinates[2].X - e.Coordinates[0].X, e.Coordinates[2].Y - e.Coordinates[0].Y) / 2.0;
+					return (d <= 0.0) ? 0.0 : Math.Pow(2.0, Math.Ceiling(Math.Log(d, 2.0)));
+				}
+				return null;
+			});
+
+	/// <summary>
+	/// Implements the SP_X spatial index function for SQLite.
+	/// </summary>
+	/// <param name="ctx"></param>
+	/// <param name="user_data"></param>
+	/// <param name="args"></param>
+	static void SP_X(sqlite3_context ctx, object user_data, sqlite3_value[] args)
+		=> ST_GeometryFunction<double?>(ctx, user_data, args,
+			(g) =>
+			{
+				if (g is NetTopologySuite.Geometries.Point p)
+				{
+					return p.X;
+				}
+				if (g?.Envelope is NetTopologySuite.Geometries.Geometry e && e.Coordinates.Length == 5)
+				{
+					return (e.Coordinates[2].X + e.Coordinates[0].X) / 2.0;
+				}
+				return null;
+			});
+
+	/// <summary>
+	/// Implements the SP_Y spatial index function for SQLite.
+	/// </summary>
+	/// <param name="ctx"></param>
+	/// <param name="user_data"></param>
+	/// <param name="args"></param>
+	static void SP_Y(sqlite3_context ctx, object user_data, sqlite3_value[] args)
+		=> ST_GeometryFunction<double?>(ctx, user_data, args,
+			(g) =>
+			{
+				if (g is NetTopologySuite.Geometries.Point p)
+				{
+					return p.Y;
+				}
+				if (g?.Envelope is NetTopologySuite.Geometries.Geometry e && e.Coordinates.Length == 5)
+				{
+					return (e.Coordinates[2].Y + e.Coordinates[0].Y) / 2.0;
+				}
+				return null;
+			});
 
 	/// <summary>
 	/// Internal helper to handle geometry-based SQLite functions.
