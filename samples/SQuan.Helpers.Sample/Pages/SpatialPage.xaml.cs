@@ -33,7 +33,7 @@ public partial class SpatialPage : ContentPage
 
 		// Experiment with creating spatial indexes.
 		db.Execute("CREATE INDEX IX_UsaStates_Name ON UsaStates (Name)");
-		db.Execute("CREATE INDEX IX_UsaStates_Geometry ON UsaStates (SP_S(Geometry), SP_Y(Geometry), SP_X(Geometry), SP_YMin(Geometry), SP_YMax(Geometry), SP_XMin(Geometry), SP_XMax(Geometry))");
+		db.Execute("CREATE INDEX IX_UsaStates_Geometry ON UsaStates (SP_S(Geometry), SP_Y(Geometry), SP_X(Geometry), SP_H2(Geometry), SP_W2(Geometry))");
 		db.Execute("CREATE INDEX IX_UsaCities_Geometry ON UsaCities (SP_Y(Geometry), SP_X(Geometry))");
 
 		// Do some test spatial queries
@@ -64,12 +64,10 @@ AND   SP_X(Geometry) BETWEEN -124.410607 AND -114.134458
 		results = db.Query<SpatialData>("""
 SELECT * FROM UsaStates
 WHERE SP_S(Geometry) IN (SELECT DISTINCT SP_S(Geometry) FROM UsaStates ORDER BY SP_S(Geometry) DESC)
-AND   SP_Y(Geometry) BETWEEN   32.534231 - SP_S(Geometry) AND   42.009659 + SP_S(Geometry)
-AND   SP_X(Geometry) BETWEEN -124.410607 - SP_S(Geometry) AND -114.134458 + SP_S(Geometry)
-AND   SP_XMin(Geometry) <= -124.410607
-AND   SP_XMax(Geometry) >= -114.134458
-AND   SP_YMin(Geometry) <= 42.009659
-AND   SP_YMax(Geometry) >= 32.534231
+AND   SP_Y(Geometry) BETWEEN   32.534231 - SP_S(Geometry)  AND   42.009659 + SP_S(Geometry)
+AND   SP_X(Geometry) BETWEEN -124.410607 - SP_S(Geometry)  AND -114.134458 + SP_S(Geometry)
+AND   SP_Y(Geometry) BETWEEN   32.534231 - SP_H2(Geometry) AND   42.009659 + SP_H2(Geometry)
+AND   SP_X(Geometry) BETWEEN -124.410607 - SP_W2(Geometry) AND -114.134458 + SP_W2(Geometry)
 """);
 		foreach (var result in results)
 		{
