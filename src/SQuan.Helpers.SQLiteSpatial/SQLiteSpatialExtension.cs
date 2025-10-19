@@ -110,11 +110,8 @@ public static class SQLiteSpatialExtensions
 		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Within", (g, g2) => g?.Within(g2) ?? false ? 1 : 0);
 		CreateGeometryGeometryFunction<double?>(db.Handle, "ST_X", (g, g2) => g?.Centroid.X);
 		CreateGeometryGeometryFunction<double?>(db.Handle, "ST_Y", (g, g2) => g?.Centroid.Y);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_H", (SpatialIndex? s) => s?.Height);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_H2", (SpatialIndex? s) => s?.Height / 2.0);
-		CreateSpatialIndexFunction<int?>(db.Handle, "SP_S", (SpatialIndex? s) => s?.Size);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_W", (SpatialIndex? s) => s?.Width);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_W2", (SpatialIndex? s) => s?.Width / 2.0);
+		CreateSpatialIndexFunction<double?>(db.Handle, "SP_Height", (SpatialIndex? s) => s?.Height);
+		CreateSpatialIndexFunction<double?>(db.Handle, "SP_Width", (SpatialIndex? s) => s?.Width);
 		CreateSpatialIndexFunction<double?>(db.Handle, "SP_X", (SpatialIndex? s) => s?.CenterX);
 		CreateSpatialIndexFunction<double?>(db.Handle, "SP_XMin", (SpatialIndex? s) => s?.X1);
 		CreateSpatialIndexFunction<double?>(db.Handle, "SP_XMax", (SpatialIndex? s) => s?.X2);
@@ -379,21 +376,5 @@ public static class SQLiteSpatialExtensions
 		/// Gets the center Y coordinate of the spatial index.
 		/// </summary>
 		public double CenterY => (Y1 + Y2) / 2;
-
-		/// <summary>
-		/// Gets the size of the spatial index, rounded up to the nearest power of two.
-		/// </summary>
-		public int? Size
-		{
-			get
-			{
-				double size = Math.Max(Width, Height);
-				if (size <= 0)
-				{
-					return null;
-				}
-				return (int)Math.Ceiling(Math.Log(size, 2.0));
-			}
-		}
 	}
 }
