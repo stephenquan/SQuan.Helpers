@@ -16,6 +16,10 @@ indent_style = tab
 indent_size = 4
 
 # Code files
+[*.cs]
+file_header_template = {fileName}
+
+# Code files
 [*.sln]
 indent_size = 4
 

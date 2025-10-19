@@ -59,6 +59,7 @@
     <PackageReference Include="ProjNET" Version="2.1.0" />
     <PackageReference Include="NetTopologySuite" Version="2.6.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+    <PackageReference Include="System.Runtime.Caching" Version="9.0.10" />
   </ItemGroup>
 
   <ItemGroup>
