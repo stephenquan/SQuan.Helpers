@@ -33,7 +33,8 @@ public partial class SpatialPage : ContentPage
 
 		// Experiment with creating spatial indexes.
 		db.Execute("CREATE INDEX IX_UsaStates_Name ON UsaStates (Name)");
-		db.Execute("CREATE INDEX IX_UsaCities_Geometry ON UsaCities (ST_Y(Geometry), ST_X(Geometry))");
+		db.Execute("CREATE INDEX IX_UsaStates_Geometry ON UsaStates (SP_S(Geometry), SP_Y(Geometry), SP_X(Geometry))");
+		db.Execute("CREATE INDEX IX_UsaCities_Geometry ON UsaCities (SP_Y(Geometry), SP_X(Geometry))");
 
 		// Do some test spatial queries
 		double? area_50_units = db.ExecuteScalar<double?>("SELECT ST_Area('POLYGON((10 10,20 10,20 20,10 10))')");
@@ -46,7 +47,29 @@ public partial class SpatialPage : ContentPage
 		var results = db.Query<SpatialData>("SELECT * FROM UsaCities ORDER BY ST_Distance(Geometry, 'POINT(-118.243683 34.052235)')");
 		foreach (var result in results)
 		{
-			System.Diagnostics.Trace.WriteLine("City: " + result.Name);
+			System.Diagnostics.Trace.WriteLine("City (spatial sort): " + result.Name);
+		}
+
+		// Cities and States that intersect with the California spatial index.
+		results = db.Query<SpatialData>("""
+SELECT * FROM UsaCities
+WHERE SP_Y(Geometry) BETWEEN   32.534231 AND   42.009659
+AND   SP_X(Geometry) BETWEEN -124.410607 AND -114.134458
+""");
+		foreach (var result in results)
+		{
+			System.Diagnostics.Trace.WriteLine("City (spatial index): " + result.Name);
+		}
+
+		results = db.Query<SpatialData>("""
+SELECT * FROM UsaStates
+WHERE SP_S(Geometry) IN (SELECT DISTINCT SP_S(Geometry) FROM UsaStates ORDER BY SP_S(Geometry) DESC)
+AND   SP_Y(Geometry) BETWEEN   32.534231 - SP_S(Geometry) AND   42.009659 + SP_S(Geometry)
+AND   SP_X(Geometry) BETWEEN -124.410607 - SP_S(Geometry) AND -114.134458 + SP_S(Geometry)
+""");
+		foreach (var result in results)
+		{
+			System.Diagnostics.Trace.WriteLine("State (spatial index): " + result.Name);
 		}
 
 		// Create a selection 1.0 degree (111 km) buffer around Los Angeles, CA.
