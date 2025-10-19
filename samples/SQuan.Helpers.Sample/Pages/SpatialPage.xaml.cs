@@ -1,6 +1,6 @@
 // SpatialPage.xaml.cs
 
-using CsvHelper;
+using System.Text.RegularExpressions;
 using SkiaSharp;
 using SQLite;
 using SQuan.Helpers.SQLiteSpatial;
@@ -16,9 +16,6 @@ public partial class SpatialPage : ContentPage
 	NetTopologySuite.Geometries.Geometry? selection;
 	bool loaded = false;
 
-	public class UsaStates : SpatialData;
-	public class UsaCities : SpatialData;
-
 	public SpatialPage()
 	{
 		InitializeComponent();
@@ -27,18 +24,10 @@ public partial class SpatialPage : ContentPage
 
 	async Task PostInitialize()
 	{
-		// Load sample spatial data from CSV files into the in-memory databases
-		await LoadFromCsv<UsaStates>(db, "usa_states.csv"); // all US states
-		await LoadFromCsv<UsaCities>(db, "usa_cities.csv"); // some US cities
-
-		// Experiment with creating spatial indexes.
-		db.Execute("CREATE INDEX IX_UsaCities_Id ON UsaCities (Id)");
-		db.Execute("CREATE VIRTUAL TABLE UsaCitiesIndex USING rtree(Id, XMin, XMax, YMin, YMax)");
-		db.Execute("INSERT INTO UsaCitiesIndex SELECT Id, SP_XMin(Geometry), SP_XMax(Geometry), SP_YMin(Geometry), SP_YMax(Geometry) FROM UsaCities");
-
-		db.Execute("CREATE INDEX IX_UsaStates_Id ON UsaStates (Id)");
-		db.Execute("CREATE VIRTUAL TABLE UsaStatesIndex USING rtree(Id, XMin, XMax, YMin, YMax)");
-		db.Execute("INSERT INTO UsaStatesIndex SELECT Id, SP_XMin(Geometry), SP_XMax(Geometry), SP_YMin(Geometry), SP_YMax(Geometry) FROM UsaStates");
+		// Load the spatial schema into the in-memory database.
+		await LoadSchema(db, "schema.sql");
+		await LoadSchema(db, "usa_cities.sql");
+		await LoadSchema(db, "usa_states.sql");
 
 		// Do some test spatial queries
 		double? area_50_units = db.ExecuteScalar<double?>("SELECT ST_Area('POLYGON((10 10,20 10,20 20,10 10))')");
@@ -58,10 +47,10 @@ public partial class SpatialPage : ContentPage
 		results = db.Query<SpatialData>("""
 SELECT *
 FROM   UsaCities c,
-       UsaCitiesIndex ix
-WHERE  ix.YMin <= 42.009659   AND ix.YMax >= 32.534231
-AND    ix.XMin <= -114.134458 AND ix.XMax >= -124.410607
-AND    c.Id = ix.Id
+       UsaCities_rtree r
+WHERE  r.YMin <= 42.009659   AND r.YMax >= 32.534231
+AND    r.XMin <= -114.134458 AND r.XMax >= -124.410607
+AND    c.Id = r.Id
 """);
 		foreach (var result in results)
 		{
@@ -72,10 +61,10 @@ AND    c.Id = ix.Id
 		results = db.Query<SpatialData>("""
 SELECT s.*
 FROM   UsaStates s,
-       UsaStatesIndex ix
-WHERE  ix.YMin <= 42.009659   AND ix.YMax >= 32.534231
-AND    ix.XMin <= -114.134458 AND ix.XMax >= -124.410607
-AND    s.Id = ix.Id
+       UsaStates_rtree r
+WHERE  r.YMin <= 42.009659   AND r.YMax >= 32.534231
+AND    r.XMin <= -114.134458 AND r.XMax >= -124.410607
+AND    s.Id = r.Id
 """);
 		foreach (var result in results)
 		{
@@ -90,17 +79,32 @@ AND    s.Id = ix.Id
 		canvasView.InvalidateSurface();
 	}
 
-	async Task LoadFromCsv<T>(SQLiteConnection db, string fileName)
+	[GeneratedRegex(@"^[^\s]+.*;\s*$")]
+	private partial Regex sqlEndRegex();
+
+	async Task LoadSchema(SQLiteConnection db, string fileName)
 	{
 		using var stream = await FileSystem.OpenAppPackageFileAsync(fileName);
-		using var reader = new StreamReader(stream);
-		using var csv = new CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture);
 		db.RunInTransaction(() =>
 		{
-			db.CreateTable<T>();
-			foreach (var record in csv.GetRecords<T>())
+			using (var reader = new System.IO.StreamReader(stream))
 			{
-				db.Insert(record);
+				string sql = string.Empty;
+				string? line = null;
+				while ((line = reader.ReadLine()) is not null)
+				{
+					if (line.StartsWith("--") || string.IsNullOrWhiteSpace(line))
+					{
+						continue;
+					}
+
+					sql += line + "\n";
+					if (sqlEndRegex().IsMatch(line))
+					{
+						db.Execute(sql);
+						sql = string.Empty;
+					}
+				}
 			}
 		});
 	}
