@@ -33,7 +33,7 @@ public partial class SpatialPage : ContentPage
 
 		// Experiment with creating spatial indexes.
 		db.Execute("CREATE INDEX IX_UsaStates_Name ON UsaStates (Name)");
-		db.Execute("CREATE INDEX IX_UsaStates_Geometry ON UsaStates (SP_S(Geometry), SP_Y(Geometry), SP_X(Geometry), SP_H2(Geometry), SP_W2(Geometry))");
+		db.Execute("CREATE INDEX IX_UsaStates_Geometry ON UsaStates (SP_S(Geometry) DESC, SP_Y(Geometry), SP_X(Geometry), SP_H2(Geometry), SP_W2(Geometry))");
 		db.Execute("CREATE INDEX IX_UsaCities_Geometry ON UsaCities (SP_Y(Geometry), SP_X(Geometry))");
 
 		// Do some test spatial queries
@@ -50,24 +50,25 @@ public partial class SpatialPage : ContentPage
 			System.Diagnostics.Trace.WriteLine("City (spatial sort): " + result.Name);
 		}
 
-		// Cities and States that intersect with the California spatial index.
+		// Search UsaCities using IX_UsaCities_Geometry spatial index.
 		results = db.Query<SpatialData>("""
-SELECT * FROM UsaCities
-WHERE SP_Y(Geometry) BETWEEN   32.534231 AND   42.009659
-AND   SP_X(Geometry) BETWEEN -124.410607 AND -114.134458
+SELECT *
+FROM   UsaCities
+WHERE  SP_Y(Geometry) BETWEEN   32.534231 AND   42.009659
+AND    SP_X(Geometry) BETWEEN -124.410607 AND -114.134458
 """);
 		foreach (var result in results)
 		{
 			System.Diagnostics.Trace.WriteLine("City (spatial index): " + result.Name);
 		}
 
+		// Search UsaStates forcing the use of IX_UsaStates_Geometry spatial index.
 		results = db.Query<SpatialData>("""
-SELECT * FROM UsaStates
-WHERE SP_S(Geometry) IN (SELECT DISTINCT SP_S(Geometry) FROM UsaStates ORDER BY SP_S(Geometry) DESC)
-AND   SP_Y(Geometry) BETWEEN   32.534231 - SP_S(Geometry)  AND   42.009659 + SP_S(Geometry)
-AND   SP_X(Geometry) BETWEEN -124.410607 - SP_S(Geometry)  AND -114.134458 + SP_S(Geometry)
-AND   SP_Y(Geometry) BETWEEN   32.534231 - SP_H2(Geometry) AND   42.009659 + SP_H2(Geometry)
-AND   SP_X(Geometry) BETWEEN -124.410607 - SP_W2(Geometry) AND -114.134458 + SP_W2(Geometry)
+SELECT  *
+FROM    UsaStates
+INDEXED BY IX_UsaStates_Geometry
+WHERE   SP_Y(Geometry) BETWEEN   32.534231 - SP_H2(Geometry) AND   42.009659 + SP_H2(Geometry)
+AND     SP_X(Geometry) BETWEEN -124.410607 - SP_W2(Geometry) AND -114.134458 + SP_W2(Geometry)
 """);
 		foreach (var result in results)
 		{

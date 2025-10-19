@@ -112,7 +112,7 @@ public static class SQLiteSpatialExtensions
 		CreateGeometryGeometryFunction<double?>(db.Handle, "ST_Y", (g, g2) => g?.Centroid.Y);
 		CreateSpatialIndexFunction<double?>(db.Handle, "SP_H", (SpatialIndex? s) => s?.Height);
 		CreateSpatialIndexFunction<double?>(db.Handle, "SP_H2", (SpatialIndex? s) => s?.Height / 2.0);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_S", (SpatialIndex? s) => s?.Size);
+		CreateSpatialIndexFunction<int?>(db.Handle, "SP_S", (SpatialIndex? s) => s?.Size);
 		CreateSpatialIndexFunction<double?>(db.Handle, "SP_W", (SpatialIndex? s) => s?.Width);
 		CreateSpatialIndexFunction<double?>(db.Handle, "SP_W2", (SpatialIndex? s) => s?.Width / 2.0);
 		CreateSpatialIndexFunction<double?>(db.Handle, "SP_X", (SpatialIndex? s) => s?.CenterX);
@@ -383,16 +383,16 @@ public static class SQLiteSpatialExtensions
 		/// <summary>
 		/// Gets the size of the spatial index, rounded up to the nearest power of two.
 		/// </summary>
-		public double Size
+		public int? Size
 		{
 			get
 			{
 				double size = Math.Max(Width, Height);
 				if (size <= 0)
 				{
-					return 0;
+					return null;
 				}
-				return Math.Pow(2.0, Math.Ceiling(Math.Log(size, 2.0)));
+				return (int)Math.Ceiling(Math.Log(size, 2.0));
 			}
 		}
 	}
