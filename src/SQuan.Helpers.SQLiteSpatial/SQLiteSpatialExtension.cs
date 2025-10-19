@@ -112,7 +112,11 @@ public static class SQLiteSpatialExtensions
 		SQLitePCL.raw.sqlite3_create_function(db.Handle, "ST_Y", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, ST_Y);
 		SQLitePCL.raw.sqlite3_create_function(db.Handle, "SP_S", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, SP_S);
 		SQLitePCL.raw.sqlite3_create_function(db.Handle, "SP_X", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, SP_X);
+		SQLitePCL.raw.sqlite3_create_function(db.Handle, "SP_XMin", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, SP_XMin);
+		SQLitePCL.raw.sqlite3_create_function(db.Handle, "SP_XMax", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, SP_XMax);
 		SQLitePCL.raw.sqlite3_create_function(db.Handle, "SP_Y", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, SP_Y);
+		SQLitePCL.raw.sqlite3_create_function(db.Handle, "SP_YMin", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, SP_YMin);
+		SQLitePCL.raw.sqlite3_create_function(db.Handle, "SP_YMax", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, null, SP_YMax);
 	}
 
 	/// <summary>
@@ -507,6 +511,48 @@ public static class SQLiteSpatialExtensions
 			});
 
 	/// <summary>
+	/// Implements the SP_XMin spatial index function for SQLite.
+	/// </summary>
+	/// <param name="ctx"></param>
+	/// <param name="user_data"></param>
+	/// <param name="args"></param>
+	static void SP_XMin(sqlite3_context ctx, object user_data, sqlite3_value[] args)
+		=> ST_GeometryFunction<double?>(ctx, user_data, args,
+			(g) =>
+			{
+				if (g is NetTopologySuite.Geometries.Point p)
+				{
+					return p.X;
+				}
+				if (g?.Envelope is NetTopologySuite.Geometries.Geometry e && e.Coordinates.Length == 5)
+				{
+					return e.Coordinates[0].X;
+				}
+				return null;
+			});
+
+	/// <summary>
+	///  Implements the SP_XMax spatial index function for SQLite.
+	/// </summary>
+	/// <param name="ctx"></param>
+	/// <param name="user_data"></param>
+	/// <param name="args"></param>
+	static void SP_XMax(sqlite3_context ctx, object user_data, sqlite3_value[] args)
+		=> ST_GeometryFunction<double?>(ctx, user_data, args,
+			(g) =>
+			{
+				if (g is NetTopologySuite.Geometries.Point p)
+				{
+					return p.X;
+				}
+				if (g?.Envelope is NetTopologySuite.Geometries.Geometry e && e.Coordinates.Length == 5)
+				{
+					return e.Coordinates[2].X;
+				}
+				return null;
+			});
+
+	/// <summary>
 	/// Implements the SP_Y spatial index function for SQLite.
 	/// </summary>
 	/// <param name="ctx"></param>
@@ -523,6 +569,48 @@ public static class SQLiteSpatialExtensions
 				if (g?.Envelope is NetTopologySuite.Geometries.Geometry e && e.Coordinates.Length == 5)
 				{
 					return (e.Coordinates[2].Y + e.Coordinates[0].Y) / 2.0;
+				}
+				return null;
+			});
+
+	/// <summary>
+	///  Implements the SP_YMin spatial index function for SQLite.
+	/// </summary>
+	/// <param name="ctx"></param>
+	/// <param name="user_data"></param>
+	/// <param name="args"></param>
+	static void SP_YMin(sqlite3_context ctx, object user_data, sqlite3_value[] args)
+		=> ST_GeometryFunction<double?>(ctx, user_data, args,
+			(g) =>
+			{
+				if (g is NetTopologySuite.Geometries.Point p)
+				{
+					return p.X;
+				}
+				if (g?.Envelope is NetTopologySuite.Geometries.Geometry e && e.Coordinates.Length == 5)
+				{
+					return e.Coordinates[0].Y;
+				}
+				return null;
+			});
+
+	/// <summary>
+	///  Implements the SP_YMax spatial index function for SQLite.
+	/// </summary>
+	/// <param name="ctx"></param>
+	/// <param name="user_data"></param>
+	/// <param name="args"></param>
+	static void SP_YMax(sqlite3_context ctx, object user_data, sqlite3_value[] args)
+		=> ST_GeometryFunction<double?>(ctx, user_data, args,
+			(g) =>
+			{
+				if (g is NetTopologySuite.Geometries.Point p)
+				{
+					return p.X;
+				}
+				if (g?.Envelope is NetTopologySuite.Geometries.Geometry e && e.Coordinates.Length == 5)
+				{
+					return e.Coordinates[2].Y;
 				}
 				return null;
 			});
