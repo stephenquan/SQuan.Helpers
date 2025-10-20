@@ -1,6 +1,6 @@
 // SpatialPage.xaml.cs
 
-using CsvHelper;
+using System.Text.RegularExpressions;
 using SkiaSharp;
 using SQLite;
 using SQuan.Helpers.SQLiteSpatial;
@@ -16,9 +16,6 @@ public partial class SpatialPage : ContentPage
 	NetTopologySuite.Geometries.Geometry? selection;
 	bool loaded = false;
 
-	public class UsaStates : SpatialData;
-	public class UsaCities : SpatialData;
-
 	public SpatialPage()
 	{
 		InitializeComponent();
@@ -27,14 +24,10 @@ public partial class SpatialPage : ContentPage
 
 	async Task PostInitialize()
 	{
-		// Load sample spatial data from CSV files into the in-memory databases
-		await LoadFromCsv<UsaStates>(db, "usa_states.csv"); // all US states
-		await LoadFromCsv<UsaCities>(db, "usa_cities.csv"); // some US cities
-
-		// Experiment with creating spatial indexes.
-		db.Execute("CREATE INDEX IX_UsaStates_Name ON UsaStates (Name)");
-		db.Execute("CREATE INDEX IX_UsaStates_Geometry ON UsaStates (SP_S(Geometry) DESC, SP_Y(Geometry), SP_X(Geometry), SP_H2(Geometry), SP_W2(Geometry))");
-		db.Execute("CREATE INDEX IX_UsaCities_Geometry ON UsaCities (SP_Y(Geometry), SP_X(Geometry))");
+		// Load the spatial schema into the in-memory database.
+		await LoadSchema(db, "schema.sql");
+		await LoadSchema(db, "usa_cities.sql");
+		await LoadSchema(db, "usa_states.sql");
 
 		// Do some test spatial queries
 		double? area_50_units = db.ExecuteScalar<double?>("SELECT ST_Area('POLYGON((10 10,20 10,20 20,10 10))')");
@@ -50,25 +43,28 @@ public partial class SpatialPage : ContentPage
 			System.Diagnostics.Trace.WriteLine("City (spatial sort): " + result.Name);
 		}
 
-		// Search UsaCities using IX_UsaCities_Geometry spatial index.
+		// Search UsaCities using the rtree spatial index.
 		results = db.Query<SpatialData>("""
 SELECT *
-FROM   UsaCities
-WHERE  SP_Y(Geometry) BETWEEN   32.534231 AND   42.009659
-AND    SP_X(Geometry) BETWEEN -124.410607 AND -114.134458
+FROM   UsaCities c,
+       UsaCities_rtree r
+WHERE  r.YMin <= 42.009659   AND r.YMax >= 32.534231
+AND    r.XMin <= -114.134458 AND r.XMax >= -124.410607
+AND    c.Id = r.Id
 """);
 		foreach (var result in results)
 		{
 			System.Diagnostics.Trace.WriteLine("City (spatial index): " + result.Name);
 		}
 
-		// Search UsaStates forcing the use of IX_UsaStates_Geometry spatial index.
+		// Search UsaStates using the rtree spatial index.
 		results = db.Query<SpatialData>("""
-SELECT  *
-FROM    UsaStates
-INDEXED BY IX_UsaStates_Geometry
-WHERE   SP_Y(Geometry) BETWEEN   32.534231 - SP_H2(Geometry) AND   42.009659 + SP_H2(Geometry)
-AND     SP_X(Geometry) BETWEEN -124.410607 - SP_W2(Geometry) AND -114.134458 + SP_W2(Geometry)
+SELECT s.*
+FROM   UsaStates s,
+       UsaStates_rtree r
+WHERE  r.YMin <= 42.009659   AND r.YMax >= 32.534231
+AND    r.XMin <= -114.134458 AND r.XMax >= -124.410607
+AND    s.Id = r.Id
 """);
 		foreach (var result in results)
 		{
@@ -83,17 +79,32 @@ AND     SP_X(Geometry) BETWEEN -124.410607 - SP_W2(Geometry) AND -114.134458 + S
 		canvasView.InvalidateSurface();
 	}
 
-	async Task LoadFromCsv<T>(SQLiteConnection db, string fileName)
+	[GeneratedRegex(@"^[^\s]+.*;\s*$")]
+	private partial Regex sqlEndRegex();
+
+	async Task LoadSchema(SQLiteConnection db, string fileName)
 	{
 		using var stream = await FileSystem.OpenAppPackageFileAsync(fileName);
-		using var reader = new StreamReader(stream);
-		using var csv = new CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture);
 		db.RunInTransaction(() =>
 		{
-			db.CreateTable<T>();
-			foreach (var record in csv.GetRecords<T>())
+			using (var reader = new System.IO.StreamReader(stream))
 			{
-				db.Insert(record);
+				string sql = string.Empty;
+				string? line = null;
+				while ((line = reader.ReadLine()) is not null)
+				{
+					if (line.StartsWith("--") || string.IsNullOrWhiteSpace(line))
+					{
+						continue;
+					}
+
+					sql += line + "\n";
+					if (sqlEndRegex().IsMatch(line))
+					{
+						db.Execute(sql);
+						sql = string.Empty;
+					}
+				}
 			}
 		});
 	}

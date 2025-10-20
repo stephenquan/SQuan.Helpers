@@ -9,7 +9,8 @@ using SQLitePCL;
 namespace SQuan.Helpers.SQLiteSpatial;
 
 /// <summary>
-/// Provides extension methods for enabling spatial functions in SQLite connections.
+/// Extension methods for enabling and using spatial functions in SQLite connections.
+/// Includes helpers for registering NetTopologySuite-based spatial functions and caching WKT geometries for performance.
 /// </summary>
 public static class SQLiteSpatialExtensions
 {
@@ -70,10 +71,9 @@ public static class SQLiteSpatialExtensions
 	/// <summary>
 	/// Applies spatial extensions to the given SQLite connection.
 	/// </summary>
-	/// <param name="db"></param>
+	/// <param name="db">A SQLite connection.</param>
 	public static void EnableSpatialExtensions(this SQLiteConnection db)
 	{
-		var dbHandle = db.Handle;
 		CreateGeometryFunction<double?>(db.Handle, "ST_Area", (g) => g?.Area);
 		CreateGeometryFunction<string?>(db.Handle, "ST_Boundary", (g) => g?.Boundary?.AsText());
 		CreateGeometryDoubleFunction<string?>(db.Handle, "ST_Buffer", (g, d) => g?.Buffer(d)?.AsText());
@@ -92,10 +92,12 @@ public static class SQLiteSpatialExtensions
 		CreateGeometryGeometryFunction<int>(db.Handle, "ST_EqualsTopologically", (g, g2) => g?.EqualsTopologically(g2) ?? false ? 1 : 0);
 		CreateGeometryFunction<string?>(db.Handle, "ST_Envelope", (g) => g?.Envelope?.AsText());
 		CreateGeometryFunction<string?>(db.Handle, "ST_GeometryType", (g) => g?.GeometryType);
+		CreateSpatialIndexFunction<double?>(db.Handle, "ST_Height", (s) => s?.Height);
 		CreateGeometryFunction<string?>(db.Handle, "ST_IsRectangle", (g) => g?.InteriorPoint?.AsText());
 		CreateGeometryGeometryFunction<string?>(db.Handle, "ST_Intersection", (g, g2) => g?.Intersection(g2)?.AsText());
 		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Intersects", (g, g2) => g?.Intersects(g2) ?? false ? 1 : 0);
 		CreateGeometryFunction<int>(db.Handle, "ST_IsEmpty", (g) => g?.IsEmpty ?? false ? 1 : 0);
+		SQLitePCL.raw.sqlite3_create_function(db.Handle, "ST_IsGeometry", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, ST_IsGeometry);
 		CreateGeometryFunction<int>(db.Handle, "ST_IsRectangle", (g) => g?.IsRectangle ?? false ? 1 : 0);
 		CreateGeometryFunction<int>(db.Handle, "ST_IsSimple", (g) => g?.IsSimple ?? false ? 1 : 0);
 		CreateGeometryFunction<int>(db.Handle, "ST_IsValid", (g) => g?.IsValid ?? false ? 1 : 0);
@@ -107,30 +109,55 @@ public static class SQLiteSpatialExtensions
 		CreateGeometryGeometryFunction<string?>(db.Handle, "ST_SymmetricDifference", (g, g2) => g?.SymmetricDifference(g2)?.ToText());
 		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Touches", (g, g2) => g?.Touches(g2) ?? false ? 1 : 0);
 		CreateGeometryGeometryFunction<string?>(db.Handle, "ST_Union", (g, g2) => g?.Union(g2)?.ToText());
+		CreateSpatialIndexFunction<double?>(db.Handle, "ST_Width", (s) => s?.Width);
 		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Within", (g, g2) => g?.Within(g2) ?? false ? 1 : 0);
-		CreateGeometryGeometryFunction<double?>(db.Handle, "ST_X", (g, g2) => g?.Centroid.X);
-		CreateGeometryGeometryFunction<double?>(db.Handle, "ST_Y", (g, g2) => g?.Centroid.Y);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_H", (SpatialIndex? s) => s?.Height);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_H2", (SpatialIndex? s) => s?.Height / 2.0);
-		CreateSpatialIndexFunction<int?>(db.Handle, "SP_S", (SpatialIndex? s) => s?.Size);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_W", (SpatialIndex? s) => s?.Width);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_W2", (SpatialIndex? s) => s?.Width / 2.0);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_X", (SpatialIndex? s) => s?.CenterX);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_XMin", (SpatialIndex? s) => s?.X1);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_XMax", (SpatialIndex? s) => s?.X2);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_Y", (SpatialIndex? s) => s?.CenterY);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_YMin", (SpatialIndex? s) => s?.Y1);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_YMax", (SpatialIndex? s) => s?.Y2);
+		CreateGeometryFunction<double?>(db.Handle, "ST_X", (g) => g?.Centroid.X);
+		CreateSpatialIndexFunction<double?>(db.Handle, "ST_XMax", (s) => s?.X2);
+		CreateSpatialIndexFunction<double?>(db.Handle, "ST_XMin", (s) => s?.X1);
+		CreateGeometryFunction<double?>(db.Handle, "ST_Y", (g) => g?.Centroid.Y);
+		CreateSpatialIndexFunction<double?>(db.Handle, "ST_YMax", (s) => s?.Y2);
+		CreateSpatialIndexFunction<double?>(db.Handle, "ST_YMin", (s) => s?.Y1);
 	}
 
 	/// <summary>
-	/// Internal method to create double double functions in SQLite.
+	/// Determines if the provided argument is a valid geometry object.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <param name="handle"></param>
-	/// <param name="name"></param>
-	/// <param name="func"></param>
-	/// <param name="flags"></param>
+	/// <remarks>This method sets the result to <see langword="1"/> if the argument is a valid geometry object;
+	/// otherwise, it sets the result to <see langword="0"/>.</remarks>
+	/// <param name="ctx">The SQLite context in which the function is executed.</param>
+	/// <param name="user_data">User data associated with the function, not used in this implementation.</param>
+	/// <param name="args">An array of SQLite values, where the first element is expected to be a geometry object.</param>
+	static void ST_IsGeometry(sqlite3_context ctx, object user_data, sqlite3_value[] args)
+	{
+		try
+		{
+			var wkt = raw.sqlite3_value_text(args[0]).utf8_to_string();
+			if (!string.IsNullOrEmpty(wkt))
+			{
+				var geometry = ToGeometry(wkt);
+				if (geometry is not null)
+				{
+					SetResult(ctx, 1);
+					return;
+				}
+			}
+		}
+		catch (Exception)
+		{
+		}
+		SetResult(ctx, 0);
+	}
+
+	/// <summary>
+	/// Creates a custom SQLite function that accepts two double parameters and returns a value of type <typeparamref name="T"/>.
+	/// This is useful for registering mathematical or spatial functions (e.g., point creation) with SQLite.
+	/// The function is registered with the specified name and flags, and the provided delegate is invoked with the double arguments.
+	/// </summary>
+	/// <typeparam name="T">The return type of the function.</typeparam>
+	/// <param name="handle">A SQLite3 database handle.</param>
+	/// <param name="name">The name of the SQLite function to register.</param>
+	/// <param name="func">A delegate that takes two double arguments and returns a value of type <typeparamref name="T"/>.</param>
+	/// <param name="flags">SQLite function flags (default: SQLITE_UTF8 | SQLITE_DETERMINISTIC).</param>
 	static void CreateDoubleDoubleFunction<T>(sqlite3 handle, string name, Func<double, double, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
 	{
 		SQLitePCL.raw.sqlite3_create_function(handle, name, 2, flags, null, (sqlite3_context ctx, object user_data, sqlite3_value[] args) =>
@@ -149,13 +176,15 @@ public static class SQLiteSpatialExtensions
 	}
 
 	/// <summary>
-	/// Internal method to create geometry functions in SQLite.
+	/// Creates a custom SQLite function that accepts a single geometry argument and returns a value of type <typeparamref name="T"/>.
+	/// This is useful for registering spatial functions (e.g., area, centroid, envelope) with SQLite.
+	/// The function is registered with the specified name and flags, and the provided delegate is invoked with the geometry argument.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <param name="handle"></param>
-	/// <param name="name"></param>
-	/// <param name="func"></param>
-	/// <param name="flags"></param>
+	/// <typeparam name="T">The return type of the function.</typeparam>
+	/// <param name="handle">A SQLite3 database handle.</param>
+	/// <param name="name">The name of the SQLite function to register.</param>
+	/// <param name="func">A delegate that takes a geometry argument and returns a value of type <typeparamref name="T"/>.</param>
+	/// <param name="flags">SQLite function flags (default: SQLITE_UTF8 | SQLITE_DETERMINISTIC).</param>
 	static void CreateGeometryFunction<T>(sqlite3 handle, string name, Func<NetTopologySuite.Geometries.Geometry?, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
 	{
 		SQLitePCL.raw.sqlite3_create_function(handle, name, 1, flags, null, (sqlite3_context ctx, object user_data, sqlite3_value[] args) =>
@@ -173,13 +202,15 @@ public static class SQLiteSpatialExtensions
 	}
 
 	/// <summary>
-	/// Internal method to create geometry double functions in SQLite.
+	/// Creates a custom SQLite function that accepts a geometry argument and a double argument, and returns a value of type <typeparamref name="T"/>.
+	/// This is useful for registering spatial functions that require both a geometry and a double parameter (e.g., buffer operations) with SQLite.
+	/// The function is registered with the specified name and flags, and the provided delegate is invoked with the geometry and double arguments.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <param name="handle"></param>
-	/// <param name="name"></param>
-	/// <param name="func"></param>
-	/// <param name="flags"></param>
+	/// <typeparam name="T">The return type of the function.</typeparam>
+	/// <param name="handle">A SQLite3 database handle.</param>
+	/// <param name="name">The name of the SQLite function to register.</param>
+	/// <param name="func">A delegate that takes a geometry argument and a double argument, and returns a value of type <typeparamref name="T"/>.</param>
+	/// <param name="flags">SQLite function flags (default: SQLITE_UTF8 | SQLITE_DETERMINISTIC).</param>
 	static void CreateGeometryDoubleFunction<T>(sqlite3 handle, string name, Func<NetTopologySuite.Geometries.Geometry?, double, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
 	{
 		SQLitePCL.raw.sqlite3_create_function(handle, name, 2, flags, null, (sqlite3_context ctx, object user_data, sqlite3_value[] args) =>
@@ -198,13 +229,15 @@ public static class SQLiteSpatialExtensions
 	}
 
 	/// <summary>
-	/// Internal method to create geometry geometry functions in SQLite.
+	/// Creates a custom SQLite function that accepts two geometry arguments and returns a value of type <typeparamref name="T"/>.
+	/// This is useful for registering spatial functions that operate on two geometries (e.g., intersection, union, contains) with SQLite.
+	/// The function is registered with the specified name and flags, and the provided delegate is invoked with the geometry arguments.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <param name="handle"></param>
-	/// <param name="name"></param>
-	/// <param name="func"></param>
-	/// <param name="flags"></param>
+	/// <typeparam name="T">The return type of the function.</typeparam>
+	/// <param name="handle">A SQLite3 database handle.</param>
+	/// <param name="name">The name of the SQLite function to register.</param>
+	/// <param name="func">A delegate that takes two geometry arguments and returns a value of type <typeparamref name="T"/>.</param>
+	/// <param name="flags">SQLite function flags (default: SQLITE_UTF8 | SQLITE_DETERMINISTIC).</param>
 	static void CreateGeometryGeometryFunction<T>(sqlite3 handle, string name, Func<NetTopologySuite.Geometries.Geometry?, NetTopologySuite.Geometries.Geometry?, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
 	{
 		SQLitePCL.raw.sqlite3_create_function(handle, name, 2, flags, null, (sqlite3_context ctx, object user_data, sqlite3_value[] args) =>
@@ -223,13 +256,15 @@ public static class SQLiteSpatialExtensions
 	}
 
 	/// <summary>
-	/// Internal method to create geometry integer functions in SQLite.
+	/// Creates a custom SQLite function that accepts a geometry argument and an integer argument, and returns a value of type <typeparamref name="T"/>.
+	/// This is useful for registering spatial functions that require both a geometry and an integer parameter (e.g., setting SRID) with SQLite.
+	/// The function is registered with the specified name and flags, and the provided delegate is invoked with the geometry and integer arguments.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <param name="handle"></param>
-	/// <param name="name"></param>
-	/// <param name="func"></param>
-	/// <param name="flags"></param>
+	/// <typeparam name="T">The return type of the function.</typeparam>
+	/// <param name="handle">A SQLite3 database handle.</param>
+	/// <param name="name">The name of the SQLite function to register.</param>
+	/// <param name="func">A delegate that takes a geometry argument and an integer argument, and returns a value of type <typeparamref name="T"/>.</param>
+	/// <param name="flags">SQLite function flags (default: SQLITE_UTF8 | SQLITE_DETERMINISTIC).</param>
 	static void CreateGeometryIntegerFunction<T>(sqlite3 handle, string name, Func<NetTopologySuite.Geometries.Geometry?, int, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
 	{
 		SQLitePCL.raw.sqlite3_create_function(handle, name, 2, flags, null, (sqlite3_context ctx, object user_data, sqlite3_value[] args) =>
@@ -248,13 +283,15 @@ public static class SQLiteSpatialExtensions
 	}
 
 	/// <summary>
-	/// Internal method to create spatial index functions in SQLite.
+	/// Creates a custom SQLite function that accepts a spatial index argument and returns a value of type <typeparamref name="T"/>.
+	/// This is useful for registering spatial index functions (e.g., bounding box calculations) with SQLite.
+	/// The function is registered with the specified name and flags, and the provided delegate is invoked with the spatial index argument.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <param name="handle"></param>
-	/// <param name="name"></param>
-	/// <param name="func"></param>
-	/// <param name="flags"></param>
+	/// <typeparam name="T">The return type of the function.</typeparam>
+	/// <param name="handle">A SQLite3 database handle.</param>
+	/// <param name="name">The name of the SQLite function to register.</param>
+	/// <param name="func">A delegate that takes a spatial index argument and returns a value of type <typeparamref name="T"/>.</param>
+	/// <param name="flags">SQLite function flags (default: SQLITE_UTF8 | SQLITE_DETERMINISTIC).</param>
 	static void CreateSpatialIndexFunction<T>(sqlite3 handle, string name, Func<SpatialIndex?, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
 	{
 		SQLitePCL.raw.sqlite3_create_function(handle, name, 1, flags, null, (sqlite3_context ctx, object user_data, sqlite3_value[] args) =>
@@ -283,10 +320,10 @@ public static class SQLiteSpatialExtensions
 
 
 	/// <summary>
-	/// Internal helper to set the result of a SQLite function call.
+	/// Sets the result of a SQLite function call based on the type of the provided result object.
 	/// </summary>
-	/// <param name="ctx"></param>
-	/// <param name="result"></param>
+	/// <param name="ctx">The SQLite function context.</param>
+	/// <param name="result">The result object to be returned to SQLite. Supported types are <c>null</c>, <see cref="string"/>, <see cref="double"/>, and <see cref="int"/>.</param>
 	static void SetResult(sqlite3_context ctx, object? result)
 	{
 		switch (result)
@@ -310,10 +347,13 @@ public static class SQLiteSpatialExtensions
 	}
 
 	/// <summary>
-	/// Internal helper to set an error result for a SQLite function call.
+	/// Sets an error result for a SQLite function call.
+	/// This helper method is used within custom SQLite function delegates to report errors back to SQLite.
+	/// It sets the error message and error code in the SQLite context, ensuring that the calling SQL statement
+	/// receives an appropriate error response.
 	/// </summary>
-	/// <param name="ctx"></param>
-	/// <param name="ex"></param>
+	/// <param name="ctx">The SQLite function context to set the error result for.</param>
+	/// <param name="ex">The exception containing the error details to report.</param>
 	static void SetResultError(sqlite3_context ctx, Exception ex)
 	{
 		raw.sqlite3_result_error(ctx, utf8z.FromString(ex.Message));
@@ -321,37 +361,39 @@ public static class SQLiteSpatialExtensions
 	}
 
 	/// <summary>
-	/// Internal class representing a spatial index with bounding box properties.
+	/// Represents a spatial index defined by a bounding box with minimum and maximum X and Y coordinates.
+	/// Provides properties for width, height, and center coordinates of the bounding box.
+	/// Used internally for spatial calculations and indexing.
 	/// </summary>
 	class SpatialIndex
 	{
 		/// <summary>
-		/// Gets or sets the minimum X coordinate.
+		/// Gets or sets the minimum X coordinate of the bounding box.
 		/// </summary>
 		public double X1 { get; set; }
 
 		/// <summary>
-		/// Gets or sets the minimum Y coordinate.
+		/// Gets or sets the minimum Y coordinate of the bounding box.
 		/// </summary>
 		public double Y1 { get; set; }
 
 		/// <summary>
-		/// Gets or sets the maximum X coordinate.
+		/// Gets or sets the maximum X coordinate of the bounding box.
 		/// </summary>
 		public double X2 { get; set; }
 
 		/// <summary>
-		/// Gets or sets the maximum Y coordinate.
+		/// Gets or sets the maximum Y coordinate of the bounding box.
 		/// </summary>
 		public double Y2 { get; set; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SpatialIndex"/> class.
+		/// Initializes a new instance of the <see cref="SpatialIndex"/> class with the specified bounding box coordinates.
 		/// </summary>
-		/// <param name="x1"></param>
-		/// <param name="y1"></param>
-		/// <param name="x2"></param>
-		/// <param name="y2"></param>
+		/// <param name="x1">The minimum X coordinate.</param>
+		/// <param name="y1">The minimum Y coordinate.</param>
+		/// <param name="x2">The maximum X coordinate.</param>
+		/// <param name="y2">The maximum Y coordinate.</param>
 		public SpatialIndex(double x1, double y1, double x2, double y2)
 		{
 			X1 = x1;
@@ -361,39 +403,23 @@ public static class SQLiteSpatialExtensions
 		}
 
 		/// <summary>
-		/// Gets the width of the spatial index.
+		/// Gets the width of the bounding box (X2 - X1).
 		/// </summary>
 		public double Width => X2 - X1;
 
 		/// <summary>
-		/// Gets the height of the spatial index.
+		/// Gets the height of the bounding box (Y2 - Y1).
 		/// </summary>
 		public double Height => Y2 - Y1;
 
 		/// <summary>
-		/// Gets the center X coordinate of the spatial index.
+		/// Gets the center X coordinate of the bounding box ((X1 + X2) / 2).
 		/// </summary>
 		public double CenterX => (X1 + X2) / 2;
 
 		/// <summary>
-		/// Gets the center Y coordinate of the spatial index.
+		/// Gets the center Y coordinate of the bounding box ((Y1 + Y2) / 2).
 		/// </summary>
 		public double CenterY => (Y1 + Y2) / 2;
-
-		/// <summary>
-		/// Gets the size of the spatial index, rounded up to the nearest power of two.
-		/// </summary>
-		public int? Size
-		{
-			get
-			{
-				double size = Math.Max(Width, Height);
-				if (size <= 0)
-				{
-					return null;
-				}
-				return (int)Math.Ceiling(Math.Log(size, 2.0));
-			}
-		}
 	}
 }
