@@ -43,13 +43,13 @@ public partial class SpatialPage : ContentPage
 			System.Diagnostics.Trace.WriteLine("City (spatial sort): " + result.Name);
 		}
 
-		// Search UsaCities using the rtree spatial index.
+		// Search UsaCities using the R*Tree spatial index.
 		results = db.Query<SpatialData>("""
 SELECT *
 FROM   UsaCities c,
        UsaCities_rtree r
-WHERE  r.YMin <= 42.009659   AND r.YMax >= 32.534231
-AND    r.XMin <= -114.134458 AND r.XMax >= -124.410607
+WHERE  r.MinX <= -114.134458 AND r.MaxX >= -124.410607
+AND    r.MinY <= 42.009659   AND r.MaxY >= 32.534231
 AND    c.Id = r.Id
 """);
 		foreach (var result in results)
@@ -57,13 +57,13 @@ AND    c.Id = r.Id
 			System.Diagnostics.Trace.WriteLine("City (spatial index): " + result.Name);
 		}
 
-		// Search UsaStates using the rtree spatial index.
+		// Search UsaStates using the R*Tree spatial index.
 		results = db.Query<SpatialData>("""
 SELECT s.*
 FROM   UsaStates s,
        UsaStates_rtree r
-WHERE  r.YMin <= 42.009659   AND r.YMax >= 32.534231
-AND    r.XMin <= -114.134458 AND r.XMax >= -124.410607
+WHERE  r.MinX <= -114.134458 AND r.MaxX >= -124.410607
+AND    r.MinY <= 42.009659   AND r.MaxY >= 32.534231
 AND    s.Id = r.Id
 """);
 		foreach (var result in results)

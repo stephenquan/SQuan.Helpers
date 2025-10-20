@@ -26,10 +26,10 @@ public class SQLiteSpatialTests
 	[InlineData("SELECT ST_Height(ST_Buffer('POINT (40 30)', 5))", 10)]
 	[InlineData("SELECT ST_X('POINT (40 30)')", 40)]
 	[InlineData("SELECT ST_Y('POINT (40 30)')", 30)]
-	[InlineData("SELECT ST_XMin(ST_Buffer('POINT (40 30)', 5))", 35)]
-	[InlineData("SELECT ST_XMax(ST_Buffer('POINT (40 30)', 5))", 45)]
-	[InlineData("SELECT ST_YMin(ST_Buffer('POINT (40 30)', 5))", 25)]
-	[InlineData("SELECT ST_YMax(ST_Buffer('POINT (40 30)', 5))", 35)]
+	[InlineData("SELECT ST_MinX(ST_Buffer('POINT (40 30)', 5))", 35)]
+	[InlineData("SELECT ST_MaxX(ST_Buffer('POINT (40 30)', 5))", 45)]
+	[InlineData("SELECT ST_MinY(ST_Buffer('POINT (40 30)', 5))", 25)]
+	[InlineData("SELECT ST_MaxY(ST_Buffer('POINT (40 30)', 5))", 35)]
 	public void SQLiteSpatial_NumericQuery_ReturnsExpectedNumber(string sqlQuery, double expectedResult)
 	{
 		SQLiteSpatialConnection db = new(":memory:");
