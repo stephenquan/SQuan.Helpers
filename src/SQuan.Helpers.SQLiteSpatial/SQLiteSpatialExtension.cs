@@ -97,6 +97,7 @@ public static class SQLiteSpatialExtensions
 		CreateGeometryGeometryFunction<string?>(db.Handle, "ST_Intersection", (g, g2) => g?.Intersection(g2)?.AsText());
 		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Intersects", (g, g2) => g?.Intersects(g2) ?? false ? 1 : 0);
 		CreateGeometryFunction<int>(db.Handle, "ST_IsEmpty", (g) => g?.IsEmpty ?? false ? 1 : 0);
+		SQLitePCL.raw.sqlite3_create_function(db.Handle, "ST_IsGeometry", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, ST_IsGeometry);
 		CreateGeometryFunction<int>(db.Handle, "ST_IsRectangle", (g) => g?.IsRectangle ?? false ? 1 : 0);
 		CreateGeometryFunction<int>(db.Handle, "ST_IsSimple", (g) => g?.IsSimple ?? false ? 1 : 0);
 		CreateGeometryFunction<int>(db.Handle, "ST_IsValid", (g) => g?.IsValid ?? false ? 1 : 0);
@@ -116,6 +117,35 @@ public static class SQLiteSpatialExtensions
 		CreateGeometryFunction<double?>(db.Handle, "ST_Y", (g) => g?.Centroid.Y);
 		CreateSpatialIndexFunction<double?>(db.Handle, "ST_YMax", (s) => s?.Y2);
 		CreateSpatialIndexFunction<double?>(db.Handle, "ST_YMin", (s) => s?.Y1);
+	}
+
+	/// <summary>
+	/// Determines if the provided argument is a valid geometry object.
+	/// </summary>
+	/// <remarks>This method sets the result to <see langword="1"/> if the argument is a valid geometry object;
+	/// otherwise, it sets the result to <see langword="0"/>.</remarks>
+	/// <param name="ctx">The SQLite context in which the function is executed.</param>
+	/// <param name="user_data">User data associated with the function, not used in this implementation.</param>
+	/// <param name="args">An array of SQLite values, where the first element is expected to be a geometry object.</param>
+	static void ST_IsGeometry(sqlite3_context ctx, object user_data, sqlite3_value[] args)
+	{
+		try
+		{
+			var wkt = raw.sqlite3_value_text(args[0]).utf8_to_string();
+			if (!string.IsNullOrEmpty(wkt))
+			{
+				var geometry = ToGeometry(wkt);
+				if (geometry is not null)
+				{
+					SetResult(ctx, 1);
+					return;
+				}
+			}
+		}
+		catch (Exception)
+		{
+		}
+		SetResult(ctx, 0);
 	}
 
 	/// <summary>

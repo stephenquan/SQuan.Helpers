@@ -42,6 +42,8 @@ public class SQLiteSpatialTests
 	[InlineData("SELECT ST_IsValid('POINT (40 30)')", 1)]
 	[InlineData("SELECT ST_IsRectangle(ST_Buffer('POINT (40 30)', 5))", 0)]
 	[InlineData("SELECT ST_IsRectangle(ST_Envelope(ST_Buffer('POINT (40 30)', 5)))", 1)]
+	[InlineData("SELECT ST_IsGeometry('POINT (40 30)')", 1)]
+	[InlineData("SELECT ST_IsGeometry('I hate Mondays!')", 0)]
 	public void SQLiteSpatial_BooleanQuery_ReturnsExpectedBoolean(string sqlQuery, int expectedResult)
 	{
 		SQLiteSpatialConnection db = new(":memory:");
