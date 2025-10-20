@@ -34,28 +34,28 @@ CREATE TABLE UsaCities
 CREATE INDEX idx_UsaCities ON UsaCities(Name);
 
 -- Create the R*Tree index table.
-CREATE VIRTUAL TABLE UsaStates_rtree USING rtree(Id, XMin, YMin, XMax, YMax);
-CREATE VIRTUAL TABLE UsaCities_rtree USING rtree(Id, XMin, YMin, XMax, YMax);
+CREATE VIRTUAL TABLE UsaStates_rtree USING rtree(Id, MinX, MaxX, MinY, MaxY);
+CREATE VIRTUAL TABLE UsaCities_rtree USING rtree(Id, MinX, MaxX, MinY, MaxY);
 
 -- Create the triggers needed to keep the R*Tree indexes in sync.
 CREATE TRIGGER UsaStates_insert AFTER INSERT ON UsaStates
 BEGIN
-    INSERT INTO UsaStates_rtree (Id, XMin, YMin, XMax, YMax)
+    INSERT INTO UsaStates_rtree (Id, MinX, MaxX, MinY, MaxY)
     VALUES (
         NEW.Id,
-        ST_XMin(NEW.Geometry),
-        ST_YMin(NEW.Geometry),
-        ST_XMax(NEW.Geometry),
-        ST_YMax(NEW.Geometry));
+        ST_MinX(NEW.Geometry),
+        ST_MaxX(NEW.Geometry),
+        ST_MinY(NEW.Geometry),
+        ST_MaxY(NEW.Geometry));
 END;
 
 CREATE TRIGGER UsaStates_update AFTER UPDATE OF geometry ON UsaStates
 BEGIN
     UPDATE UsaStates_rtree
-    SET XMin = ST_XMin(NEW.Geometry),
-        XMax = ST_XMax(NEW.Geometry),
-        YMin = ST_YMin(NEW.Geometry),
-        YMax = ST_YMax(NEW.Geometry)
+    SET MinX = ST_MinX(NEW.Geometry),
+        MaxX = ST_MaxX(NEW.Geometry),
+        MinY = ST_MinY(NEW.Geometry),
+        MaxY = ST_MaxY(NEW.Geometry)
     WHERE Id = NEW.Id;
 END;
 
@@ -66,22 +66,22 @@ END;
 
 CREATE TRIGGER UsaCities_insert AFTER INSERT ON UsaCities
 BEGIN
-    INSERT INTO UsaCities_rtree (Id, XMin, YMin, XMax, YMax)
+    INSERT INTO UsaCities_rtree (Id, MinX, MaxX, MinY, MaxY)
     VALUES (
         NEW.Id,
-        ST_XMin(NEW.Geometry),
-        ST_YMin(NEW.Geometry),
-        ST_XMax(NEW.Geometry),
-        ST_YMax(NEW.Geometry));
+        ST_MinX(NEW.Geometry),
+        ST_MaxX(NEW.Geometry),
+        ST_MinY(NEW.Geometry),
+        ST_MaxY(NEW.Geometry));
 END;
 
 CREATE TRIGGER UsaCities_update AFTER UPDATE OF geometry ON UsaCities
 BEGIN
     UPDATE UsaCities_rtree
-    SET XMin = ST_XMin(NEW.Geometry),
-        XMax = ST_XMax(NEW.Geometry),
-        YMin = ST_YMin(NEW.Geometry),
-        YMax = ST_YMax(NEW.Geometry)
+    SET MinX = ST_MinX(NEW.Geometry),
+        MaxX = ST_MaxX(NEW.Geometry),
+        MinY = ST_MinY(NEW.Geometry),
+        MaxY = ST_MaxY(NEW.Geometry)
     WHERE Id = NEW.Id;
 END;
 
