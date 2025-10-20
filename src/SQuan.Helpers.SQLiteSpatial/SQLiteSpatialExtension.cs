@@ -92,6 +92,7 @@ public static class SQLiteSpatialExtensions
 		CreateGeometryGeometryFunction<int>(db.Handle, "ST_EqualsTopologically", (g, g2) => g?.EqualsTopologically(g2) ?? false ? 1 : 0);
 		CreateGeometryFunction<string?>(db.Handle, "ST_Envelope", (g) => g?.Envelope?.AsText());
 		CreateGeometryFunction<string?>(db.Handle, "ST_GeometryType", (g) => g?.GeometryType);
+		CreateSpatialIndexFunction<double?>(db.Handle, "ST_Height", (s) => s?.Height);
 		CreateGeometryFunction<string?>(db.Handle, "ST_IsRectangle", (g) => g?.InteriorPoint?.AsText());
 		CreateGeometryGeometryFunction<string?>(db.Handle, "ST_Intersection", (g, g2) => g?.Intersection(g2)?.AsText());
 		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Intersects", (g, g2) => g?.Intersects(g2) ?? false ? 1 : 0);
@@ -107,17 +108,14 @@ public static class SQLiteSpatialExtensions
 		CreateGeometryGeometryFunction<string?>(db.Handle, "ST_SymmetricDifference", (g, g2) => g?.SymmetricDifference(g2)?.ToText());
 		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Touches", (g, g2) => g?.Touches(g2) ?? false ? 1 : 0);
 		CreateGeometryGeometryFunction<string?>(db.Handle, "ST_Union", (g, g2) => g?.Union(g2)?.ToText());
+		CreateSpatialIndexFunction<double?>(db.Handle, "ST_Width", (s) => s?.Width);
 		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Within", (g, g2) => g?.Within(g2) ?? false ? 1 : 0);
-		CreateGeometryGeometryFunction<double?>(db.Handle, "ST_X", (g, g2) => g?.Centroid.X);
-		CreateGeometryGeometryFunction<double?>(db.Handle, "ST_Y", (g, g2) => g?.Centroid.Y);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_Height", (s) => s?.Height);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_Width", (s) => s?.Width);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_X", (s) => s?.CenterX);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_XMin", (s) => s?.X1);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_XMax", (s) => s?.X2);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_Y", (s) => s?.CenterY);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_YMin", (s) => s?.Y1);
-		CreateSpatialIndexFunction<double?>(db.Handle, "SP_YMax", (s) => s?.Y2);
+		CreateGeometryFunction<double?>(db.Handle, "ST_X", (g) => g?.Centroid.X);
+		CreateSpatialIndexFunction<double?>(db.Handle, "ST_XMax", (s) => s?.X2);
+		CreateSpatialIndexFunction<double?>(db.Handle, "ST_XMin", (s) => s?.X1);
+		CreateGeometryFunction<double?>(db.Handle, "ST_Y", (g) => g?.Centroid.Y);
+		CreateSpatialIndexFunction<double?>(db.Handle, "ST_YMax", (s) => s?.Y2);
+		CreateSpatialIndexFunction<double?>(db.Handle, "ST_YMin", (s) => s?.Y1);
 	}
 
 	/// <summary>

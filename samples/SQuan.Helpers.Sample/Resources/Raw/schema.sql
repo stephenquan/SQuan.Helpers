@@ -43,19 +43,19 @@ BEGIN
     INSERT INTO UsaStates_rtree (Id, XMin, YMin, XMax, YMax)
     VALUES (
         NEW.Id,
-        SP_XMin(NEW.Geometry),
-        SP_YMin(NEW.Geometry),
-        SP_XMax(NEW.Geometry),
-        SP_YMax(NEW.Geometry));
+        ST_XMin(NEW.Geometry),
+        ST_YMin(NEW.Geometry),
+        ST_XMax(NEW.Geometry),
+        ST_YMax(NEW.Geometry));
 END;
 
 CREATE TRIGGER UsaStates_update AFTER UPDATE OF geometry ON UsaStates
 BEGIN
     UPDATE UsaStates_rtree
-    SET XMin = SP_XMin(NEW.Geometry),
-        XMax = SP_XMax(NEW.Geometry),
-        YMin = SP_YMin(NEW.Geometry),
-        YMax = SP_YMax(NEW.Geometry)
+    SET XMin = ST_XMin(NEW.Geometry),
+        XMax = ST_XMax(NEW.Geometry),
+        YMin = ST_YMin(NEW.Geometry),
+        YMax = ST_YMax(NEW.Geometry)
     WHERE Id = NEW.Id;
 END;
 
@@ -69,19 +69,19 @@ BEGIN
     INSERT INTO UsaCities_rtree (Id, XMin, YMin, XMax, YMax)
     VALUES (
         NEW.Id,
-        SP_XMin(NEW.Geometry),
-        SP_YMin(NEW.Geometry),
-        SP_XMax(NEW.Geometry),
-        SP_YMax(NEW.Geometry));
+        ST_XMin(NEW.Geometry),
+        ST_YMin(NEW.Geometry),
+        ST_XMax(NEW.Geometry),
+        ST_YMax(NEW.Geometry));
 END;
 
 CREATE TRIGGER UsaCities_update AFTER UPDATE OF geometry ON UsaCities
 BEGIN
     UPDATE UsaCities_rtree
-    SET XMin = SP_XMin(NEW.Geometry),
-        XMax = SP_XMax(NEW.Geometry),
-        YMin = SP_YMin(NEW.Geometry),
-        YMax = SP_YMax(NEW.Geometry)
+    SET XMin = ST_XMin(NEW.Geometry),
+        XMax = ST_XMax(NEW.Geometry),
+        YMin = ST_YMin(NEW.Geometry),
+        YMax = ST_YMax(NEW.Geometry)
     WHERE Id = NEW.Id;
 END;
 
