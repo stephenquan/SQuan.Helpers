@@ -299,14 +299,9 @@ public static class SQLiteSpatialExtensions
 			try
 			{
 				var geometry = ToGeometry(raw.sqlite3_value_text(args[0]).utf8_to_string());
-				if (geometry is NetTopologySuite.Geometries.Point p)
+				if (geometry?.EnvelopeInternal is NetTopologySuite.Geometries.Envelope e && !e.IsNull)
 				{
-					SetResult(ctx, func(new NetTopologySuite.Geometries.Envelope(p.X, p.X, p.Y, p.Y)));
-					return;
-				}
-				if (geometry?.Envelope is NetTopologySuite.Geometries.Geometry e && e.Coordinates.Length == 5)
-				{
-					SetResult(ctx, func(new NetTopologySuite.Geometries.Envelope(e.Coordinates[0].X, e.Coordinates[2].X, e.Coordinates[0].Y, e.Coordinates[2].Y)));
+					SetResult(ctx, func(e));
 					return;
 				}
 				SetResult(ctx, func(null));
@@ -317,7 +312,6 @@ public static class SQLiteSpatialExtensions
 			}
 		});
 	}
-
 
 	/// <summary>
 	/// Sets the result of a SQLite function call based on the type of the provided result object.
