@@ -12,13 +12,13 @@ namespace SQuan.Helpers.Sample;
 public partial class SpatialPage : ContentPage
 {
 	SQLiteSpatialConnection db = new(":memory:");
-	MapToViewTransform transform = new();
 	NetTopologySuite.Geometries.Geometry? selection;
 	bool loaded = false;
 
 	public SpatialPage()
 	{
 		InitializeComponent();
+		mapView.SetMapExtent(-125, 24.3, -66.9, 49.4); // USA extent
 		Dispatcher.Dispatch(async () => await PostInitialize());
 	}
 
@@ -43,40 +43,12 @@ public partial class SpatialPage : ContentPage
 			System.Diagnostics.Trace.WriteLine("City (spatial sort): " + result.Name);
 		}
 
-		// Search UsaCities using the R*Tree spatial index.
-		results = db.Query<SpatialData>("""
-SELECT *
-FROM   UsaCities c,
-       UsaCities_rtree r
-WHERE  r.MinX <= -114.134458 AND r.MaxX >= -124.410607
-AND    r.MinY <= 42.009659   AND r.MaxY >= 32.534231
-AND    c.Id = r.Id
-""");
-		foreach (var result in results)
-		{
-			System.Diagnostics.Trace.WriteLine("City (spatial index): " + result.Name);
-		}
-
-		// Search UsaStates using the R*Tree spatial index.
-		results = db.Query<SpatialData>("""
-SELECT s.*
-FROM   UsaStates s,
-       UsaStates_rtree r
-WHERE  r.MinX <= -114.134458 AND r.MaxX >= -124.410607
-AND    r.MinY <= 42.009659   AND r.MaxY >= 32.534231
-AND    s.Id = r.Id
-""");
-		foreach (var result in results)
-		{
-			System.Diagnostics.Trace.WriteLine("State (spatial index): " + result.Name);
-		}
-
 		// Create a selection 1.0 degree (111 km) buffer around Los Angeles, CA.
 		selection = new NetTopologySuite.Geometries.Point(-118.2437, 34.0522).Buffer(1.0);
 
 		// Finalize loading.
 		loaded = true;
-		canvasView.InvalidateSurface();
+		mapView.InvalidateSurface();
 	}
 
 	[GeneratedRegex(@"^[^\s]+.*;\s*$")]
@@ -109,57 +81,71 @@ AND    s.Id = r.Id
 		});
 	}
 
-	void canvasView_PaintSurface(object sender, SkiaSharp.Views.Maui.SKPaintSurfaceEventArgs e)
+	void mapView_PaintSurface(object sender, SkiaSharp.Views.Maui.SKPaintSurfaceEventArgs e)
 	{
 		if (!loaded)
 		{
 			return;
 		}
 
-		if (transform.FollowMapExtent)
-		{
-			transform.UpdateScale(canvasView.Width, canvasView.Height);
-		}
-		transform.UpdateCenter(canvasView.Width, canvasView.Height);
-
 		SKSurface surface = e.Surface;
 		SKCanvas canvas = surface.Canvas;
+
+		var mapExtent = mapView.EffectiveMapExtent;
+
 		canvas.Clear();
-		canvas.DrawSpatialData(db.Query<SpatialData>("SELECT * FROM UsaStates"), transform);
-		if (selection is not null)
+		int statesDrawn = DrawSpatialData(canvas, $@"
+SELECT *
+FROM   UsaStates s,
+       UsaStates_rtree r
+WHERE  r.MinX <= {mapExtent.MaxX} AND r.MaxX >= {mapExtent.MinX}
+AND    r.MinY <= {mapExtent.MaxY} AND r.MaxY >= {mapExtent.MinY}
+AND    s.Id = r.Id");
+		mapView.DrawMapGeometry(canvas, selection, "", Colors.Orange);
+		int citiesDrawn = DrawSpatialData(canvas, $@"
+SELECT *
+FROM   UsaCities c,
+       UsaCities_rtree r
+WHERE  r.MinX <= {mapExtent.MaxX} AND r.MaxX >= {mapExtent.MinX}
+AND    r.MinY <= {mapExtent.MaxY} AND r.MaxY >= {mapExtent.MinY}
+AND    c.Id = r.Id");
+		System.Diagnostics.Trace.WriteLine($"Drawn {statesDrawn} states and {citiesDrawn} cities.");
+	}
+
+	public int DrawSpatialData(SKCanvas canvas, string sqlQuery)
+	{
+		int count = 0;
+		var items = db.Query<SpatialData>(sqlQuery);
+		foreach (var item in items)
 		{
-			canvas.DrawGeometry("", Colors.Orange, selection, transform);
+			mapView.DrawMapGeometry(canvas, SQLiteSpatialExtensions.ToGeometry(item.Geometry), item.Name, Color.FromArgb(item.Color));
+			count++;
 		}
-		canvas.DrawSpatialData(db.Query<SpatialData>("SELECT * FROM UsaCities"), transform);
+		return count;
 	}
 
 	void OnReset(object sender, EventArgs e)
 	{
-		transform.MapExtent = Rect.FromLTRB(-125, 24.3, -66.9, 49.4); // USA extent
-		transform.FollowMapExtent = true;
-		canvasView.InvalidateSurface();
+		mapView.SetMapExtent(-125, 24.3, -66.9, 49.4); // USA extent
 	}
 
 	void OnZoomIn(object sender, EventArgs e)
 	{
-		transform.ScaleBy(2);
-		canvasView.InvalidateSurface();
+		mapView.Zoom(2.0);
 	}
 
 	void OnZoomOut(object sender, EventArgs e)
 	{
-		transform.ScaleBy(0.5);
-		canvasView.InvalidateSurface();
+		mapView.Zoom(0.5);
 	}
 
-	void OnMapPressed(object sender, PointerEventArgs e)
+	void OnMapPressed(object sender, PointEventArgs e)
 	{
-		if (e.GetPosition(canvasView) is Point pt)
-		{
-			PointF mapPoint = transform.ToMap(pt.X, pt.Y);
-			transform.PanTo(mapPoint);
-			transform.ScaleBy(2.0);
-			canvasView.InvalidateSurface();
-		}
+		mapView.SetMapExtent(
+			e.MapPoint.X - mapView.MapExtent.Width / 2,
+			e.MapPoint.Y - mapView.MapExtent.Height / 2,
+			e.MapPoint.X + mapView.MapExtent.Width / 2,
+			e.MapPoint.Y + mapView.MapExtent.Height / 2);
+		mapView.InvalidateSurface();
 	}
 }
