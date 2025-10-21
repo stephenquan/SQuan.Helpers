@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\samples\SQuan.Helpers.Sample\SQuan.Helpers.Sample.csproj" />
+    <ProjectReference Include="..\SQuan.Helpers.Maui.Mvvm\SQuan.Helpers.Maui.Mvvm.csproj" />
+    <ProjectReference Include="..\SQuan.Helpers.Maui.Mvvm.SourceGenerators\SQuan.Helpers.Maui.Mvvm.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
   
   <ItemGroup>

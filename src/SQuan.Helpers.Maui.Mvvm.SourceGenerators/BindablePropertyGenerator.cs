@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿// BindablePropertyGenerator.cs
+
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -177,8 +179,12 @@ partial class {className}
 	object On{propertyName}CreateDefaultValue()
 	{{
 		Is{propertyName}CreatingDefaultValue = true;
-		object result = {propertyName};
+		var result = {propertyName};
 		Is{propertyName}CreatingDefaultValue = false;
+		On{propertyName}Changing(result);
+		On{propertyName}Changing(default({typeName}), result);
+		On{propertyName}Changed(result);
+		On{propertyName}Changed(default({typeName}), result);
 		return result;
 	}}
 
