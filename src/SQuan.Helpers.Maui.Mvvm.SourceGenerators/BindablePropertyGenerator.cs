@@ -181,10 +181,13 @@ partial class {className}
 		Is{propertyName}CreatingDefaultValue = true;
 		var result = {propertyName};
 		Is{propertyName}CreatingDefaultValue = false;
-		On{propertyName}Changing(result);
-		On{propertyName}Changing(default({typeName}), result);
-		On{propertyName}Changed(result);
-		On{propertyName}Changed(default({typeName}), result);
+		if (!EqualityComparer<{typeName}>.Default.Equals(result, default({typeName})))
+		{{
+			On{propertyName}Changing(result);
+			On{propertyName}Changing(default({typeName}), result);
+			On{propertyName}Changed(result);
+			On{propertyName}Changed(default({typeName}), result);
+		}}
 		return result;
 	}}
 
