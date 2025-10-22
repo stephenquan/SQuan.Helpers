@@ -112,40 +112,13 @@ AND    c.Id = r.Id");
 		System.Diagnostics.Trace.WriteLine($"Drawn {statesDrawn} states and {citiesDrawn} cities.");
 	}
 
-	public int DrawSpatialData(SKCanvas canvas, string sqlQuery)
-	{
-		int count = 0;
-		var items = db.Query<SpatialData>(sqlQuery);
-		foreach (var item in items)
-		{
-			mapView.DrawMapGeometry(canvas, SQLiteSpatialExtensions.ToGeometry(item.Geometry), item.Name, Color.FromArgb(item.Color));
-			count++;
-		}
-		return count;
-	}
+	int DrawSpatialData(SKCanvas canvas, string sqlQuery)
+		=> db.Query<SpatialData>(sqlQuery)
+			.Select(item => mapView.DrawMapGeometry(canvas, SQLiteSpatialExtensions.ToGeometry(item.Geometry), item.Name, Color.FromArgb(item.Color)))
+			.Count();
 
-	void OnReset(object sender, EventArgs e)
-	{
-		mapView.SetMapExtent(-125, 24.3, -66.9, 49.4); // USA extent
-	}
-
-	void OnZoomIn(object sender, EventArgs e)
-	{
-		mapView.Zoom(2.0);
-	}
-
-	void OnZoomOut(object sender, EventArgs e)
-	{
-		mapView.Zoom(0.5);
-	}
-
-	void OnMapPressed(object sender, PointEventArgs e)
-	{
-		mapView.SetMapExtent(
-			e.MapPoint.X - mapView.MapExtent.Width / 2,
-			e.MapPoint.Y - mapView.MapExtent.Height / 2,
-			e.MapPoint.X + mapView.MapExtent.Width / 2,
-			e.MapPoint.Y + mapView.MapExtent.Height / 2);
-		mapView.InvalidateSurface();
-	}
+	void OnReset(object sender, EventArgs e) => mapView.SetMapExtent(-125, 24.3, -66.9, 49.4);
+	void OnZoomIn(object sender, EventArgs e) => mapView.Zoom(2.0);
+	void OnZoomOut(object sender, EventArgs e) => mapView.Zoom(0.5);
+	void OnMapTapped(object sender, MapViewEventArgs e) => mapView.PanTo(e.MapPoint);
 }

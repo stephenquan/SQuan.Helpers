@@ -6,18 +6,6 @@ using SkiaSharp.Views.Maui.Controls;
 
 namespace SQuan.Helpers.Sample;
 
-public class PointEventArgs : EventArgs
-{
-	public Point ViewPoint { get; }
-	public Point MapPoint { get; }
-
-	public PointEventArgs(Point viewPoint, Point mapPoint)
-	{
-		ViewPoint = viewPoint;
-		MapPoint = mapPoint;
-	}
-}
-
 /// <summary>
 /// Implementation of a custom MapView using SKCanvasView.
 /// </summary>
@@ -51,36 +39,54 @@ public partial class MapView : SKCanvasView
 	/// <summary>
 	/// Event raised when the map is pressed.
 	/// </summary>
-	public event EventHandler<PointEventArgs>? Pressed;
+	public event EventHandler<MapViewEventArgs>? Pressed;
 
 	/// <summary>
 	/// Event raised when the map is released.
 	/// </summary>
-	public event EventHandler<PointEventArgs>? Released;
+	public event EventHandler<MapViewEventArgs>? Released;
+
+	/// <summary>
+	/// Event raised when the map is tapped.
+	/// </summary>
+	public event EventHandler<MapViewEventArgs>? Tapped;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MapView"/> class.
 	/// </summary>
 	public MapView()
 	{
-		PointerGestureRecognizer pointerGestureRecognizer = new PointerGestureRecognizer();
+		// Recognize pointer pressed and released events.
+		PointerGestureRecognizer pointerGestureRecognizer = new();
 		pointerGestureRecognizer.PointerPressed += (s, e) =>
 		{
 			if (e.GetPosition(this) is Point viewPoint)
 			{
-				Pressed?.Invoke(this, new PointEventArgs(viewPoint, ToMapPoint(viewPoint.X, viewPoint.Y)));
+				Pressed?.Invoke(this, new MapViewEventArgs(viewPoint, ToMapPoint(viewPoint.X, viewPoint.Y)));
 			}
 		};
 		pointerGestureRecognizer.PointerReleased += (s, e) =>
 		{
 			if (e.GetPosition(this) is Point viewPoint)
 			{
-				Released?.Invoke(this, new PointEventArgs(viewPoint, ToMapPoint(viewPoint.X, viewPoint.Y)));
+				Released?.Invoke(this, new MapViewEventArgs(viewPoint, ToMapPoint(viewPoint.X, viewPoint.Y)));
 			}
 		};
-		this.GestureRecognizers.Add(pointerGestureRecognizer);
+		GestureRecognizers.Add(pointerGestureRecognizer);
 
-		this.PropertyChanged += (s, e) =>
+		// Recognize touch gestures.
+		TapGestureRecognizer touchGestureRecognizer = new();
+		touchGestureRecognizer.Tapped += (s, e) =>
+		{
+			if (e.GetPosition(this) is Point viewPoint)
+			{
+				Tapped?.Invoke(this, new MapViewEventArgs(viewPoint, ToMapPoint(viewPoint.X, viewPoint.Y)));
+			}
+		};
+		GestureRecognizers.Add(touchGestureRecognizer);
+
+		// React to size changes to recalculate map units.
+		PropertyChanged += (s, e) =>
 		{
 			switch (e.PropertyName)
 			{
@@ -99,11 +105,12 @@ public partial class MapView : SKCanvasView
 	/// <param name="minY">The minimum Y (latitude) value of the map extent.</param>
 	/// <param name="maxX">The maximum X (longitude) value of the map extent.</param>
 	/// <param name="maxY">The maximum Y (latitude) value of the map extent.</param>
-	public void SetMapExtent(double minX, double minY, double maxX, double maxY)
+	public MapView SetMapExtent(double minX, double minY, double maxX, double maxY)
 	{
 		MapExtent.Init(minX, maxX, minY, maxY);
 		CalculateMapUnits();
 		InvalidateSurface();
+		return this;
 	}
 
 	/// <summary>
@@ -114,15 +121,12 @@ public partial class MapView : SKCanvasView
 	/// <summary>
 	/// Gets the current map units (scale) based on the map extent and view dimensions.
 	/// </summary>
-	public void CalculateMapUnits()
+	public MapView CalculateMapUnits()
 	{
-		if (Width <= 1 || Height <= 1)
-		{
-			MapUnits = 1.0;
-			return;
-		}
-
-		MapUnits = Math.Max(MapExtent.Width / Width, MapExtent.Height / Height);
+		MapUnits = (Width <= 1 || Height <= 1)
+			? 1.0
+			: Math.Max(MapExtent.Width / Width, MapExtent.Height / Height);
+		return this;
 	}
 
 	/// <summary>
@@ -157,7 +161,7 @@ public partial class MapView : SKCanvasView
 	/// Zooms the map view by the specified zoom factor, keeping the center of the current map extent fixed.
 	/// </summary>
 	/// <param name="zoomFactor">The factor by which to zoom the map. Values greater than 1 zoom in, values less than 1 zoom out.</param>
-	public void Zoom(double zoomFactor)
+	public MapView Zoom(double zoomFactor)
 	{
 		double centerX = (MapExtent.MinX + MapExtent.MaxX) / 2;
 		double centerY = (MapExtent.MinY + MapExtent.MaxY) / 2;
@@ -169,7 +173,33 @@ public partial class MapView : SKCanvasView
 			centerX + newWidth / 2,
 			centerY + newHeight / 2);
 		InvalidateSurface();
+		return this;
 	}
+
+	/// <summary>
+	/// Pans the map view to center on the specified coordinates.
+	/// </summary>
+	/// <param name="mapX">The X-coordinate of the new center point of the map.</param>
+	/// <param name="mapY">The Y-coordinate of the new center point of the map.</param>
+	public MapView PanTo(double mapX, double mapY)
+	{
+		double halfWidth = MapExtent.Width / 2;
+		double halfHeight = MapExtent.Height / 2;
+		SetMapExtent(
+			mapX - halfWidth,
+			mapY - halfHeight,
+			mapX + halfWidth,
+			mapY + halfHeight);
+		InvalidateSurface();
+		return this;
+	}
+
+	/// <summary>
+	/// Pans the view to the specified map point.
+	/// </summary>
+	/// <param name="mapPoint">The <see cref="Point"/> representing the target location to pan to.</param>
+	public MapView PanTo(Point mapPoint)
+		=> PanTo(mapPoint.X, mapPoint.Y);
 
 	/// <summary>
 	/// Draws the specified geometry onto the provided canvas using the given color.
@@ -179,17 +209,16 @@ public partial class MapView : SKCanvasView
 	/// <param name="geometry">The geometry to be drawn. Must be a valid NetTopologySuite geometry object.</param>
 	/// <param name="text">The text label associated with the geometry.</param>
 	/// <param name="color">The color to use for drawing the geometry.</param>
-	public void DrawMapGeometry(SKCanvas canvas, NetTopologySuite.Geometries.Geometry? geometry, string text, Color color)
+	public MapView DrawMapGeometry(SKCanvas canvas, NetTopologySuite.Geometries.Geometry? geometry, string text, Color color)
 	{
 		switch (geometry)
 		{
 			case NetTopologySuite.Geometries.Point mapPoint:
-				DrawMapPoint(canvas, mapPoint, text, color);
-				break;
+				return DrawMapPoint(canvas, mapPoint, text, color);
 			case NetTopologySuite.Geometries.Polygon mapPolygon:
-				DrawMapPolygon(canvas, mapPolygon, text, color);
-				break;
+				return DrawMapPolygon(canvas, mapPolygon, text, color);
 		}
+		return this;
 	}
 
 	/// <summary>
@@ -200,7 +229,7 @@ public partial class MapView : SKCanvasView
 	/// <param name="mapPoint">The geographical point to be converted to a view point and drawn on the canvas. Cannot be null.</param>
 	/// <param name="text">The text label to display next to the drawn point. Cannot be null or empty.</param>
 	/// <param name="color">The color used to draw the point and text.</param>
-	public void DrawMapPoint(SKCanvas canvas, NetTopologySuite.Geometries.Point mapPoint, string text, Color color)
+	public MapView DrawMapPoint(SKCanvas canvas, NetTopologySuite.Geometries.Point mapPoint, string text, Color color)
 	{
 		Point viewPoint = ToViewPoint(mapPoint.X, mapPoint.Y);
 		using SKPaint paint = new SKPaint
@@ -208,9 +237,19 @@ public partial class MapView : SKCanvasView
 			Color = color.ToSKColor(),
 			IsAntialias = true
 		};
-		canvas.DrawCircle((float)viewPoint.X, (float)viewPoint.Y, 5, paint);
-		using SKFont font = new SKFont { Size = 12 };
-		canvas.DrawText(text, (float)(viewPoint.X + 12), (float)(viewPoint.Y + 12), font, paint);
+		var dpiScale = (float)(DeviceDisplay.Current.MainDisplayInfo.Density);
+		canvas.DrawCircle(
+			(float)(viewPoint.X * dpiScale),
+			(float)(viewPoint.Y * dpiScale),
+			5 * dpiScale, paint);
+		using SKFont font = new SKFont { Size = 12 * dpiScale };
+		canvas.DrawText(
+			text,
+			(float)((viewPoint.X + 12) * dpiScale),
+			(float)((viewPoint.Y + 12) * dpiScale),
+			font,
+			paint);
+		return this;
 	}
 
 	/// <summary>
@@ -220,7 +259,7 @@ public partial class MapView : SKCanvasView
 	/// <param name="mapPolygon">The polygon geometry to be drawn. Must be a valid NetTopologySuite polygon object.</param>
 	/// <param name="text">The text label associated with the geometry.</param>
 	/// <param name="color">The color of the polygon.</param>
-	public void DrawMapPolygon(SKCanvas canvas, NetTopologySuite.Geometries.Polygon mapPolygon, string text, Color color)
+	public MapView DrawMapPolygon(SKCanvas canvas, NetTopologySuite.Geometries.Polygon mapPolygon, string text, Color color)
 	{
 		List<Point> points = [];
 		for (int i = 0; i < mapPolygon.ExteriorRing.Coordinates.Length; i++)
@@ -228,7 +267,7 @@ public partial class MapView : SKCanvasView
 			var point = mapPolygon.ExteriorRing.Coordinates[i];
 			points.Add(ToViewPoint(point.X, point.Y));
 		}
-		DrawPolygon(canvas, points, color);
+		return DrawPolygon(canvas, points, color);
 	}
 
 	/// <summary>
@@ -239,11 +278,11 @@ public partial class MapView : SKCanvasView
 	/// <param name="canvas">The canvas on which to draw the polygon. Must not be null.</param>
 	/// <param name="viewPoints">A list of points defining the vertices of the polygon. Must contain at least two points.</param>
 	/// <param name="color">The color to use for the polygon's outline.</param>
-	public void DrawPolygon(SKCanvas canvas, List<Point> viewPoints, Color color)
+	public MapView DrawPolygon(SKCanvas canvas, List<Point> viewPoints, Color color)
 	{
 		if (viewPoints.Count < 2)
 		{
-			return;
+			return this;
 		}
 		using SKPaint paint = new SKPaint
 		{
@@ -253,12 +292,18 @@ public partial class MapView : SKCanvasView
 			StrokeWidth = 2
 		};
 		using SKPath path = new SKPath();
-		path.MoveTo((float)viewPoints[0].X, (float)viewPoints[0].Y);
+		var dpiScale = (float)(DeviceDisplay.Current.MainDisplayInfo.Density);
+		path.MoveTo(
+			(float)(viewPoints[0].X * dpiScale),
+			(float)(viewPoints[0].Y * dpiScale));
 		for (int i = 1; i < viewPoints.Count; i++)
 		{
-			path.LineTo((float)viewPoints[i].X, (float)viewPoints[i].Y);
+			path.LineTo(
+				(float)(viewPoints[i].X * dpiScale),
+				(float)(viewPoints[i].Y * dpiScale));
 		}
 		path.Close();
 		canvas.DrawPath(path, paint);
+		return this;
 	}
 }
