@@ -10,7 +10,7 @@
         <local:MapView
             x:Name="mapView"
             PaintSurface="mapView_PaintSurface"
-            Pressed="OnMapPressed" />
+            Tapped="OnMapTapped" />
         <Grid
             Margin="40"
             HorizontalOptions="End"
