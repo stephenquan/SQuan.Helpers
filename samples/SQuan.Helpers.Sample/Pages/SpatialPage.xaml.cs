@@ -37,7 +37,7 @@ public partial class SpatialPage : ContentPage
 		double? area_100_units = db.ExecuteScalar<double?>("SELECT ST_Area(ST_Envelope(ST_Buffer('POINT(10 10)', 5)))");
 
 		// Retrieve cities in order of distance, starting with those nearest to Los Angeles.
-		var results = db.Query<SpatialData>("SELECT * FROM UsaCities ORDER BY ST_Distance(Geometry, 'POINT(-118.243683 34.052235)')");
+		var results = db.Query<SpatialData>("SELECT * FROM UsaCities ORDER BY ST_Distance(WKT, 'POINT(-118.243683 34.052235)')");
 		foreach (var result in results)
 		{
 			System.Diagnostics.Trace.WriteLine("City (spatial sort): " + result.Name);
@@ -95,7 +95,7 @@ public partial class SpatialPage : ContentPage
 
 		canvas.Clear();
 		int statesDrawn = DrawSpatialData(canvas, $@"
-SELECT *
+SELECT s.*
 FROM   UsaStates s,
        UsaStates_rtree r
 WHERE  r.MinX <= {mapExtent.MaxX} AND r.MaxX >= {mapExtent.MinX}
@@ -103,7 +103,7 @@ AND    r.MinY <= {mapExtent.MaxY} AND r.MaxY >= {mapExtent.MinY}
 AND    s.Id = r.Id");
 		mapView.DrawMapGeometry(canvas, selection, "", Colors.Orange);
 		int citiesDrawn = DrawSpatialData(canvas, $@"
-SELECT *
+SELECT c.*
 FROM   UsaCities c,
        UsaCities_rtree r
 WHERE  r.MinX <= {mapExtent.MaxX} AND r.MaxX >= {mapExtent.MinX}
@@ -114,7 +114,11 @@ AND    c.Id = r.Id");
 
 	int DrawSpatialData(SKCanvas canvas, string sqlQuery)
 		=> db.Query<SpatialData>(sqlQuery)
-			.Select(item => mapView.DrawMapGeometry(canvas, SQLiteSpatialExtensions.ToGeometry(item.Geometry), item.Name, Color.FromArgb(item.Color)))
+			.Select(item => mapView.DrawMapGeometry(
+				canvas,
+				item.WKT.ToGeometry(),
+				item.Name,
+				Color.FromArgb(item.Color)))
 			.Count();
 
 	void OnReset(object sender, EventArgs e) => mapView.SetMapExtent(-125, 24.3, -66.9, 49.4);
