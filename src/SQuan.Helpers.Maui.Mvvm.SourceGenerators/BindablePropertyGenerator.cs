@@ -183,10 +183,13 @@ partial class {className}
 		Is{propertyName}CreatingDefaultValue = false;
 		if (!EqualityComparer<{typeName}>.Default.Equals(result, default({typeName})))
 		{{
-			On{propertyName}Changing(result);
-			On{propertyName}Changing(default({typeName}), result);
-			On{propertyName}Changed(result);
-			On{propertyName}Changed(default({typeName}), result);
+			Dispatcher.Dispatch(() =>
+			{{
+				On{propertyName}Changing(result);
+				On{propertyName}Changing(default({typeName}), result);
+				On{propertyName}Changed(result);
+				On{propertyName}Changed(default({typeName}), result);
+			}});
 		}}
 		return result;
 	}}
