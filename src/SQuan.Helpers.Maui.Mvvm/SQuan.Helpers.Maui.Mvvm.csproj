@@ -52,7 +52,7 @@
   </Target>
   
   <ItemGroup Label="Package">
-    <PackageReference Include="GitVersion.MsBuild" Version="5.12.0" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />
+    <PackageReference Include="GitVersion.MsBuild" Version="6.4.0" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />
     <None Include="..\SQuan.Helpers.Maui.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0\SQuan.Helpers.Maui.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="true" />
   </ItemGroup>
   
