@@ -75,46 +75,46 @@ public static class SQLiteSpatialExtensions
 	public static void EnableSpatialExtensions(this SQLiteConnection db)
 	{
 		CreateGeometryFunction<double?>(db.Handle, "ST_Area", (g) => g?.Area);
-		CreateGeometryFunction<string?>(db.Handle, "ST_Boundary", (g) => g?.Boundary?.AsText());
-		CreateGeometryDoubleFunction<string?>(db.Handle, "ST_Buffer", (g, d) => g?.Buffer(d)?.AsText());
-		CreateGeometryFunction<string?>(db.Handle, "ST_Centroid", (g) => g?.Centroid?.AsText());
-		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Contains", (g, g2) => g?.Contains(g2) ?? false ? 1 : 0);
-		CreateGeometryFunction<string?>(db.Handle, "ST_ConvexHull", (g) => g?.ConvexHull()?.AsText());
-		CreateGeometryGeometryFunction<int>(db.Handle, "ST_CoveredBy", (g, g2) => g?.CoveredBy(g2) ?? false ? 1 : 0);
-		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Covers", (g, g2) => g?.Covers(g2) ?? false ? 1 : 0);
-		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Crosses", (g, g2) => g?.Crosses(g2) ?? false ? 1 : 0);
-		CreateGeometryGeometryFunction<string?>(db.Handle, "ST_Difference", (g, g2) => g?.Difference(g2)?.ToText());
-		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Disjoint", (g, g2) => g?.Disjoint(g2) ?? false ? 1 : 0);
+		CreateGeometryFunction<Geometry?>(db.Handle, "ST_Boundary", (g) => g?.Boundary);
+		CreateGeometryDoubleFunction<Geometry?>(db.Handle, "ST_Buffer", (g, d) => g?.Buffer(d));
+		CreateGeometryFunction<Geometry?>(db.Handle, "ST_Centroid", (g) => g?.Centroid);
+		CreateGeometryGeometryFunction<bool>(db.Handle, "ST_Contains", (g, g2) => g?.Contains(g2) ?? false);
+		CreateGeometryFunction<Geometry?>(db.Handle, "ST_ConvexHull", (g) => g?.ConvexHull());
+		CreateGeometryGeometryFunction<bool>(db.Handle, "ST_CoveredBy", (g, g2) => g?.CoveredBy(g2) ?? false);
+		CreateGeometryGeometryFunction<bool>(db.Handle, "ST_Covers", (g, g2) => g?.Covers(g2) ?? false);
+		CreateGeometryGeometryFunction<bool>(db.Handle, "ST_Crosses", (g, g2) => g?.Crosses(g2) ?? false);
+		CreateGeometryGeometryFunction<Geometry?>(db.Handle, "ST_Difference", (g, g2) => g?.Difference(g2));
+		CreateGeometryGeometryFunction<bool>(db.Handle, "ST_Disjoint", (g, g2) => g?.Disjoint(g2) ?? false);
 		CreateGeometryGeometryFunction<double?>(db.Handle, "ST_Distance", (g, g2) => g?.Distance(g2));
-		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Equals", (g, g2) => g?.Equals(g2) ?? false ? 1 : 0);
-		CreateGeometryGeometryFunction<int>(db.Handle, "ST_EqualsExact", (g, g2) => g?.EqualsExact(g2) ?? false ? 1 : 0);
-		CreateGeometryGeometryFunction<int>(db.Handle, "ST_EqualsNormalized", (g, g2) => g?.EqualsNormalized(g2) ?? false ? 1 : 0);
-		CreateGeometryGeometryFunction<int>(db.Handle, "ST_EqualsTopologically", (g, g2) => g?.EqualsTopologically(g2) ?? false ? 1 : 0);
-		CreateGeometryFunction<string?>(db.Handle, "ST_Envelope", (g) => g?.Envelope?.AsText());
+		CreateGeometryGeometryFunction<bool>(db.Handle, "ST_Equals", (g, g2) => g?.Equals(g2) ?? false);
+		CreateGeometryGeometryFunction<bool>(db.Handle, "ST_EqualsExact", (g, g2) => g?.EqualsExact(g2) ?? false);
+		CreateGeometryGeometryFunction<bool>(db.Handle, "ST_EqualsNormalized", (g, g2) => g?.EqualsNormalized(g2) ?? false);
+		CreateGeometryGeometryFunction<bool>(db.Handle, "ST_EqualsTopologically", (g, g2) => g?.EqualsTopologically(g2) ?? false);
+		CreateGeometryFunction<Geometry?>(db.Handle, "ST_Envelope", (g) => g?.Envelope);
 		CreateGeometryFunction<string?>(db.Handle, "ST_GeometryType", (g) => g?.GeometryType);
 		CreateSpatialIndexFunction<double?>(db.Handle, "ST_Height", (e) => e?.Height);
-		CreateGeometryFunction<string?>(db.Handle, "ST_IsRectangle", (g) => g?.InteriorPoint?.AsText());
-		CreateGeometryGeometryFunction<string?>(db.Handle, "ST_Intersection", (g, g2) => g?.Intersection(g2)?.AsText());
-		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Intersects", (g, g2) => g?.Intersects(g2) ?? false ? 1 : 0);
-		CreateGeometryFunction<int>(db.Handle, "ST_IsEmpty", (g) => g?.IsEmpty ?? false ? 1 : 0);
+		CreateGeometryFunction<Geometry?>(db.Handle, "ST_IsRectangle", (g) => g?.InteriorPoint);
+		CreateGeometryGeometryFunction<Geometry?>(db.Handle, "ST_Intersection", (g, g2) => g?.Intersection(g2));
+		CreateGeometryGeometryFunction<bool>(db.Handle, "ST_Intersects", (g, g2) => g?.Intersects(g2) ?? false);
+		CreateGeometryFunction<bool>(db.Handle, "ST_IsEmpty", (g) => g?.IsEmpty ?? false);
 		SQLitePCL.raw.sqlite3_create_function(db.Handle, "ST_IsGeometry", 1, SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC, ST_IsGeometry);
-		CreateGeometryFunction<int>(db.Handle, "ST_IsRectangle", (g) => g?.IsRectangle ?? false ? 1 : 0);
-		CreateGeometryFunction<int>(db.Handle, "ST_IsSimple", (g) => g?.IsSimple ?? false ? 1 : 0);
-		CreateGeometryFunction<int>(db.Handle, "ST_IsValid", (g) => g?.IsValid ?? false ? 1 : 0);
+		CreateGeometryFunction<bool>(db.Handle, "ST_IsRectangle", (g) => g?.IsRectangle ?? false);
+		CreateGeometryFunction<bool>(db.Handle, "ST_IsSimple", (g) => g?.IsSimple ?? false);
+		CreateGeometryFunction<bool>(db.Handle, "ST_IsValid", (g) => g?.IsValid ?? false);
 		CreateGeometryFunction<double?>(db.Handle, "ST_Length", (g) => g?.Length);
 		CreateSpatialIndexFunction<double?>(db.Handle, "ST_MaxX", (e) => e?.MaxX);
 		CreateSpatialIndexFunction<double?>(db.Handle, "ST_MaxY", (e) => e?.MaxY);
 		CreateSpatialIndexFunction<double?>(db.Handle, "ST_MinX", (e) => e?.MinX);
 		CreateSpatialIndexFunction<double?>(db.Handle, "ST_MinY", (e) => e?.MinY);
-		CreateDoubleDoubleFunction<string>(db.Handle, "ST_Point", (x, y) => new NetTopologySuite.Geometries.Point(x, y).AsText());
-		CreateGeometryFunction<string?>(db.Handle, "ST_SRID", (g) => g?.Reverse()?.ToText());
-		CreateGeometryIntegerFunction<string?>(db.Handle, "ST_SetSRID", (g, i) => { g?.SRID = i; return g?.ToText(); });
+		CreateDoubleDoubleFunction<Geometry>(db.Handle, "ST_Point", (x, y) => new Point(x, y));
+		CreateGeometryFunction<Geometry?>(db.Handle, "ST_Reverse", (g) => g?.Reverse());
+		CreateGeometryIntegerFunction<Geometry?>(db.Handle, "ST_SetSRID", (g, i) => { g?.SRID = i; return g; });
 		CreateGeometryFunction<int?>(db.Handle, "ST_SRID", (g) => g?.SRID);
-		CreateGeometryGeometryFunction<string?>(db.Handle, "ST_SymmetricDifference", (g, g2) => g?.SymmetricDifference(g2)?.ToText());
-		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Touches", (g, g2) => g?.Touches(g2) ?? false ? 1 : 0);
-		CreateGeometryGeometryFunction<string?>(db.Handle, "ST_Union", (g, g2) => g?.Union(g2)?.ToText());
+		CreateGeometryGeometryFunction<Geometry?>(db.Handle, "ST_SymmetricDifference", (g, g2) => g?.SymmetricDifference(g2));
+		CreateGeometryGeometryFunction<bool>(db.Handle, "ST_Touches", (g, g2) => g?.Touches(g2) ?? false);
+		CreateGeometryGeometryFunction<Geometry?>(db.Handle, "ST_Union", (g, g2) => g?.Union(g2));
 		CreateSpatialIndexFunction<double?>(db.Handle, "ST_Width", (e) => e?.Width);
-		CreateGeometryGeometryFunction<int>(db.Handle, "ST_Within", (g, g2) => g?.Within(g2) ?? false ? 1 : 0);
+		CreateGeometryGeometryFunction<bool>(db.Handle, "ST_Within", (g, g2) => g?.Within(g2) ?? false);
 		CreateGeometryFunction<double?>(db.Handle, "ST_X", (g) => g?.Centroid.X);
 		CreateGeometryFunction<double?>(db.Handle, "ST_Y", (g) => g?.Centroid.Y);
 	}
@@ -185,7 +185,7 @@ public static class SQLiteSpatialExtensions
 	/// <param name="name">The name of the SQLite function to register.</param>
 	/// <param name="func">A delegate that takes a geometry argument and returns a value of type <typeparamref name="T"/>.</param>
 	/// <param name="flags">SQLite function flags (default: SQLITE_UTF8 | SQLITE_DETERMINISTIC).</param>
-	static void CreateGeometryFunction<T>(sqlite3 handle, string name, Func<NetTopologySuite.Geometries.Geometry?, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
+	static void CreateGeometryFunction<T>(sqlite3 handle, string name, Func<Geometry?, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
 	{
 		SQLitePCL.raw.sqlite3_create_function(handle, name, 1, flags, null, (sqlite3_context ctx, object user_data, sqlite3_value[] args) =>
 		{
@@ -211,7 +211,7 @@ public static class SQLiteSpatialExtensions
 	/// <param name="name">The name of the SQLite function to register.</param>
 	/// <param name="func">A delegate that takes a geometry argument and a double argument, and returns a value of type <typeparamref name="T"/>.</param>
 	/// <param name="flags">SQLite function flags (default: SQLITE_UTF8 | SQLITE_DETERMINISTIC).</param>
-	static void CreateGeometryDoubleFunction<T>(sqlite3 handle, string name, Func<NetTopologySuite.Geometries.Geometry?, double, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
+	static void CreateGeometryDoubleFunction<T>(sqlite3 handle, string name, Func<Geometry?, double, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
 	{
 		SQLitePCL.raw.sqlite3_create_function(handle, name, 2, flags, null, (sqlite3_context ctx, object user_data, sqlite3_value[] args) =>
 		{
@@ -238,7 +238,7 @@ public static class SQLiteSpatialExtensions
 	/// <param name="name">The name of the SQLite function to register.</param>
 	/// <param name="func">A delegate that takes two geometry arguments and returns a value of type <typeparamref name="T"/>.</param>
 	/// <param name="flags">SQLite function flags (default: SQLITE_UTF8 | SQLITE_DETERMINISTIC).</param>
-	static void CreateGeometryGeometryFunction<T>(sqlite3 handle, string name, Func<NetTopologySuite.Geometries.Geometry?, NetTopologySuite.Geometries.Geometry?, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
+	static void CreateGeometryGeometryFunction<T>(sqlite3 handle, string name, Func<Geometry?, Geometry?, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
 	{
 		SQLitePCL.raw.sqlite3_create_function(handle, name, 2, flags, null, (sqlite3_context ctx, object user_data, sqlite3_value[] args) =>
 		{
@@ -265,7 +265,7 @@ public static class SQLiteSpatialExtensions
 	/// <param name="name">The name of the SQLite function to register.</param>
 	/// <param name="func">A delegate that takes a geometry argument and an integer argument, and returns a value of type <typeparamref name="T"/>.</param>
 	/// <param name="flags">SQLite function flags (default: SQLITE_UTF8 | SQLITE_DETERMINISTIC).</param>
-	static void CreateGeometryIntegerFunction<T>(sqlite3 handle, string name, Func<NetTopologySuite.Geometries.Geometry?, int, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
+	static void CreateGeometryIntegerFunction<T>(sqlite3 handle, string name, Func<Geometry?, int, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
 	{
 		SQLitePCL.raw.sqlite3_create_function(handle, name, 2, flags, null, (sqlite3_context ctx, object user_data, sqlite3_value[] args) =>
 		{
@@ -292,21 +292,16 @@ public static class SQLiteSpatialExtensions
 	/// <param name="name">The name of the SQLite function to register.</param>
 	/// <param name="func">A delegate that takes a spatial index argument and returns a value of type <typeparamref name="T"/>.</param>
 	/// <param name="flags">SQLite function flags (default: SQLITE_UTF8 | SQLITE_DETERMINISTIC).</param>
-	static void CreateSpatialIndexFunction<T>(sqlite3 handle, string name, Func<NetTopologySuite.Geometries.Envelope?, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
+	static void CreateSpatialIndexFunction<T>(sqlite3 handle, string name, Func<Envelope?, T> func, int flags = SQLitePCL.raw.SQLITE_UTF8 | SQLitePCL.raw.SQLITE_DETERMINISTIC)
 	{
 		SQLitePCL.raw.sqlite3_create_function(handle, name, 1, flags, null, (sqlite3_context ctx, object user_data, sqlite3_value[] args) =>
 		{
 			try
 			{
 				var geometry = ToGeometry(raw.sqlite3_value_text(args[0]).utf8_to_string());
-				if (geometry is NetTopologySuite.Geometries.Point p)
+				if (geometry?.EnvelopeInternal is Envelope e && !e.IsNull)
 				{
-					SetResult(ctx, func(new NetTopologySuite.Geometries.Envelope(p.X, p.X, p.Y, p.Y)));
-					return;
-				}
-				if (geometry?.Envelope is NetTopologySuite.Geometries.Geometry e && e.Coordinates.Length == 5)
-				{
-					SetResult(ctx, func(new NetTopologySuite.Geometries.Envelope(e.Coordinates[0].X, e.Coordinates[2].X, e.Coordinates[0].Y, e.Coordinates[2].Y)));
+					SetResult(ctx, func(e));
 					return;
 				}
 				SetResult(ctx, func(null));
@@ -317,7 +312,6 @@ public static class SQLiteSpatialExtensions
 			}
 		});
 	}
-
 
 	/// <summary>
 	/// Sets the result of a SQLite function call based on the type of the provided result object.
@@ -337,11 +331,30 @@ public static class SQLiteSpatialExtensions
 			case double d:
 				raw.sqlite3_result_double(ctx, d);
 				break;
+			case float f:
+				raw.sqlite3_result_double(ctx, f);
+				break;
 			case int i:
 				raw.sqlite3_result_int(ctx, i);
 				break;
+			case long l:
+				raw.sqlite3_result_int64(ctx, l);
+				break;
+			case bool b:
+				raw.sqlite3_result_int(ctx, b ? 1 : 0);
+				break;
+			case Geometry g:
+				SetResult(ctx, g.AsText());
+				break;
 			default:
-				raw.sqlite3_result_null(ctx);
+				if (result?.ToString() is string str && !string.IsNullOrEmpty(str))
+				{
+					raw.sqlite3_result_text(ctx, utf8z.FromString(str));
+				}
+				else
+				{
+					raw.sqlite3_result_null(ctx);
+				}
 				break;
 		}
 	}
@@ -357,6 +370,5 @@ public static class SQLiteSpatialExtensions
 	static void SetResultError(sqlite3_context ctx, Exception ex)
 	{
 		raw.sqlite3_result_error(ctx, utf8z.FromString(ex.Message));
-		raw.sqlite3_result_error_code(ctx, raw.SQLITE_ERROR);
 	}
 }

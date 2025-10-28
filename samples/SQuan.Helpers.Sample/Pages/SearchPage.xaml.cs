@@ -1,8 +1,12 @@
+// SearchPage.xaml.cs
+
 using System.Dynamic;
 using SQuan.Helpers.Maui;
 using SQuan.Helpers.Maui.Mvvm;
 
 namespace SQuan.Helpers.Sample;
+
+#pragma warning disable CA1001 // Suppress IDisposable warning for CancellationTokenSource
 
 public partial class SearchPage : ContentPage
 {

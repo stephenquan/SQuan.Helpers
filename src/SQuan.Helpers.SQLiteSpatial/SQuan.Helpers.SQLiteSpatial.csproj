@@ -14,14 +14,14 @@
     <Description>Provides Spatial helpers to SQLite .NET.</Description>
 
     <PackageId>SQuan.Helpers.SQLiteSpatial</PackageId>
-    <PackageDescription>Provides Spatial support for SQLite .NET.</PackageDescription>
+    <PackageDescription>SQuan.Helpers.SQLiteSpatial brings together sqlite-net-pcl and NetTopologySuite to enable spatial capabilities in SQLite for .NET applications.</PackageDescription>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/stephenquan/SQuan.Helpers</PackageProjectUrl>
     <RepositoryUrl>https://github.com/stephenquan/SQuan.Helpers</RepositoryUrl>
     <PackageReleaseNotes>https://github.com/stephenquan/SQuan.Helpers/releases</PackageReleaseNotes>
-    <PackageTags>dotnet,sqlite,spatial</PackageTags>
+    <PackageTags>dotnet,sqlite,spatial,nettopologysuite</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Authors>Stephen Quan</Authors>
   </PropertyGroup>
@@ -52,7 +52,7 @@
   </Target>
 
   <ItemGroup Label="Package">
-    <PackageReference Include="GitVersion.MsBuild" Version="5.12.0" PrivateAssets="all"  />
+    <PackageReference Include="GitVersion.MsBuild" Version="6.4.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
