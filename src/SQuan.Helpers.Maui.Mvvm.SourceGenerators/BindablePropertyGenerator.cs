@@ -102,6 +102,8 @@ public class BindablePropertyGenerator : IIncrementalGenerator
 
 			string additionalChangingCommands = string.Empty;
 			string additionalChangedCommands = string.Empty;
+			string coerceValueProperty = string.Empty;
+			string coerceValue = string.Empty;
 
 			foreach (var attr in propertyAttributes)
 			{
@@ -109,6 +111,13 @@ public class BindablePropertyGenerator : IIncrementalGenerator
 				{
 					case "SQuan.Helpers.Maui.Mvvm.BindablePropertyAttribute":
 						defaultBindingMode = attr.GetNamedArgumentsAttributeValueByNameAsString("DefaultBindingMode", "OneWay");
+						coerceValue = attr.GetNamedArgumentsAttributeValueByNameAsString("CoerceValue", string.Empty);
+						if (!string.IsNullOrEmpty(coerceValue))
+						{
+							coerceValueProperty = $@"
+            coerceValue: (b,o) => (({className})b).{coerceValue}(({typeName})o),
+";
+						}
 						break;
 
 					case "SQuan.Helpers.Maui.Mvvm.NotifyPropertyChangedForAttribute":
@@ -120,6 +129,7 @@ $$"""
 """;
 						}
 						break;
+
 					case "SQuan.Helpers.Maui.Mvvm.NotifyPropertyChangingForAttribute":
 						foreach (var str in attr.ConstructorArguments.ToStringList())
 						{
@@ -165,6 +175,7 @@ partial class {className}
 				(({className})b).On{propertyName}Changed(({typeName})o, ({typeName})n);
 {additionalChangedCommands}
 			}},
+{coerceValueProperty}
 			defaultValueCreator: (b) => (({className})b).On{propertyName}CreateDefaultValue()
 		);
 
