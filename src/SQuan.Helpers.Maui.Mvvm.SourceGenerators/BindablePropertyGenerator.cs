@@ -181,7 +181,7 @@ partial class {className}
 		Is{propertyName}CreatingDefaultValue = true;
 		var result = {propertyName};
 		Is{propertyName}CreatingDefaultValue = false;
-		if (!EqualityComparer<{typeName}>.Default.Equals(result, default({typeName})))
+		if (!System.Collections.Generic.EqualityComparer<{typeName}>.Default.Equals(result, default({typeName})))
 		{{
 			Dispatcher.Dispatch(() =>
 			{{
