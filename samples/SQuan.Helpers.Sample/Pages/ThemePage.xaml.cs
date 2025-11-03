@@ -1,20 +1,23 @@
+// ThemePage.xaml.cs
+
 using SQuan.Helpers.Maui;
 
 namespace SQuan.Helpers.Sample;
 
 public partial class ThemePage : ContentPage
 {
-	public string Sun { get; } = "sun32.png";
-	public string Moon { get; } = "moon32.png";
+	public ImageSource Sun { get; } = "sun32.png";
+	public ImageSource Moon { get; } = "moon32.png";
 
 	public ThemePage()
 	{
 		InitializeComponent();
 
-		logoImage.SetAppTheme(
+		AppThemeMethodExtensions.SetAppTheme(
+			logoImage,
 			Image.SourceProperty,
-			BindingBase.Create(static (string s) => s, BindingMode.OneWay, source: Sun),
-			BindingBase.Create(static (string s) => s, BindingMode.OneWay, source: Moon));
+			BindingBase.Create(static (ImageSource s) => s, BindingMode.OneWay, source: Sun),
+			BindingBase.Create(static (ImageSource s) => s, BindingMode.OneWay, source: Moon));
 	}
 
 	void OnToggleTheme(object sender, EventArgs e)
