@@ -31,7 +31,7 @@ public partial class SpatialPage : ContentPage
 
 		// Do some test spatial queries
 		double? area_50_units = db.ExecuteScalar<double?>("SELECT ST_Area('POLYGON((10 10,20 10,20 20,10 10))')");
-		string? centroid_at_16_13 = db.ExecuteScalar<string?>("SELECT ST_Centroid('POLYGON((10 10,20 10,20 20,10 10))')");
+		string? centroid_at_5_5 = db.ExecuteScalar<string?>("SELECT ST_Centroid('POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))')");
 		string? circle_buffer = db.ExecuteScalar<string?>("SELECT ST_Buffer('POINT(10 10)', 5)");
 		double? distance_5_units = db.ExecuteScalar<double?>("SELECT ST_Distance('POINT(0 0)', 'POINT(3 4)')");
 		double? area_100_units = db.ExecuteScalar<double?>("SELECT ST_Area(ST_Envelope(ST_Buffer('POINT(10 10)', 5)))");

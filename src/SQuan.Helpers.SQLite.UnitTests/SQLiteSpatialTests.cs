@@ -10,6 +10,7 @@ public class SQLiteSpatialTests
 	[InlineData("SELECT ST_Point(3,4)", "POINT (3 4)")]
 	[InlineData("SELECT ST_Envelope(ST_Buffer('POINT (5 5)', 5))", "POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))")]
 	[InlineData("SELECT ST_Intersection('LINESTRING(0 0,10 10)','LINESTRING(0 10,10 0)')", "POINT (5 5)")]
+	[InlineData("SELECT ST_Centroid('POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))')", "POINT (5 5)")]
 	public void SQLiteSpatial_GeometryQuery_ReturnsExpectedGeometry(string sqlQuery, string expectedWkt)
 	{
 		SQLiteSpatialConnection db = new(":memory:");
