@@ -1,5 +1,7 @@
-﻿using SQuan.Helpers.Maui.UnitTests.Mocks;
+﻿// BalanceViewTests.cs
+
 using Microsoft.Maui.Graphics.Converters;
+using SQuan.Helpers.Maui.UnitTests.Mocks;
 namespace SQuan.Helpers.Maui.UnitTests;
 
 public class BalanceViewTests

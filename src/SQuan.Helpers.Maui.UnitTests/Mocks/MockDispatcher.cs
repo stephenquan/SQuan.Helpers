@@ -1,3 +1,5 @@
+// MockDispatcher.cs
+
 namespace SQuan.Helpers.Maui.UnitTests.Mocks;
 
 public sealed class MockDispatcher : IDispatcher
