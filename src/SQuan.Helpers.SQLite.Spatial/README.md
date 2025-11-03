@@ -33,5 +33,5 @@ foreach (var result in results)
 
 For more information please visit:
 
- - Documentation: https://github.com/stephenquan/SQuan.Helpers/wiki/SQLiteSpatial
+ - Documentation: https://github.com/stephenquan/SQuan.Helpers/wiki/SQLite.Spatial
  - GitHub repository: https://github.com/stephenquan/SQuan.Helpers
