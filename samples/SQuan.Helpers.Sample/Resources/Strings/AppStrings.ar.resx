@@ -123,6 +123,12 @@
   <data name="BTN_CLICKED_N_TIMES" xml:space="preserve">
     <value>تم النقر {0} مرات</value>
   </data>
+  <data name="BTN_SYSTEM_CULTURE" xml:space="preserve">
+    <value>لغة وثقافة النظام</value>
+  </data>
+  <data name="BTN_TOGGLE_CULTURE" xml:space="preserve">
+    <value>تبديل اللغة والثقافة</value>
+  </data>
   <data name="LBL_HELLO" xml:space="preserve">
     <value>مرحبًا أيها العالم!</value>
   </data>

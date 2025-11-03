@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿// LocalizationManager.shared.cs
+
+using System.ComponentModel;
 using System.Globalization;
 using Microsoft.Extensions.Localization;
 
@@ -98,6 +100,23 @@ public partial class LocalizationManager : INotifyPropertyChanged
 
 	string? installedUICultureName = CultureInfo.InstalledUICulture.Name;
 
+	bool followInstalledUICulture = true;
+
+	/// <summary>Gets or sets a value indicating whether the current UI culture should follow the installed UI culture.</summary>
+	public bool FollowInstalledUICulture
+	{
+		get => followInstalledUICulture;
+		set
+		{
+			followInstalledUICulture = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FollowInstalledUICulture)));
+			if (value)
+			{
+				Poll();
+			}
+		}
+	}
+
 	/// <summary>Gets the current installed UI culture.</summary>
 	public CultureInfo InstalledUICulture
 	{
@@ -134,13 +153,18 @@ public partial class LocalizationManager : INotifyPropertyChanged
 		get => CultureInfo.CurrentUICulture;
 		set
 		{
-			if (value is not null && value.Name != CultureInfo.CurrentUICulture.Name)
+			if (value is null)
 			{
-				CultureInfo.CurrentUICulture = value;
-				currentUICultureName = value.Name;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentUICulture)));
-				CurrentUICultureChanged?.Invoke(this, EventArgs.Empty);
+				FollowInstalledUICulture = true;
+				Poll();
+				return;
 			}
+
+			FollowInstalledUICulture = false;
+			CultureInfo.CurrentUICulture = value;
+			currentUICultureName = value.Name;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentUICulture)));
+			CurrentUICultureChanged?.Invoke(this, EventArgs.Empty);
 		}
 	}
 
@@ -155,11 +179,11 @@ public partial class LocalizationManager : INotifyPropertyChanged
 			installedUICultureName = CultureInfo.InstalledUICulture.Name;
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(InstalledUICulture)));
 			InstalledUICultureChanged?.Invoke(this, EventArgs.Empty);
+		}
 
-			if (Options.FollowInstalledUICultureChanges)
-			{
-				CurrentUICulture = CultureInfo.InstalledUICulture;
-			}
+		if (FollowInstalledUICulture)
+		{
+			CurrentUICulture = CultureInfo.InstalledUICulture;
 		}
 
 		CultureInfo.CurrentCulture.ClearCachedData();

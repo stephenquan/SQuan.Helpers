@@ -123,6 +123,12 @@
   <data name="BTN_CLICKED_N_TIMES" xml:space="preserve">
     <value>Cliqué {0} fois</value>
   </data>
+  <data name="BTN_SYSTEM_CULTURE" xml:space="preserve">
+    <value>Culture du système</value>
+  </data>
+  <data name="BTN_TOGGLE_CULTURE" xml:space="preserve">
+    <value>Changer de culture</value>
+  </data>
   <data name="LBL_HELLO" xml:space="preserve">
     <value>Bonjour, le monde !</value>
   </data>
