@@ -6,7 +6,7 @@ using NetTopologySuite.IO;
 using SQLite;
 using SQLitePCL;
 
-namespace SQuan.Helpers.SQLiteSpatial;
+namespace SQuan.Helpers.SQLite.Spatial;
 
 /// <summary>
 /// Extension methods for enabling and using spatial functions in SQLite connections.

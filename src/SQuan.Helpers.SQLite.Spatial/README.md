@@ -1,11 +1,11 @@
-# SQuan.Helpers.SQLiteSpatial
+# SQuan.Helpers.SQLite.Spatial
 
-The [SQuan.Helpers.SQLiteSpatial](https://www.nuget.org/packages/SQuan.Helpers.SQLiteSpatial) brings together [sqlite-net-pcl](https://www.nuget.org/packages/sqlite-net-pcl) and [NetTopologySuite](https://www.nuget.org/packages/NetTopologySuite) to enable spatial capabilities in SQLite for .NET applications. It uses WKT ([Well-Known Text](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)) as the geometry format, allowing spatial data to store in text columns. Its spatial functions are loosely inspired by those in [PostGIS](https://postgis.net/docs/manual-1.5/ch08.html).
+The [SQuan.Helpers.SQLite.Spatial](https://www.nuget.org/packages/SQuan.Helpers.SQLite.Spatial) brings together [sqlite-net-pcl](https://www.nuget.org/packages/sqlite-net-pcl) and [NetTopologySuite](https://www.nuget.org/packages/NetTopologySuite) to enable spatial capabilities in SQLite for .NET applications. It uses WKT ([Well-Known Text](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)) as the geometry format, allowing spatial data to store in text columns. Its spatial functions are loosely inspired by those in [PostGIS](https://postgis.net/docs/manual-1.5/ch08.html).
 
 ## Namespace
 
 ```c#
-using SQuan.Helpers.SQLiteSpatial;
+using SQuan.Helpers.SQLite.Spatial;
 ```
 
 ## Example

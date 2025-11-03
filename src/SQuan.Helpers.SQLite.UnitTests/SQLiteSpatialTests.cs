@@ -1,8 +1,8 @@
 ﻿// SQLiteSpatialTests.cs
 
-using SQuan.Helpers.SQLiteSpatial;
+using SQuan.Helpers.SQLite.Spatial;
 
-namespace SQuan.Helpers.Maui.UnitTests;
+namespace SQuan.Helpers.SQLite.UnitTests;
 
 public class SQLiteSpatialTests
 {
