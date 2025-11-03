@@ -2,7 +2,7 @@
 
 using SQLite;
 
-namespace SQuan.Helpers.SQLiteSpatial;
+namespace SQuan.Helpers.SQLite.Spatial;
 
 /// <summary>
 /// Represents a specialized <see cref="SQLiteConnection"/> that enables spatial capabilities for SQLite databases.

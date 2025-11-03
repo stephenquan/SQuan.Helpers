@@ -3,7 +3,7 @@
 using System.Text.RegularExpressions;
 using SkiaSharp;
 using SQLite;
-using SQuan.Helpers.SQLiteSpatial;
+using SQuan.Helpers.SQLite.Spatial;
 
 namespace SQuan.Helpers.Sample;
 
