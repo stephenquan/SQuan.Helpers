@@ -21,7 +21,7 @@ public static class MauiProgram
 			.UseMauiCommunityToolkitMarkup()
 			.UseSkiaSharp()
 			.UseSQuanHelpersMaui()
-			.UseSQuanHelperMauiLocalization<AppStrings>()
+			.UseSQuanHelpersMauiLocalization<AppStrings>()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
