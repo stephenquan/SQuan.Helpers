@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:SQuan.Helpers.Sample"
     xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
+    xmlns:sqm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
     Title="Spatial Demo">
     <Grid>
         <local:MapView
@@ -16,9 +17,21 @@
             HorizontalOptions="End"
             VerticalOptions="Center">
             <VerticalStackLayout Spacing="10">
-                <Button Clicked="OnReset" Text="O" />
-                <Button Clicked="OnZoomIn" Text="+" />
-                <Button Clicked="OnZoomOut" Text="-" />
+                <Button
+                    Clicked="OnReset"
+                    FontFamily="{x:Static sqm:LucideIcons.FontFamily}"
+                    FontSize="32"
+                    Text="{x:Static sqm:LucideIcons.Globe}" />
+                <Button
+                    Clicked="OnZoomIn"
+                    FontFamily="{x:Static sqm:LucideIcons.FontFamily}"
+                    FontSize="32"
+                    Text="{x:Static sqm:LucideIcons.ZoomIn}" />
+                <Button
+                    Clicked="OnZoomOut"
+                    FontFamily="{x:Static sqm:LucideIcons.FontFamily}"
+                    FontSize="32"
+                    Text="{x:Static sqm:LucideIcons.ZoomOut}" />
             </VerticalStackLayout>
         </Grid>
     </Grid>

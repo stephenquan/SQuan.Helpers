@@ -39,6 +39,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Include="Resources\Fonts\*.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Include="README.md" Pack="true" Visible="true" PackagePath="\" />
 		<None Include="..\common\icon.png" Pack="true" Visible="true" PackagePath="\" />
 		<None Include="..\..\LICENSE" Pack="true" Visible="true" PackagePath="\" />
