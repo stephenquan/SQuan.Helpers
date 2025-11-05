@@ -1,7 +1,10 @@
-﻿using CommunityToolkit.Maui;
+﻿// MauiProgram.cs
+
+using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.Logging;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+using SQuan.Helpers.Maui;
 using SQuan.Helpers.Maui.Localization;
 using SQuan.Helpers.Sample.Resources.Strings;
 
@@ -17,6 +20,7 @@ public static class MauiProgram
 			.UseMauiCommunityToolkit()
 			.UseMauiCommunityToolkitMarkup()
 			.UseSkiaSharp()
+			.UseSQuanHelpersMaui()
 			.UseSQuanHelperMauiLocalization<AppStrings>()
 			.ConfigureFonts(fonts =>
 			{

@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:SQuan.Helpers.Sample"
+    xmlns:sqm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
     x:Name="mainPage"
     x:DataType="local:MainPage">
     <ScrollView>
@@ -11,6 +12,10 @@
             Padding="30"
             Spacing="30"
             VerticalOptions="Center">
+            <Label
+                FontSize="32"
+                HorizontalOptions="Center"
+                Text="{x:Static sqm:LucideIcons.Globe}" />
             <Label
                 FontSize="32"
                 HorizontalOptions="Center"
