@@ -79,6 +79,24 @@ namespace SQuan.Helpers.Sample.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to System Culture.
+        /// </summary>
+        internal static string BTN_SYSTEM_CULTURE {
+            get {
+                return ResourceManager.GetString("BTN_SYSTEM_CULTURE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle Culture.
+        /// </summary>
+        internal static string BTN_TOGGLE_CULTURE {
+            get {
+                return ResourceManager.GetString("BTN_TOGGLE_CULTURE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hello, World!.
         /// </summary>
         internal static string LBL_HELLO {

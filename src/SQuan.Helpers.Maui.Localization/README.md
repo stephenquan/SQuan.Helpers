@@ -10,7 +10,7 @@ In order to use the toolkit correctly the UseSQuanHelpersMauiLocalization method
 var builder = MauiApp.CreateBuilder();
 builder
     .UseMauiApp<App>()
-    .UseSQuanHelperMauiLocalization<AppStrings>()
+    .UseSQuanHelpersMauiLocalization<AppStrings>()
 ```
 
 ## Include the XAML namespace

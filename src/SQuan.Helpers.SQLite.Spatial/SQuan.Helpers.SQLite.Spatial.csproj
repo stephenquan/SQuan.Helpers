@@ -13,8 +13,8 @@
     <Summary>Spatial Helpers for SQLite .NET</Summary>
     <Description>Provides Spatial helpers to SQLite .NET.</Description>
 
-    <PackageId>SQuan.Helpers.SQLiteSpatial</PackageId>
-    <PackageDescription>SQuan.Helpers.SQLiteSpatial brings together sqlite-net-pcl and NetTopologySuite to enable spatial capabilities in SQLite for .NET applications.</PackageDescription>
+    <PackageId>SQuan.Helpers.SQLite.Spatial</PackageId>
+    <PackageDescription>SQuan.Helpers.SQLite.Spatial brings together sqlite-net-pcl and NetTopologySuite to enable spatial capabilities in SQLite for .NET applications.</PackageDescription>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>

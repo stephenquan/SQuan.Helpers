@@ -9,7 +9,7 @@
     x:DataType="local:LocalizePage"
     FlowDirection="{i18n:FlowDirection}">
     <ScrollView>
-        <VerticalStackLayout Padding="30,0" Spacing="25">
+        <VerticalStackLayout Padding="30,30,30,200" Spacing="25">
             <Image
                 Aspect="AspectFit"
                 HeightRequest="185"
@@ -50,20 +50,34 @@
                                     Converter={i18n:StringFormatConverter}}" />
             -->
 
-            <Entry Text="{Binding Expression, Mode=TwoWay}" />
 
+            <Label Text="Enter a value for X0" />
+            <local:MyNumericEntry Value="{Binding X0, Mode=TwoWay}" />
+
+            <Label Text="Enter a value for X1" />
             <local:MyNumericEntry Value="{Binding X1, Mode=TwoWay}" />
 
-            <Label Text="{i18n:Localize LBL_RESULT, X0={local:Eval Expression={Binding Expression}, X0={Binding Count}, X1={Binding X1}}}" />
+            <Label Text="Enter a mathematical expression" />
+            <Entry Text="{Binding Expression, Mode=TwoWay}" />
 
-            <local:MyDateTimePicker Value="{Binding Modified, Mode=TwoWay}" />
+            <Label Text="The result of the expression" />
+            <Label Text="{i18n:Localize LBL_RESULT, X0={local:Eval Expression={Binding Expression}, X0={Binding X0}, X1={Binding X1}}}" />
 
-            <Label Text="{Binding Modified, StringFormat='Modified: {0}'}" />
+            <Label Text="Select a new date" />
+            <local:MyDateTimePicker Value="{Binding UserDate, Mode=TwoWay}" />
 
-            <Button
-                Command="{Binding ChangeUICultureCommand}"
-                HorizontalOptions="Start"
-                Text="{Binding LM.CurrentUICulture.Name}" />
+            <Label Text="{Binding UserDate, StringFormat='Date selected: {0}'}" />
+
+            <Label Text="Localization" />
+            <HorizontalStackLayout Spacing="25">
+                <Button Command="{Binding ToggleCultureCommand}" Text="{i18n:Localize BTN_TOGGLE_CULTURE}" />
+                <Button Command="{Binding SystemCultureCommand}" Text="{i18n:Localize BTN_SYSTEM_CULTURE}" />
+            </HorizontalStackLayout>
+
+            <Label Text="{Binding LM.InstalledUICulture.Name, StringFormat='InstalledUICulture: {0}'}" />
+            <Label Text="{Binding LM.CurrentUICulture.Name, StringFormat='CurrentUICulture: {0}'}" />
+            <Label Text="{Binding LM.CurrentCulture.Name, StringFormat='CurrentCulture: {0}'}" />
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

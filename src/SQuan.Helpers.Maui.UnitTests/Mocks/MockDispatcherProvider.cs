@@ -1,4 +1,6 @@
-﻿namespace SQuan.Helpers.Maui.UnitTests.Mocks;
+﻿// MockDispatcherProvider.cs
+
+namespace SQuan.Helpers.Maui.UnitTests.Mocks;
 
 // Inspired by https://github.com/dotnet/maui/blob/main/src/Core/tests/UnitTests/TestClasses/DispatcherStub.cs
 sealed class MockDispatcherProvider : IDispatcherProvider, IDisposable
