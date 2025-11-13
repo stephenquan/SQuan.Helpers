@@ -74,23 +74,20 @@ public partial class MyDateTimePicker : ContentView
 					Value = datePicker.Date;
 					timePicker?.Time = datePicker.Date?.TimeOfDay;
 				}
-				else if (datePicker.Date is null)
+				else if (datePicker.Date is not DateTime dateTime)
 				{
 					Value = null;
 					timePicker.Time = TimeSpan.Zero;
 				}
 				else
 				{
-					if (datePicker.Date is DateTime dateTime)
+					if (timePicker.Time is TimeSpan timeSpan)
 					{
-						if (timePicker.Time is TimeSpan timeSpan)
-						{
-							Value = dateTime - dateTime.TimeOfDay + timeSpan;
-						}
-						else
-						{
-							Value = dateTime - dateTime.TimeOfDay;
-						}
+						Value = dateTime - dateTime.TimeOfDay + timeSpan;
+					}
+					else
+					{
+						Value = dateTime - dateTime.TimeOfDay;
 					}
 				}
 				changing--;
