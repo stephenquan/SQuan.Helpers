@@ -74,11 +74,24 @@ public partial class MyDateTimePicker : ContentView
 					Value = datePicker.Date;
 					timePicker?.Time = datePicker.Date?.TimeOfDay;
 				}
+				else if (datePicker.Date is null)
+				{
+					Value = null;
+					timePicker.Time = TimeSpan.Zero;
+				}
 				else
 				{
-#if TODO
-					Value = datePicker.Date - datePicker.Date.TimeOfDay + timePicker.Time;
-#endif
+					if (datePicker.Date is DateTime dateTime)
+					{
+						if (timePicker.Time is TimeSpan timeSpan)
+						{
+							Value = dateTime - dateTime.TimeOfDay + timeSpan;
+						}
+						else
+						{
+							Value = dateTime - dateTime.TimeOfDay;
+						}
+					}
 				}
 				changing--;
 			}
@@ -94,11 +107,9 @@ public partial class MyDateTimePicker : ContentView
 					datePicker.Date = DateTime.Today;
 					Value = datePicker.Date + timePicker.Time;
 				}
-				else
+				else if (timePicker.Time is TimeSpan timeSpan)
 				{
-#if TODO
-					Value = datePicker.Date - datePicker.Date.TimeOfDay + timePicker.Time;
-#endif
+					Value = Value - Value.Value.TimeOfDay + timeSpan;
 				}
 				changing--;
 			}
