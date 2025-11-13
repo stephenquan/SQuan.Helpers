@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+  </Folder>
+  <Project Path="samples/SQuan.Helpers.Sample/SQuan.Helpers.Sample.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+  <Project Path="src/SQuan.Helpers.Maui.Localization/SQuan.Helpers.Maui.Localization.csproj" />
+  <Project Path="src/SQuan.Helpers.Maui.Mvvm.SourceGenerators/SQuan.Helpers.Maui.Mvvm.SourceGenerators.csproj" />
+  <Project Path="src/SQuan.Helpers.Maui.Mvvm/SQuan.Helpers.Maui.Mvvm.csproj" />
+  <Project Path="src/SQuan.Helpers.Maui.UnitTests/SQuan.Helpers.Maui.UnitTests.csproj" />
+  <Project Path="src/SQuan.Helpers.Maui/SQuan.Helpers.Maui.csproj" />
+  <Project Path="src/SQuan.Helpers.SQLite.Spatial/SQuan.Helpers.SQLite.Spatial.csproj" />
+  <Project Path="src/SQuan.Helpers.SQLite.UnitTests/SQuan.Helpers.SQLite.UnitTests.csproj" />
+</Solution>

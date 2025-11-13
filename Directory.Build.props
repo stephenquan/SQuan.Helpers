@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <NoWarn>NETSDK1023</NoWarn>
-    <NetVersion>net9.0</NetVersion>
+    <NetVersion>net10.0</NetVersion>
     <LangVersion>preview</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
@@ -18,8 +18,8 @@
     <NuGetAuditMode>all</NuGetAuditMode>
 
     <!-- MAUI Specific -->
-    <MauiVersion>9.0.120</MauiVersion>
-    <MauiPackageVersion>9.0.120</MauiPackageVersion>
+    <MauiVersion>10.0.10</MauiVersion>
+    <MauiPackageVersion>10.0.10</MauiPackageVersion>
     <NextMauiPackageVersion>10.0.0</NextMauiPackageVersion>
     <MauiStrictXamlCompilation>true</MauiStrictXamlCompilation>
     <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
