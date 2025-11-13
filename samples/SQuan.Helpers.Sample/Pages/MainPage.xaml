@@ -13,6 +13,7 @@
             Spacing="30"
             VerticalOptions="Center">
             <Label
+                FontFamily="{x:Static sqm:LucideIcons.FontFamily}"
                 FontSize="32"
                 HorizontalOptions="Center"
                 Text="{x:Static sqm:LucideIcons.Globe}" />

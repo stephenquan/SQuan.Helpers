@@ -9,6 +9,8 @@
 		<integer>1</integer>
 		<integer>2</integer>
 	</array>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.lifestyle</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>arm64</string>
