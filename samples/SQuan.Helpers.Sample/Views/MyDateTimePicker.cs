@@ -72,11 +72,13 @@ public partial class MyDateTimePicker : ContentView
 				if (Value is null)
 				{
 					Value = datePicker.Date;
-					timePicker.Time = datePicker.Date.TimeOfDay;
+					timePicker?.Time = datePicker.Date?.TimeOfDay;
 				}
 				else
 				{
+#if TODO
 					Value = datePicker.Date - datePicker.Date.TimeOfDay + timePicker.Time;
+#endif
 				}
 				changing--;
 			}
@@ -94,7 +96,9 @@ public partial class MyDateTimePicker : ContentView
 				}
 				else
 				{
+#if TODO
 					Value = datePicker.Date - datePicker.Date.TimeOfDay + timePicker.Time;
+#endif
 				}
 				changing--;
 			}
