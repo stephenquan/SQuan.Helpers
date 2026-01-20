@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SQuan.Helpers.Sample.BorderlessPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:sqm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
+    Title="Borderless Demo">
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="30">
+            <Label Text="Entry" />
+            <Entry />
+
+            <Label Text="Entry (borderless)" />
+            <Entry sqm:InputViewExtras.BorderThickness="0" />
+
+            <Label Text="Editor" />
+            <Editor />
+
+            <Label Text="Editor (borderless)" />
+            <Editor sqm:InputViewExtras.BorderThickness="0" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
