@@ -32,11 +32,13 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 
+		SamplesHelper.RegisterSample("Balance Demo", nameof(BalancePage), typeof(BalancePage));
+		SamplesHelper.RegisterSample("Borderless Demo", nameof(BorderlessPage), typeof(BorderlessPage));
 		SamplesHelper.RegisterSample("Count Demo", nameof(CountPage), typeof(CountPage));
 		SamplesHelper.RegisterSample("Count Dynamic Demo", nameof(CountDynamicPage), typeof(CountDynamicPage));
 		SamplesHelper.RegisterSample("Card Demo", nameof(CardPage), typeof(CardPage));
-		SamplesHelper.RegisterSample("Balance Demo", nameof(BalancePage), typeof(BalancePage));
 		SamplesHelper.RegisterSample("Localization Demo", nameof(LocalizePage), typeof(LocalizePage));
+		SamplesHelper.RegisterSample("Numeric Mask Demo", nameof(NumericMaskPage), typeof(NumericMaskPage));
 		SamplesHelper.RegisterSample("Theme Demo", nameof(ThemePage), typeof(ThemePage));
 		SamplesHelper.RegisterSample("Search Demo", nameof(SearchPage), typeof(SearchPage));
 		SamplesHelper.RegisterSample("Popup Demo", nameof(PopupPage), typeof(PopupPage));
