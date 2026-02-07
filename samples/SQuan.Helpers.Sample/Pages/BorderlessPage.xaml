@@ -5,19 +5,35 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:sqm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
     Title="Borderless Demo">
+    <ContentPage.Resources>
+        <Style TargetType="Entry">
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#ffe, Dark=#553}" />
+        </Style>
+        <Style TargetType="Editor">
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#ffe, Dark=#553}" />
+        </Style>
+    </ContentPage.Resources>
     <ScrollView>
         <VerticalStackLayout Padding="30" Spacing="30">
             <Label Text="Entry" />
             <Entry />
 
             <Label Text="Entry (borderless)" />
-            <Entry sqm:InputViewExtras.BorderThickness="0" />
+            <Entry>
+                <Entry.Behaviors>
+                    <sqm:BorderlessBehavior />
+                </Entry.Behaviors>
+            </Entry>
 
             <Label Text="Editor" />
             <Editor />
 
             <Label Text="Editor (borderless)" />
-            <Editor sqm:InputViewExtras.BorderThickness="0" />
+            <Editor>
+                <Editor.Behaviors>
+                    <sqm:BorderlessBehavior />
+                </Editor.Behaviors>
+            </Editor>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
