@@ -71,8 +71,20 @@ public partial class AspectView : ContentView
 			return topGrid;
 		});
 	}
+
+	/// <summary>
+	/// Converts width, height, and aspect ratio values into a <see cref="Size"/> that preserves the desired aspect ratio.
+	/// </summary>
 	class ContentSizeConverter : IMultiValueConverter
 	{
+		/// <summary>
+		/// Converts the specified width, height, and aspect ratio values into a <see cref="Size"/> that maintains the aspect ratio.
+		/// </summary>
+		/// <param name="values">An array containing the width, height, and aspect ratio values.</param>
+		/// <param name="targetType">The type of the binding target property.</param>
+		/// <param name="parameter">An optional parameter to be used in the converter logic.</param>
+		/// <param name="culture">The culture to be used in the converter.</param>
+		/// <returns>A <see cref="Size"/> that maintains the specified aspect ratio.</returns>
 		public object? Convert(object[] values, Type targetType, object? parameter, CultureInfo culture)
 			=> values.Length == 3
 			&& values[0] is double width && values[1] is double height && values[2] is double aspectRatio
@@ -81,6 +93,16 @@ public partial class AspectView : ContentView
 					? new Size(height * aspectRatio, height)
 					: new Size(width, width / aspectRatio))
 				: Size.Zero;
+
+		/// <summary>
+		/// Not supported. This converter does not provide a ConvertBack implementation.
+		/// </summary>
+		/// <param name="value">The value produced by the binding target.</param>
+		/// <param name="targetTypes">The array of types to convert to.</param>
+		/// <param name="parameter">An optional parameter to be used in the converter logic.</param>
+		/// <param name="culture">The culture to be used in the converter.</param>
+		/// <returns>Throws a <see cref="NotImplementedException"/> since ConvertBack is not supported.</returns>
+		/// <exception cref="NotImplementedException"></exception>
 		public object[] ConvertBack(object value, Type[] targetTypes, object? parameter, CultureInfo culture)
 			=> throw new NotImplementedException();
 	}
