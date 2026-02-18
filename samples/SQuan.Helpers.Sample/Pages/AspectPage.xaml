@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SQuan.Helpers.Sample.AspectPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SQuan.Helpers.Sample"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:sqm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
+    Title="Aspect Demo"
+    x:DataType="local:AspectPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <mct:MathExpressionConverter x:Key="MathExpressionConverter" />
+            <Style TargetType="Button">
+                <Setter Property="CornerRadius" Value="0" />
+                <Setter Property="BorderColor" Value="Transparent" />
+                <Setter Property="BorderWidth" Value="0" />
+                <Setter Property="FontSize" Value="{Binding Height, Source={RelativeSource Self}, x:DataType=Button, Converter={StaticResource MathExpressionConverter}, ConverterParameter='x * 6 / 10'}" />
+                <Setter Property="Command" Value="{Binding PlayCommand}" />
+                <Setter Property="CommandParameter" Value="{Binding Source={RelativeSource Self}, x:DataType=Button}" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <sqm:AspectView Padding="30" AspectRatio="1">
+        <AbsoluteLayout BackgroundColor="SkyBlue">
+            <Button
+                AbsoluteLayout.LayoutBounds="0, 0, 0.3, 0.3"
+                AbsoluteLayout.LayoutFlags="All"
+                Text="X" />
+            <Button
+                AbsoluteLayout.LayoutBounds="0.5, 0, 0.3, 0.3"
+                AbsoluteLayout.LayoutFlags="All"
+                Text="O" />
+            <Button
+                AbsoluteLayout.LayoutBounds="1, 0, 0.3, 0.3"
+                AbsoluteLayout.LayoutFlags="All"
+                Text="O" />
+            <Button
+                AbsoluteLayout.LayoutBounds="0, 0.5, 0.3, 0.3"
+                AbsoluteLayout.LayoutFlags="All"
+                Text="X" />
+            <Button
+                AbsoluteLayout.LayoutBounds="1, 0.5, 0.3, 0.3"
+                AbsoluteLayout.LayoutFlags="All"
+                Text="O" />
+            <Button
+                AbsoluteLayout.LayoutBounds="0.5, 0.5, 0.3, 0.3"
+                AbsoluteLayout.LayoutFlags="All"
+                Text="X" />
+            <Button
+                AbsoluteLayout.LayoutBounds="0, 1, 0.3, 0.3"
+                AbsoluteLayout.LayoutFlags="All"
+                Text="O" />
+            <Button
+                AbsoluteLayout.LayoutBounds="0.5, 1, 0.3, 0.3"
+                AbsoluteLayout.LayoutFlags="All"
+                Text="X" />
+            <Button
+                AbsoluteLayout.LayoutBounds="1, 1, 0.3, 0.3"
+                AbsoluteLayout.LayoutFlags="All"
+                Text="X" />
+        </AbsoluteLayout>
+    </sqm:AspectView>
+</ContentPage>
