@@ -27,7 +27,7 @@ public partial class AspectView : ContentView
 	}
 
 	static object CoerceAspectRatio(BindableObject bindable, object value)
-		=> (value is double aspectRatio && aspectRatio > 0.0) ? aspectRatio : (double)0.0;
+		=> (value is double aspectRatio && aspectRatio > 0.0) ? aspectRatio : 1.0;
 
 	/// <summary>
 	/// The size of the content within the <see cref="AspectView"/>.
