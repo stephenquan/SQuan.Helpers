@@ -17,7 +17,7 @@ public partial class AspectView : ContentView
 
 	/// <summary>
 	/// Gets or sets the aspect ratio (width divided by height) for the content.
-	/// This property is used in conjunction with the <see cref="Aspect"/> property to determine how the content is scaled and positioned within the view.
+	/// This property is used to constraint the size of the content within the available space while maintaining the specified aspect ratio.
 	/// </summary>
 	public double AspectRatio
 	{
