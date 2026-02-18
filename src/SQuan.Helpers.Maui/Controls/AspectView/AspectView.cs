@@ -108,6 +108,6 @@ public partial class AspectView : ContentView
 		/// <returns>Throws a <see cref="NotImplementedException"/> since ConvertBack is not supported.</returns>
 		/// <exception cref="NotImplementedException"></exception>
 		public object?[] ConvertBack(object? value, Type[] targetTypes, object? parameter, CultureInfo culture)
-			=> throw new NotImplementedException();
+			=> throw new NotImplementedException("ConvertBack is not implemented for ContentSizeConverter.");
 	}
 }
