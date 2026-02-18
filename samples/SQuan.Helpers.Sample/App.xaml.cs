@@ -1,4 +1,6 @@
-﻿namespace SQuan.Helpers.Sample;
+﻿// App.xaml.cs
+
+namespace SQuan.Helpers.Sample;
 
 public partial class App : Application
 {
@@ -9,6 +11,9 @@ public partial class App : Application
 
 	protected override Window CreateWindow(IActivationState? activationState)
 	{
-		return new Window(new AppShell());
+		var window = new Window(new AppShell());
+		window.MinimumWidth = 300;
+		window.MinimumHeight = 300;
+		return window;
 	}
 }

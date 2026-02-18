@@ -32,6 +32,7 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 
+		SamplesHelper.RegisterSample("Aspect Demo", nameof(AspectPage), typeof(AspectPage));
 		SamplesHelper.RegisterSample("Balance Demo", nameof(BalancePage), typeof(BalancePage));
 		SamplesHelper.RegisterSample("Borderless Demo", nameof(BorderlessPage), typeof(BorderlessPage));
 		SamplesHelper.RegisterSample("Count Demo", nameof(CountPage), typeof(CountPage));
