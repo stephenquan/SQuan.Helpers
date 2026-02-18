@@ -1,6 +1,8 @@
 ﻿// AppBuilderExtensions.cs
 
 using System.Reflection;
+using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Markup;
 
 namespace SQuan.Helpers.Maui;
 
@@ -17,10 +19,13 @@ public static class AppBuilderExtensions
 	public static MauiAppBuilder UseSQuanHelpersMaui(this MauiAppBuilder builder)
 	{
 		Assembly assembly = typeof(LucideIcons).Assembly;
-		builder.ConfigureFonts(fonts =>
-		{
-			fonts.AddEmbeddedResourceFont(assembly, LucideIcons.FontFile, LucideIcons.FontFamily);
-		});
+		builder
+			.UseMauiCommunityToolkit()
+			.UseMauiCommunityToolkitMarkup()
+			.ConfigureFonts(fonts =>
+			{
+				fonts.AddEmbeddedResourceFont(assembly, LucideIcons.FontFile, LucideIcons.FontFamily);
+			});
 		return builder;
 	}
 }

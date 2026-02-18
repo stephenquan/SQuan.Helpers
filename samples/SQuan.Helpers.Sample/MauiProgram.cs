@@ -44,6 +44,7 @@ public static class MauiProgram
 		SamplesHelper.RegisterSample("Search Demo", nameof(SearchPage), typeof(SearchPage));
 		SamplesHelper.RegisterSample("Popup Demo", nameof(PopupPage), typeof(PopupPage));
 		SamplesHelper.RegisterSample("Spatial Demo", nameof(SpatialPage), typeof(SpatialPage));
+		SamplesHelper.RegisterSample("StatusBar Demo", nameof(StatusBarPage), typeof(StatusBarPage));
 
 		return builder.Build();
 	}
