@@ -73,7 +73,6 @@ public class BPExtrasGenerator : IIncrementalGenerator
 			var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
 			var propertyName = propertySymbol.Name;
 			var typeName = propertySymbol.Type.ToDisplayString();
-			PropertyDeclarationSyntax propertySyntax = (propertySymbol.DeclaringSyntaxReferences[0].GetSyntax() as PropertyDeclarationSyntax)!;
 
 			bool hasPropertyChangedMethod = false;
 			string propertyChangedMethodName = string.Empty;
