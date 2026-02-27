@@ -105,7 +105,7 @@ public class BPExtrasGenerator : IIncrementalGenerator
 			{
 				staticWrappers +=
 					$$"""
-						static void {{propertyChangedMethodName}}(BindableObject b, object o, object n)
+						static void {{propertyChangedMethodName}}(Microsoft.Maui.Controls.BindableObject b, object o, object n)
 						{
 							(({{className}})b).{{propertyChangedMethodName}}(({{typeName}})o, ({{typeName}})n);
 							(({{className}})b).{{propertyChangedMethodName}}(({{typeName}})n);
