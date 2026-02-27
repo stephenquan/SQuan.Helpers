@@ -121,7 +121,7 @@ public class BPExtrasGenerator : IIncrementalGenerator
 			{
 				staticWrappers +=
 					$$"""
-						static void {{propertyChangingMethodName}}(BindableObject b, object o, object n)
+						static void {{propertyChangingMethodName}}(Microsoft.Maui.Controls.BindableObject b, object o, object n)
 						{
 							(({{className}})b).{{propertyChangingMethodName}}(({{typeName}})o, ({{typeName}})n);
 							(({{className}})b).{{propertyChangingMethodName}}(({{typeName}})n);
@@ -144,13 +144,12 @@ public class BPExtrasGenerator : IIncrementalGenerator
 
 					namespace {{namespaceName}};
 
-					//[{GeneratedCodeAttribute}]
 					partial class {{className}}
 					{
 						{{staticWrappers}}
 					}
 					""";
-				spc.AddSource($"{bareClassName}_{propertyName}_BindablePropertyExtras.g.cs", SourceText.From(source, Encoding.UTF8));
+				spc.AddSource($"{bareClassName}_{propertyName}_BPExtras.g.cs", SourceText.From(source, Encoding.UTF8));
 			}
 		});
 	}
