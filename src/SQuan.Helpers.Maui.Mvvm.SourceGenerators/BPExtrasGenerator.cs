@@ -148,7 +148,7 @@ public class BPExtrasGenerator : IIncrementalGenerator
 						{{staticWrappers}}
 					}
 					""";
-				spc.AddSource($"{bareClassName}_{propertyName}_BPExtras.g.cs", SourceText.From(source, Encoding.UTF8));
+				spc.AddSource($"{namespaceName}_{bareClassName}_{propertyName}_BPExtras.g.cs", SourceText.From(source, Encoding.UTF8));
 			}
 		});
 	}
