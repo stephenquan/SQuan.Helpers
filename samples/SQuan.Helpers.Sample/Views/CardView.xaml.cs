@@ -1,5 +1,7 @@
+// CardView.xaml.cs
+
 using CommunityToolkit.Maui.Markup;
-using SQuan.Helpers.Maui.Mvvm;
+using BindablePropertyAttribute = CommunityToolkit.Maui.BindablePropertyAttribute;
 
 namespace SQuan.Helpers.Sample;
 

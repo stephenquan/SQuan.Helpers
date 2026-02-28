@@ -3,6 +3,7 @@
 using System.Dynamic;
 using SQuan.Helpers.Maui;
 using SQuan.Helpers.Maui.Mvvm;
+using BindablePropertyAttribute = CommunityToolkit.Maui.BindablePropertyAttribute;
 
 namespace SQuan.Helpers.Sample;
 
@@ -10,9 +11,16 @@ namespace SQuan.Helpers.Sample;
 
 public partial class SearchPage : ContentPage
 {
-	[BindableProperty] public partial string SearchText { get; set; } = "Statue of Liberty";
-	[BindableProperty, NotifyPropertyChangedFor(nameof(IsNotSearching))] public partial bool IsSearching { get; internal set; } = false;
+	[BindableProperty]
+	public partial string SearchText { get; set; } = "Statue of Liberty";
+
+	[BindableProperty(PropertyChangedMethodName = nameof(IsSearchingChanged)), BPExtras]
+	public partial bool IsSearching { get; internal set; } = false;
+	partial void IsSearchingChanged(bool value)
+		=> OnPropertyChanged(nameof(IsNotSearching));
+
 	public bool IsNotSearching => !IsSearching;
+
 	public ObservableList<SearchResult> Results { get; } = [];
 	CancellationTokenSource? cts;
 

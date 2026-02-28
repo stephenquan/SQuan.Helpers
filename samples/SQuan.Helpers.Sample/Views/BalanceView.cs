@@ -1,6 +1,8 @@
-﻿using System.Globalization;
+﻿// BalanceView.cs
+
+using System.Globalization;
 using CommunityToolkit.Maui.Markup;
-using SQuan.Helpers.Maui.Mvvm;
+using BindablePropertyAttribute = CommunityToolkit.Maui.BindablePropertyAttribute;
 
 namespace SQuan.Helpers.Sample;
 
