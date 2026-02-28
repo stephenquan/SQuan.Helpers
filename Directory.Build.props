@@ -18,15 +18,22 @@
     <NuGetAuditMode>all</NuGetAuditMode>
 
     <!-- MAUI Specific -->
-    <MauiVersion>10.0.31</MauiVersion>
-    <MauiPackageVersion>10.0.31</MauiPackageVersion>
+    <MauiVersion>10.0.41</MauiVersion>
+    <MauiPackageVersion>10.0.41</MauiPackageVersion>
+    <MicrosoftExtensionsLoggingDebugVersion>10.0.3</MicrosoftExtensionsLoggingDebugVersion>
     <NextMauiPackageVersion>10.0.0</NextMauiPackageVersion>
     <MauiStrictXamlCompilation>true</MauiStrictXamlCompilation>
     <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
     <MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
 
-    <!-- CommunityToolkit.Maui -->
-    <NoWarn>$(NoWarn);MCTEXP001;CS0436</NoWarn>
+    <!-- CommunityToolkits -->
+    <CommunityToolkitMauiVersion>14.0.1</CommunityToolkitMauiVersion>
+    <CommunityToolkitMauiMarkupVersion>7.0.0</CommunityToolkitMauiMarkupVersion>
+    <CommunityToolkitMvvmVersion>8.4.0</CommunityToolkitMvvmVersion>
+    <NoWarn>$(NoWarn);MCTEXP001</NoWarn>
+
+    <!-- GitVersion -->
+    <GitVersionMsBuildVersion>6.4.0</GitVersionMsBuildVersion>
 
     <!-- https://learn.microsoft.com/dotnet/core/deploying/native-aot/?tabs=net8plus%2Cwindows -->
     <StripSymbols>false</StripSymbols>

@@ -64,7 +64,7 @@
   </Target>
 
   <ItemGroup Label="Package">
-    <PackageReference Include="GitVersion.MsBuild" Version="6.4.0" PrivateAssets="all" />
+    <PackageReference Include="GitVersion.MsBuild" Version="$(GitVersionMsBuildVersion)" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

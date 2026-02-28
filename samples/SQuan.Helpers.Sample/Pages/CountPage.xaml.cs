@@ -1,13 +1,21 @@
+// CountPage.xaml.cs
+
 using CommunityToolkit.Maui.Markup;
-using SQuan.Helpers.Maui.Mvvm;
+using BindablePropertyAttribute = CommunityToolkit.Maui.BindablePropertyAttribute;
+using BPExtrasAttribute = SQuan.Helpers.Maui.Mvvm.BPExtrasAttribute;
 using RelayCommandAttribute = CommunityToolkit.Mvvm.Input.RelayCommandAttribute;
 
 namespace SQuan.Helpers.Sample;
 
 public partial class CountPage : ContentPage
 {
-	// Our syntax is similar to CommunityToolkit.Mvvm
-	[ObservableProperty] public partial int Count { get; set; } = 0;
+	[BindableProperty(PropertyChangedMethodName = nameof(OnCountChanged)), BPExtras]
+	public partial int Count { get; set; } = 0;
+
+	partial void OnCountChanged(int oldValue, int newValue)
+	{
+		System.Diagnostics.Trace.WriteLine($"Count changed from {oldValue} to {newValue}");
+	}
 
 	public CountPage()
 	{
