@@ -38,6 +38,7 @@ public static class MauiProgram
 		SamplesHelper.RegisterSample("Count Demo", nameof(CountPage), typeof(CountPage));
 		SamplesHelper.RegisterSample("Count Dynamic Demo", nameof(CountDynamicPage), typeof(CountDynamicPage));
 		SamplesHelper.RegisterSample("Card Demo", nameof(CardPage), typeof(CardPage));
+		SamplesHelper.RegisterSample("Expression Demo", nameof(ExpressionPage), typeof(ExpressionPage));
 		SamplesHelper.RegisterSample("Localization Demo", nameof(LocalizePage), typeof(LocalizePage));
 		SamplesHelper.RegisterSample("Numeric Mask Demo", nameof(NumericMaskPage), typeof(NumericMaskPage));
 		SamplesHelper.RegisterSample("Theme Demo", nameof(ThemePage), typeof(ThemePage));
