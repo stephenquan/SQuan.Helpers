@@ -15,10 +15,30 @@ namespace SQuan.Helpers.Maui;
 /// </summary>
 public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 {
+	static ILogger? logger;
+
 	/// <summary>
 	/// Optional logger used for diagnostics, tracing, and error reporting.
 	/// </summary>
-	public static ILogger? Logger { get; } = IPlatformApplication.Current?.Services.GetService<ILogger<ExpressionManager>>();
+	public static ILogger? Logger //{ get; } = IPlatformApplication.Current?.Services.GetService<ILogger<ExpressionManager>>();
+	{
+		get
+		{
+			if (logger is not null)
+			{
+				return logger;
+			}
+
+			var app = IPlatformApplication.Current;
+			if (app is null)
+			{
+				return null;
+			}
+
+			logger = app.Services.GetService<ILogger<ExpressionManager>>();
+			return logger;
+		}
+	}
 
 	/// <summary>
 	/// Parser plugin defining supported operators, functions, and syntax rules.
@@ -171,9 +191,13 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 	/// <param name="valueKind">The reason for the value change.</param>
 	/// <param name="valueType">Optional value type constraint.</param>
 	/// <param name="isDeterministic">Indicates whether the value is deterministic.</param>
-	/// <param name="trace">Whether to emit trace logging.</param>
 	/// <returns>The affected node.</returns>
-	public ExpressionNode SetValue(string nodeRef, object? value, ExpressionValueKind valueKind = ExpressionValueKind.Default, Type? valueType = default, bool isDeterministic = true, bool trace = true)
+	public ExpressionNode SetValue(
+		string nodeRef,
+		object? value,
+		ExpressionValueKind valueKind = ExpressionValueKind.Default,
+		Type? valueType = default,
+		bool isDeterministic = true)
 	{
 		bool modified = false;
 		var node = dictionary.GetOrAdd(nodeRef, nodeRef =>
@@ -444,6 +468,11 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 	{
 		if (disposing)
 		{
+			if (isRunning)
+			{
+				// Ensure the background calculation loop is stopped before disposing the collection
+				StopCalculationLoopAsync().GetAwaiter().GetResult();
+			}
 			pendingCalculations.Dispose();
 		}
 	}
