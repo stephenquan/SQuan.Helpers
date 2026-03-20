@@ -47,39 +47,45 @@ public partial class ExpressionPage : ContentPage
 				Children =
 				{
 					new Label { Text = "Enter X1" },
-					new Entry { }.Bind(Entry.TextProperty, "EM[/survey/x1]", BindingMode.TwoWay, source: this),
+					new Entry { }.Bind(Entry.TextProperty, BindingBase.Create(static (ExpressionPage p) => p.EM["/survey/x1"], BindingMode.TwoWay, source: this)),
 					new Label { Text = "Enter X2" },
-					new Entry { }.Bind(Entry.TextProperty, "Value", BindingMode.TwoWay, source: X2),
+					new Entry { }.Bind(Entry.TextProperty, BindingBase.Create(static (ExpressionNode n) => n.Value, BindingMode.TwoWay, source: X2)),
 					new Label { }.Bind(Label.TextProperty,
 						new Binding("[/survey/sum]", BindingMode.OneWay, source: EM),
 						new Binding("ValueType", BindingMode.OneWay, source: Sum),
 						new Binding("ValueKind", BindingMode.OneWay, source: Sum),
-						"Sum: {0} (valueType: {1}, valueKind: {2})"),
+						BindingBase.Create(static (ExpressionNode n) => n.IsDeterministic, BindingMode.OneWay, source: Sum),
+						"Sum: {0} (valueType: {1}, valueKind: {2}, isDeterministic: {3})"),
 					new Label { }.Bind(Label.TextProperty,
 						BindingBase.Create(static (ExpressionNode n) => n.Value, BindingMode.OneWay, source: Product),
 						BindingBase.Create(static (ExpressionNode n) => n.ValueType, BindingMode.OneWay, source: Product),
 						BindingBase.Create(static (ExpressionNode n) => n.ValueKind, BindingMode.OneWay, source: Product),
-						"Product: {0} (valueType: {1}, valueKind: {2})"),
+						BindingBase.Create(static (ExpressionNode n) => n.IsDeterministic, BindingMode.OneWay, source: Product),
+						"Product: {0} (valueType: {1}, valueKind: {2}, isDeterministic: {3})"),
 					new Label { }.Bind(Label.TextProperty,
 						BindingBase.Create(static (ExpressionNode n) => n.Value, BindingMode.OneWay, source: Hypotenuse),
 						BindingBase.Create(static (ExpressionNode n) => n.ValueType, BindingMode.OneWay, source: Hypotenuse),
 						BindingBase.Create(static (ExpressionNode n) => n.ValueKind, BindingMode.OneWay, source: Hypotenuse),
-						"Hypotenuse: {0} (valueType: {1}, valueKind: {2})"),
+						BindingBase.Create(static (ExpressionNode n) => n.IsDeterministic, BindingMode.OneWay, source: Hypotenuse),
+						"Hypotenuse: {0} (valueType: {1}, valueKind: {2}, isDeterministic: {3})"),
 					new Label { }.Bind(Label.TextProperty,
 						BindingBase.Create(static (ExpressionNode n) => n.Value, BindingMode.OneWay, source: SerialCode),
 						BindingBase.Create(static (ExpressionNode n) => n.ValueType, BindingMode.OneWay, source: SerialCode),
 						BindingBase.Create(static (ExpressionNode n) => n.ValueKind, BindingMode.OneWay, source: SerialCode),
-						"Serial Code: {0} (valueType: {1}, valueKind: {2})"),
+						BindingBase.Create(static (ExpressionNode n) => n.IsDeterministic, BindingMode.OneWay, source: SerialCode),
+						"Serial Code: {0} (valueType: {1}, valueKind: {2}, isDeterministic: {3})"),
 					new Label { }.Bind(Label.TextProperty,
 						BindingBase.Create(static (ExpressionNode n) => n.Value, BindingMode.OneWay, source: BadExpression),
 						BindingBase.Create(static (ExpressionNode n) => n.ValueType, BindingMode.OneWay, source: BadExpression),
 						BindingBase.Create(static (ExpressionNode n) => n.ValueKind, BindingMode.OneWay, source: BadExpression),
-						"Bad Expression: {0} (valueType: {1}, valueKind: {2})"),
+						BindingBase.Create(static (ExpressionNode n) => n.IsDeterministic, BindingMode.OneWay, source: BadExpression),
+						"Bad Expression: {0} (valueType: {1}, valueKind: {2}, isDeterministic: {3})"),
 					new Label { }.Bind(Label.TextProperty,
 						BindingBase.Create(static (ExpressionNode n) => n.Value, BindingMode.OneWay, source: RandomNumber),
 						BindingBase.Create(static (ExpressionNode n) => n.ValueType, BindingMode.OneWay, source: RandomNumber),
 						BindingBase.Create(static (ExpressionNode n) => n.ValueKind, BindingMode.OneWay, source: RandomNumber),
-						"Random Number: {0} (valueType: {1}, valueKind: {2})"),
+						BindingBase.Create(static (ExpressionNode n) => n.IsDeterministic, BindingMode.OneWay, source: RandomNumber),
+						"Random Number: {0} (valueType: {1}, valueKind: {2}, isDeterministic: {3})"),
 					new Button { Text = "Recalculate Random Number" }
 						.Invoke(b => b.Clicked += (s, e) => EM.RecalculateByNodeRef("/survey/random"))
 				}
@@ -125,9 +131,19 @@ public static class BindHelpers
 	public static T Bind<T>(
 		this T target,
 		BindableProperty targetProperty,
+		BindingBase binding) where T : BindableObject
+	{
+		target.SetBinding(targetProperty, binding);
+		return target;
+	}
+
+	public static T Bind<T>(
+		this T target,
+		BindableProperty targetProperty,
 		BindingBase binding1,
 		BindingBase binding2,
 		BindingBase binding3,
+		BindingBase binding4,
 		string stringFormat) where T : BindableObject
 	{
 		target.SetBinding(targetProperty, new MultiBinding
@@ -136,7 +152,8 @@ public static class BindHelpers
 			{
 				binding1,
 				binding2,
-				binding3
+				binding3,
+				binding4,
 			},
 			StringFormat = stringFormat
 		});
