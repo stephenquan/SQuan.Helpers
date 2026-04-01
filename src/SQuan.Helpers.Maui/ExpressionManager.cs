@@ -536,7 +536,7 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 				{
 					node.ValueKind = ExpressionValueKind.Default;
 					node.IsDeterministic = isDeterministic;
-					Logger?.LogTrace("Reseted {NodeRef} to {Value} (type={ValueType}, valueKind={ValueKind})", node.NodeRef, value, node.ValueType, node.ValueKind);
+					Logger?.LogTrace("Reset {NodeRef} to {Value} (type={ValueType}, valueKind={ValueKind})", node.NodeRef, value, node.ValueType, node.ValueKind);
 					InvokeOnUIThread(() =>
 					{
 						node.OnValueChanged();

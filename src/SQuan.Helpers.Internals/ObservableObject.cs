@@ -21,7 +21,7 @@ public partial class ObservableObject : INotifyPropertyChanged
 	/// <returns>true if the property value was changed and the notification was raised; otherwise, false.</returns>
 	protected bool SetProperty<TProperty>(ref TProperty storage, TProperty value, [CallerMemberName] string? propertyName = null)
 	{
-		if (EqualityComparer<TProperty>.Default.Equals(storage, value))
+		if (System.Collections.Generic.EqualityComparer<TProperty>.Default.Equals(storage, value))
 		{
 			return false;
 		}
