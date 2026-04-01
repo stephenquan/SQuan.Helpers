@@ -84,5 +84,10 @@
 		<Folder Include="Platforms\Tizen\" />
 		<Folder Include="Platforms\Windows\" />
 	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\SQuan.Helpers.Internals.SourceGenerators\SQuan.Helpers.Internals.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
+		<ProjectReference Include="..\SQuan.Helpers.Internals\SQuan.Helpers.Internals.csproj" />
+	</ItemGroup>
 
 </Project>

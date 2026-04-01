@@ -3,7 +3,7 @@
 namespace SQuan.Helpers.Maui;
 
 /// <summary>
-/// Represents the lifecycle state of an <see cref="ExpressionNode"/>.
+/// Represents the lifecycle state of an <see cref="IExpressionNode"/>.
 /// </summary>
 public enum ExpressionValueKind
 {
@@ -13,7 +13,17 @@ public enum ExpressionValueKind
 	Uninitialized,
 
 	/// <summary>
-	/// The node has a default value assigned by the system.
+	/// The node has been initialized with an expression, but the expression has not yet been parsed to produce an expression tree.
+	/// </summary>
+	PendingParsing,
+
+	/// <summary>
+	/// The node is in the process of being reset to the default expression.
+	/// </summary>
+	PendingReset,
+
+	/// <summary>
+	/// The node has been reset to the default expression.
 	/// </summary>
 	Default,
 
@@ -46,4 +56,9 @@ public enum ExpressionValueKind
 	/// The node's expression was parsed successfully, but an error occurred during evaluation (e.g. due to invalid input values or a runtime exception in a function).
 	/// </summary>
 	CalculateError,
+
+	/// <summary>
+	/// The node's expression was parsed successfully, but the node is currently in an error state and cannot be evaluated (e.g. due to a dependency on another node that is in an error state).
+	/// </summary>
+	ResetError,
 }

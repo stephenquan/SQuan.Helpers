@@ -6,6 +6,8 @@
   <Project Path="samples/SQuan.Helpers.Sample/SQuan.Helpers.Sample.csproj">
     <Deploy Solution="Debug|*" />
   </Project>
+  <Project Path="src/SQuan.Helpers.Internals.SourceGenerators/SQuan.Helpers.Internals.SourceGenerators.csproj" />
+  <Project Path="src/SQuan.Helpers.Internals/SQuan.Helpers.Internals.csproj" Id="eff83421-645b-430d-9333-9e8a72fd9567" />
   <Project Path="src/SQuan.Helpers.Maui.Localization/SQuan.Helpers.Maui.Localization.csproj" />
   <Project Path="src/SQuan.Helpers.Maui.Mvvm.SourceGenerators/SQuan.Helpers.Maui.Mvvm.SourceGenerators.csproj" />
   <Project Path="src/SQuan.Helpers.Maui.Mvvm/SQuan.Helpers.Maui.Mvvm.csproj" />
