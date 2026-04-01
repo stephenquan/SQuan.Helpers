@@ -1,20 +1,26 @@
 ﻿// LocalizationManager.shared.cs
 
-using System.ComponentModel;
 using System.Globalization;
 using Microsoft.Extensions.Localization;
-
+using SQuan.Helpers.Internals;
 namespace SQuan.Helpers.Maui.Localization;
 
 /// <summary>
 /// Provides functionality for managing and accessing localized resources.
 /// </summary>
-public partial class LocalizationManager : INotifyPropertyChanged
+public partial class LocalizationManager : ObservableObject
 {
 	/// <summary>
 	/// Gets or sets the options for localization behavior in the application.
 	/// </summary>
+	[Obsolete("This property is not currently used and may be removed in future versions.")]
 	public static LocalizationOptions Options { get; set; } = new LocalizationOptions();
+
+	/// <summary>
+	/// Gets or sets the resolver used to provide localized resources.
+	/// </summary>
+	[ObservableProperty]
+	public partial LocalizeResolver? Resolver { get; set; }
 
 	/// <summary>
 	/// Gets the collection of registered resources and their associated localization information.
@@ -37,7 +43,7 @@ public partial class LocalizationManager : INotifyPropertyChanged
 
 			StringResources[resourceType] = new LocalizationStringResourceInfo
 			{
-				Stringlocalizer = null,
+				Localizer = null,
 				IsInitialized = false
 			};
 		}
@@ -48,172 +54,82 @@ public partial class LocalizationManager : INotifyPropertyChanged
 		RegisterStringResource(typeof(T));
 	}
 
-	static LocalizationManager? instance = null;
-
 	/// <summary>
 	/// Gets the current instance of the <see cref="LocalizationManager"/>.
 	/// </summary>
-	public static LocalizationManager Current
-	{
-		get
-		{
-			if (instance is null)
-			{
-				instance = new LocalizationManager();
-			}
-			return instance;
-		}
-	}
+	public static LocalizationManager Current { get; } = new();
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="LocalizationManager"/> class.
 	/// </summary>
-	public LocalizationManager()
+	LocalizationManager()
 	{
-		IDispatcher? dispatcher = Application.Current?.Dispatcher;
-		if (dispatcher is not null)
-		{
-			var _timer = dispatcher.CreateTimer();
-			_timer.Interval = TimeSpan.FromSeconds(1);
-			_timer.Tick += (s, e) =>
-			{
-				this.Poll();
-			};
-			_timer.Start();
-		}
 	}
 
 	/// <summary>
 	/// Occurs when the installed UI culture of the application changes.
 	/// </summary>
+	[Obsolete("This event is not currently used and may be removed in future versions.")]
 	public event EventHandler? InstalledUICultureChanged;
 
 	/// <summary>
 	/// Occurs when the current culture of the application changes.
 	/// </summary>
+	[Obsolete("This event is not currently used and may be removed in future versions.")]
 	public event EventHandler? CurrentCultureChanged;
 
 	/// <summary>
 	/// Occurs when the current UI culture of the application changes.
 	/// </summary>
+	[Obsolete("This event is not currently used and may be removed in future versions.")]
 	public event EventHandler? CurrentUICultureChanged;
 
-	string? installedUICultureName = CultureInfo.InstalledUICulture.Name;
-
-	bool followInstalledUICulture = true;
-
 	/// <summary>Gets or sets a value indicating whether the current UI culture should follow the installed UI culture.</summary>
-	public bool FollowInstalledUICulture
-	{
-		get => followInstalledUICulture;
-		set
-		{
-			followInstalledUICulture = value;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FollowInstalledUICulture)));
-			if (value)
-			{
-				Poll();
-			}
-		}
-	}
+	[Obsolete("This property is not currently used and may be removed in future versions.")]
+	[ObservableProperty]
+	public partial bool FollowInstalledUICulture { get; set; }
 
 	/// <summary>Gets the current installed UI culture.</summary>
+	[Obsolete("This property is not currently used and may be removed in future versions.")]
 	public CultureInfo InstalledUICulture
 	{
 		get => CultureInfo.InstalledUICulture;
 	}
-
-	string? currentCultureName = CultureInfo.CurrentCulture.Name;
 
 	/// <summary>
 	/// Gets or sets the current culture used by the application.
 	/// </summary>
 	public CultureInfo CurrentCulture
 	{
-		get => CultureInfo.CurrentCulture;
-		set
-		{
-			if (value is not null && value.Name != CultureInfo.CurrentCulture.Name)
-			{
-				CultureInfo.CurrentCulture = value;
-				currentCultureName = value.Name;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentCulture)));
-				CurrentCultureChanged?.Invoke(this, EventArgs.Empty);
-			}
-		}
-	}
-
-	string? currentUICultureName = CultureInfo.CurrentUICulture.Name;
+		get;
+		set => SetProperty(ref field, CultureInfo.CurrentCulture = value);
+	} = CultureInfo.CurrentCulture;
 
 	/// <summary>
 	/// Gets or sets the current UI culture used by the application.
 	/// </summary>
 	public CultureInfo CurrentUICulture
 	{
-		get => CultureInfo.CurrentUICulture;
-		set
-		{
-			if (value is null)
-			{
-				FollowInstalledUICulture = true;
-				Poll();
-				return;
-			}
-
-			FollowInstalledUICulture = false;
-			CultureInfo.CurrentUICulture = value;
-			currentUICultureName = value.Name;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentUICulture)));
-			CurrentUICultureChanged?.Invoke(this, EventArgs.Empty);
-		}
-	}
+		get;
+		set => SetProperty(ref field, CultureInfo.CurrentUICulture = value);
+	} = CultureInfo.CurrentUICulture;
 
 	/// <summary>
 	/// Checks for changes in current culture settings.
 	/// </summary>
+	[Obsolete("This method is not currently used and may be removed in future versions.")]
 	public void Poll()
 	{
-		CultureInfo.InstalledUICulture.ClearCachedData();
-		if (installedUICultureName is null || installedUICultureName != CultureInfo.InstalledUICulture.Name)
-		{
-			installedUICultureName = CultureInfo.InstalledUICulture.Name;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(InstalledUICulture)));
-			InstalledUICultureChanged?.Invoke(this, EventArgs.Empty);
-		}
-
-		if (FollowInstalledUICulture)
-		{
-			CurrentUICulture = CultureInfo.InstalledUICulture;
-		}
-
-		CultureInfo.CurrentCulture.ClearCachedData();
-		if (currentCultureName is null || currentCultureName != CultureInfo.CurrentCulture.Name)
-		{
-			currentCultureName = CultureInfo.CurrentCulture.Name;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentCulture)));
-			CurrentCultureChanged?.Invoke(this, EventArgs.Empty);
-		}
-
-		CultureInfo.CurrentUICulture.ClearCachedData();
-		if (currentUICultureName is null || currentUICultureName != CultureInfo.CurrentUICulture.Name)
-		{
-			currentUICultureName = CultureInfo.CurrentUICulture.Name;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentUICulture)));
-			CurrentUICultureChanged?.Invoke(this, EventArgs.Empty);
-		}
 	}
 
-	/// <summary>
-	/// Gets a localized string for the specified key using the current culture.
-	/// </summary>
-	/// <param name="key"></param>
-	/// <param name="culture"></param>
-	/// <param name="args"></param>
-	/// <returns></returns>
-	public string GetString(string key, CultureInfo? culture = null, params object?[]? args)
+	static string GetResourceString(string key, CultureInfo culture)
 	{
-		CultureInfo? activeCulture = culture ?? CultureInfo.CurrentUICulture;
 		var services = IPlatformApplication.Current?.Services;
+
+		if (string.IsNullOrEmpty(key))
+		{
+			return string.Empty;
+		}
 
 		foreach (Type? resourceType in StringResources.Keys)
 		{
@@ -228,32 +144,50 @@ public partial class LocalizationManager : INotifyPropertyChanged
 				if (services is not null)
 				{
 					var stringLocalizerType = typeof(IStringLocalizer<>).MakeGenericType(new Type[] { resourceType });
-					info.Stringlocalizer = (IStringLocalizer?)services.GetService(stringLocalizerType);
+					info.Localizer = (IStringLocalizer?)services.GetService(stringLocalizerType);
 				}
 				info.IsInitialized = true;
 			}
 
-			if (info.Stringlocalizer is IStringLocalizer stringLocalizer)
+			if (info.Localizer is IStringLocalizer stringLocalizer)
 			{
 				var localizedString = stringLocalizer.GetString(key);
 				if (!localizedString.ResourceNotFound)
 				{
-					if (args is not null && args.Length > 0)
-					{
-						return string.Format(localizedString.Value, args);
-					}
-
 					return localizedString.Value;
 				}
 			}
 		}
 
-		return $"[{activeCulture.Name}] {key}";
+		return string.Empty;
 	}
 
 	/// <summary>
-	/// Occurs when a property value changes.
+	/// Gets the delegate used to resolve localized string resources based on a specified key.
 	/// </summary>
-	public event PropertyChangedEventHandler? PropertyChanged;
-}
+	public LocalizeResolver StringResourceResolver { get; } = GetResourceString;
 
+	/// <summary>
+	/// Gets a localized string for the specified key using the current culture.
+	/// </summary>
+	/// <param name="key">The key of the string resource.</param>
+	/// <param name="culture">The culture to use for localization.</param>
+	/// <param name="args">Optional arguments for string formatting.</param>
+	/// <returns>The localized string.</returns>
+	public string GetString(string key, CultureInfo? culture = null, params object?[]? args)
+	{
+		CultureInfo? _culture = culture ?? CultureInfo.CurrentUICulture;
+		var resolver = Resolver ?? StringResourceResolver;
+		if (resolver(key, _culture) is not string value)
+		{
+			return string.Empty;
+		}
+
+		if (args is not null && args.Length > 0)
+		{
+			value = string.Format(value, args);
+		}
+
+		return value;
+	}
+}

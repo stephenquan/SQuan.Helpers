@@ -1,11 +1,13 @@
-﻿using System.Globalization;
+﻿// LocalizeMultiValueConverter.shared.cs
+
+using System.Globalization;
 
 namespace SQuan.Helpers.Maui.Localization;
 
 /// <summary>
 /// Provides functionality to convert a value into a localized string based on a specified culture, key, and arguments.
 /// </summary>
-public class LocalizeMultiConverter : IMultiValueConverter
+class LocalizeMultiValueConverter : IMultiValueConverter
 {
 	/// <summary>
 	/// Converts a set of input values into a localized string based on the specified key and culture.
@@ -22,15 +24,42 @@ public class LocalizeMultiConverter : IMultiValueConverter
 	/// conditions.</returns>
 	public object? Convert(object?[] values, Type targetType, object? parameter, CultureInfo culture)
 	{
-		if (values.Length >= 2
+		if (values.Length >= 9
 			&& values[0] is string key
-			&& values[1] is CultureInfo cultureUICulture)
+			&& !string.IsNullOrEmpty(key)
+			&& values[1] is CultureInfo globalCulture
+			&& values[3] is CultureInfo globalUICulture
+			&& values[6] is LocalizeResolver stringResourceResolver
+			&& values[8] is object?[] args)
 		{
-			if (values.Length == 2)
+			var resolver = stringResourceResolver;
+			if (values[7] is LocalizeResolver scopedResolver)
 			{
-				return LocalizationManager.Current.GetString(key, cultureUICulture);
+				resolver = scopedResolver;
 			}
-			return LocalizationManager.Current.GetString(key, cultureUICulture, values.Skip(2).ToArray());
+			else if (values[5] is LocalizeResolver globalResolver)
+			{
+				resolver = globalResolver;
+			}
+
+			var currentCulture = globalCulture;
+			if (values[2] is CultureInfo scopedCulture)
+			{
+				currentCulture = scopedCulture;
+			}
+			var currentUICulture = globalUICulture;
+			if (values[4] is CultureInfo scopedUICulture)
+			{
+				currentUICulture = scopedUICulture;
+			}
+
+			var value = resolver(key, currentUICulture);
+			if (args.Length > 0)
+			{
+				value = string.Format(globalCulture, value, args);
+			}
+
+			return value;
 		}
 
 		return string.Empty;

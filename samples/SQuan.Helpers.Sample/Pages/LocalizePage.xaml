@@ -40,44 +40,65 @@
                 Text="{i18n:Localize BTN_CLICKED_N_TIMES,
                                      X0={Binding Count}}" />
 
-            <!--
             <Button
-                x:Name="CounterBtn"
-                Command="{Binding IncrementCounterCommand}"
-                HorizontalOptions="Start"
-                Text="{MultiBinding {i18n:Localize BTN_CLICKED_N_TIMES},
-                                    {Binding Count},
-                                    Converter={i18n:StringFormatConverter}}" />
-            -->
+                Command="{Binding ToggleAppCultureCommand}"
+                Text="{Binding CurrentUICulture.Name, x:DataType='i18n:LocalizationManager', Source={x:Static i18n:LocalizationManager.Current}}"
+                ZIndex="0" />
 
+            <Border Padding="10">
+                <i18n:LocalizeScope Spacing="25" UICulture="{Binding ScopedUICulture}">
+                    <Label
+                        HorizontalOptions="Start"
+                        HorizontalTextAlignment="Start"
+                        SemanticProperties.HeadingLevel="Level1"
+                        Style="{StaticResource Headline}"
+                        Text="{i18n:Localize LBL_HELLO}" />
 
-            <Label Text="Enter a value for X0" />
-            <local:MyNumericEntry Value="{Binding X0, Mode=TwoWay}" />
+                    <Label
+                        HorizontalOptions="Start"
+                        HorizontalTextAlignment="Start"
+                        SemanticProperties.Description="Welcome to dot net Multi platform App U I"
+                        SemanticProperties.HeadingLevel="Level2"
+                        Style="{StaticResource SubHeadline}"
+                        Text="{i18n:Localize LBL_WELCOME}" />
 
-            <Label Text="Enter a value for X1" />
-            <local:MyNumericEntry Value="{Binding X1, Mode=TwoWay}" />
+                    <Button
+                        Command="{Binding IncrementCounterCommand}"
+                        HorizontalOptions="Start"
+                        Text="{i18n:Localize BTN_CLICKED_N_TIMES,
+                                             X0={Binding Count}}" />
 
-            <Label Text="Enter a mathematical expression" />
-            <Entry Text="{Binding Expression, Mode=TwoWay}" />
+                    <Button
+                        Command="{Binding ToggleScopedCultureCommand}"
+                        Text="{Binding ScopedUICulture.Name}"
+                        ZIndex="0" />
+                </i18n:LocalizeScope>
+            </Border>
 
-            <Label Text="The result of the expression" />
-            <Label Text="{i18n:Localize LBL_RESULT, X0={local:Eval Expression={Binding Expression}, X0={Binding X0}, X1={Binding X1}}}" />
+            <Border Padding="10">
+                <i18n:LocalizeScope
+                    Resolver="{Binding FormContext.ITextResolver}"
+                    Spacing="25"
+                    UICulture="{Binding FormUICulture}">
 
-            <Label Text="Select a new date" />
-            <local:MyDateTimePicker Value="{Binding UserDate, Mode=TwoWay}" />
+                    <Label Text="{i18n:Localize '/survey/x1:label'}" />
+                    <Entry Text="{Binding FormContext[/survey/x1], Mode=TwoWay}" />
 
-            <Label Text="{Binding UserDate, StringFormat='Date selected: {0}'}" />
+                    <Label Text="{i18n:Localize '/survey/x2:label'}" />
+                    <Entry Text="{Binding FormContext[/survey/x2], Mode=TwoWay}" />
 
-            <Label Text="Localization" />
-            <HorizontalStackLayout Spacing="25">
-                <Button Command="{Binding ToggleCultureCommand}" Text="{i18n:Localize BTN_TOGGLE_CULTURE}" />
-                <Button Command="{Binding SystemCultureCommand}" Text="{i18n:Localize BTN_SYSTEM_CULTURE}" />
-            </HorizontalStackLayout>
+                    <Label Text="{i18n:Localize '/survey/sum:label'}" />
+                    <Entry Text="{Binding FormContext[/survey/sum], Mode=OneWay}" />
 
-            <Label Text="{Binding LM.InstalledUICulture.Name, StringFormat='InstalledUICulture: {0}'}" />
-            <Label Text="{Binding LM.CurrentUICulture.Name, StringFormat='CurrentUICulture: {0}'}" />
-            <Label Text="{Binding LM.CurrentCulture.Name, StringFormat='CurrentCulture: {0}'}" />
+                    <Label Text="{i18n:Localize '/survey/product:label'}" />
+                    <Entry Text="{Binding FormContext[/survey/product], Mode=OneWay}" />
 
+                    <Button
+                        Command="{Binding ToggleFormCultureCommand}"
+                        Text="{Binding FormUICulture.Name}"
+                        ZIndex="0" />
+                </i18n:LocalizeScope>
+            </Border>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

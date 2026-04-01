@@ -1,4 +1,6 @@
-﻿namespace SQuan.Helpers.Maui.Localization;
+﻿// LocalizeExtensionMethods.shared.cs
+
+namespace SQuan.Helpers.Maui.Localization;
 
 /// <summary>
 /// Provides extension methods for localization functionality.
@@ -16,9 +18,9 @@ public static class LocalizeExtensionMethods
 	/// <param name="key">The resource key used to retrieve the localized string.</param>
 	/// <param name="args">Optional arguments to format the localized string.</param>
 	/// <returns>The <see cref="BindableObject"/> with the applied localization binding, allowing for method chaining.</returns>
-	public static BindableObject Localize(this BindableObject bindable, BindableProperty targetProperty, string key, params object?[]? args)
+	public static BindableObject Localize(this BindableObject bindable, BindableProperty targetProperty, string key, params object?[] args)
 	{
-		bindable.SetBinding(targetProperty, LocalizeBinding.Create(key, args));
+		bindable.SetBinding(targetProperty, LocalizeBindingBase.Create(key, args));
 		return bindable;
 	}
 
@@ -33,9 +35,9 @@ public static class LocalizeExtensionMethods
 	/// <param name="args">Optional arguments to format the localized value. These arguments will be used to replace placeholders in the
 	/// localized string, if applicable.</param>
 	/// <returns>The <see cref="BindableObject"/> with the applied localized binding, allowing for method chaining.</returns>
-	public static BindableObject Localize(this BindableObject bindable, BindableProperty targetProperty, BindingBase? keyBinding, params object?[]? args)
+	public static BindableObject Localize(this BindableObject bindable, BindableProperty targetProperty, BindingBase keyBinding, params object?[] args)
 	{
-		bindable.SetBinding(targetProperty, LocalizeBinding.Create(keyBinding, args));
+		bindable.SetBinding(targetProperty, LocalizeBindingBase.Create(keyBinding, args));
 		return bindable;
 	}
 }

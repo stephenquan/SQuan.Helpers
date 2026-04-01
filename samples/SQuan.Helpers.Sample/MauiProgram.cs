@@ -28,6 +28,8 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
 
+		LocalizationManager.Current.Resolver = (key, culture) => AppStrings.ResourceManager.GetString(key, culture) ?? string.Empty;
+
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
