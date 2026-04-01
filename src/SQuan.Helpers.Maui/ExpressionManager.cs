@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace SQuan.Helpers.Maui;
 
 /// <summary>
-/// Manages a graph of <see cref="ExpressionNode{T}"/> instances and evaluates expressions
+/// Manages a graph of <see cref="ExpressionNode"/> instances and evaluates expressions
 /// asynchronously using a background calculation loop.
 /// The manager maintains dependency relationships between nodes, propagates value changes,
 /// and ensures calculations are performed in the correct order.
@@ -45,9 +45,9 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 	/// </summary>
 	public readonly ExpressionParserPlugin ParserPlugin = new();
 
-	readonly ConcurrentDictionary<string, IExpressionNode> expressions = new();
-	readonly BlockingCollection<IExpressionWorkItem> queuedWork = new();
-	readonly ConcurrentDictionary<IExpressionNode, byte> queuedNodes = new();
+	readonly ConcurrentDictionary<string, ExpressionNode> expressions = new();
+	readonly BlockingCollection<ExpressionWorkItem> queuedWork = new();
+	readonly ConcurrentDictionary<ExpressionNode, byte> queuedNodes = new();
 	readonly WeakEventManager propertyChangedEventManager = new();
 
 	volatile bool isRunning = false;
@@ -115,7 +115,7 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 	{
 		get
 		{
-			if (expressions.TryGetValue(nodeRef, out var node) && node is IExpressionNode _node)
+			if (expressions.TryGetValue(nodeRef, out var node) && node is ExpressionNode _node)
 			{
 				return _node.GetInternalValue();
 			}
@@ -123,16 +123,9 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 		}
 		set
 		{
-			if (expressions.TryGetValue(nodeRef, out var node) && node is IExpressionNode _node)
+			if (expressions.TryGetValue(nodeRef, out var node) && node is ExpressionNode _node)
 			{
-				IExpressionNode? _ = _node switch
-				{
-					ExpressionNode<int> nodeI => SetValue(nodeI, value, ExpressionValueKind.UserInput),
-					ExpressionNode<long> nodeL => SetValue(nodeL, value, ExpressionValueKind.UserInput),
-					ExpressionNode<double> nodeD => SetValue(nodeD, value, ExpressionValueKind.UserInput),
-					ExpressionNode<string> nodeS => SetValue(nodeS, value, ExpressionValueKind.UserInput),
-					_ => null
-				};
+				SetValue(_node, value, ExpressionValueKind.UserInput);
 			}
 		}
 	}
@@ -155,7 +148,7 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 	/// <returns>The current value, or null if the node does not exist.</returns>
 	public object? GetValue(string nodeRef)
 	{
-		if (expressions.TryGetValue(nodeRef, out var node) && node is IExpressionNode _node)
+		if (expressions.TryGetValue(nodeRef, out var node) && node is ExpressionNode _node)
 		{
 			return _node.GetInternalValue();
 		}
@@ -163,18 +156,18 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 	}
 
 	/// <summary>
-	/// Creates a new instance of the <see cref="ExpressionNode{T}"/> class associated with the specified node reference.
+	/// Creates a new instance of the <see cref="ExpressionNode"/> class associated with the specified node reference.
 	/// </summary>
 	/// <param name="nodeRef">The unique identifier for the node to create. Cannot be null.</param>
-	/// <returns>A new <see cref="ExpressionNode{T}"/> instance associated with the specified node reference.</returns>
-	public ExpressionNode<T> CreateNode<T>(string nodeRef)
+	/// <returns>A new <see cref="ExpressionNode"/> instance associated with the specified node reference.</returns>
+	public ExpressionNode CreateNode<T>(string nodeRef)
 	{
-		if (expressions.TryGetValue(nodeRef, out var _node) && _node is ExpressionNode<T> __node)
+		if (expressions.TryGetValue(nodeRef, out var _node) && _node is ExpressionNode __node)
 		{
 			__node.Clear();
 		}
 
-		var node = new ExpressionNode<T>
+		var node = new ExpressionNode
 		{
 			Owner = this,
 			NodeRef = nodeRef,
@@ -184,9 +177,9 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 		return node;
 	}
 
-	ExpressionNode<T> GetOrCreateNode<T>(string nodeRef)
+	ExpressionNode GetOrCreateNode<T>(string nodeRef)
 	{
-		if (expressions.TryGetValue(nodeRef, out var _node) && _node is ExpressionNode<T> __node)
+		if (expressions.TryGetValue(nodeRef, out var _node) && _node is ExpressionNode __node)
 		{
 			return __node;
 		}
@@ -202,18 +195,17 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 	/// <param name="value">The value to assign.</param>
 	/// <param name="kind">The reason for the value change.</param>
 	/// <returns>The affected node.</returns>
-	public ExpressionNode<T> SetValue<T>(string nodeRef, object? value, ExpressionValueKind kind = ExpressionValueKind.Default)
-		=> SetValue<T>(GetOrCreateNode<T>(nodeRef), value, kind);
+	public ExpressionNode SetValue<T>(string nodeRef, object? value, ExpressionValueKind kind = ExpressionValueKind.Default)
+		=> SetValue(GetOrCreateNode<T>(nodeRef), value, kind);
 
 	/// <summary>
 	/// Sets the value of a node with an explicit value type.
 	/// </summary>
-	/// <typeparam name="T">The expected value type.</typeparam>
 	/// <param name="node">The node to update.</param>
 	/// <param name="value">The value to assign.</param>
 	/// <param name="kind">The reason for the value change.</param>
 	/// <returns>The updated node.</returns>
-	public ExpressionNode<T> SetValue<T>(ExpressionNode<T> node, object? value, ExpressionValueKind kind = ExpressionValueKind.Default)
+	public ExpressionNode SetValue(ExpressionNode node, object? value, ExpressionValueKind kind = ExpressionValueKind.Default)
 	{
 		if (node.ValueKind == ExpressionValueKind.PendingParsing)
 		{
@@ -232,7 +224,7 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 
 			foreach (var outputKey in node.OutputNodeRefs.Keys)
 			{
-				if (expressions.TryGetValue(outputKey, out var outputNode) && outputNode is IExpressionNode _outputNode)
+				if (expressions.TryGetValue(outputKey, out var outputNode) && outputNode is ExpressionNode _outputNode)
 				{
 					//Logger?.LogTrace("Notifying output node {OutputNodeRef} of change in {NodeRef}", outputKey, node.NodeRef);
 					Recalculate(_outputNode);
@@ -249,17 +241,17 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 	/// <param name="nodeRef">The node reference.</param>
 	/// <param name="expression">The expression text.</param>
 	/// <returns>The affected node.</returns>
-	public ExpressionNode<T> SetExpression<T>(string nodeRef, string expression)
+	public ExpressionNode SetExpression<T>(string nodeRef, string expression)
 		=> SetExpression<T>(GetOrCreateNode<T>(nodeRef), expression);
 
-	ExpressionNode<T> SetExpression<T>(ExpressionNode<T> node, string expression)
+	ExpressionNode SetExpression<T>(ExpressionNode node, string expression)
 	{
 		Logger?.LogTrace("SetExpression {NodeRef} to {Expression} (type={ValueType})", node.NodeRef, expression, typeof(T));
 		node.Expression = expression;
 		node.ValueKind = ExpressionValueKind.PendingParsing;
 		if (queuedNodes.TryAdd(node, 0))
 		{
-			queuedWork.Add(new ExpressionWorkItemInitialize { Node = node });
+			queuedWork.Add(new ExpressionWorkItem { Node = node });
 		}
 		return node;
 	}
@@ -271,17 +263,17 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 	/// <param name="nodeRef">The node reference.</param>
 	/// <param name="expression">The default expression text.</param>
 	/// <returns>The affected node.</returns>
-	public ExpressionNode<T> SetDefault<T>(string nodeRef, string expression)
+	public ExpressionNode SetDefault<T>(string nodeRef, string expression)
 		=> SetDefault<T>(GetOrCreateNode<T>(nodeRef), expression);
 
-	ExpressionNode<T> SetDefault<T>(ExpressionNode<T> node, string expression)
+	ExpressionNode SetDefault<T>(ExpressionNode node, string expression)
 	{
 		Logger?.LogTrace("SetDefault {NodeRef} to {Expression} (type={ValueType})", node.NodeRef, expression, typeof(T));
 		node.DefaultExpression = expression;
 		node.ValueKind = ExpressionValueKind.PendingParsing;
 		if (queuedNodes.TryAdd(node, 0))
 		{
-			queuedWork.Add(new ExpressionWorkItemInitialize { Node = node });
+			queuedWork.Add(new ExpressionWorkItem { Node = node });
 		}
 		return node;
 	}
@@ -292,7 +284,7 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 	/// <param name="nodeRef">The node reference.</param>
 	public void Recalculate(string nodeRef)
 	{
-		if (expressions.TryGetValue(nodeRef, out var node) && node is IExpressionNode _node)
+		if (expressions.TryGetValue(nodeRef, out var node) && node is ExpressionNode _node)
 		{
 			Recalculate(_node);
 		}
@@ -302,7 +294,7 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 	/// Enqueues a specific node for recalculation.
 	/// </summary>
 	/// <param name="node">The node to recalculate.</param>
-	public void Recalculate(IExpressionNode node)
+	public void Recalculate(ExpressionNode node)
 	{
 		switch (node.ValueKind)
 		{
@@ -327,7 +319,7 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 
 		if (queuedNodes.TryAdd(node, 0))
 		{
-			queuedWork.Add(new ExpressionWorkItemCalculate { Node = node });
+			queuedWork.Add(new ExpressionWorkItem { Node = node });
 		}
 	}
 
@@ -337,7 +329,7 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 	/// <param name="nodeRef">The expression node to reset. This node must not be in an error state to be reset successfully.</param>
 	public void ResetToDefault(string nodeRef)
 	{
-		if (expressions.TryGetValue(nodeRef, out var node) && node is IExpressionNode _node)
+		if (expressions.TryGetValue(nodeRef, out var node) && node is ExpressionNode _node)
 		{
 			ResetToDefault(_node);
 		}
@@ -347,7 +339,7 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 	/// Resets the specified expression node to a pending reset state if it is in a valid state.
 	/// </summary>
 	/// <param name="node">The expression node to reset. This node must not be in an error state to be reset successfully.</param>
-	public void ResetToDefault(IExpressionNode node)
+	public void ResetToDefault(ExpressionNode node)
 	{
 		switch (node.ValueKind)
 		{
@@ -371,7 +363,7 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 
 		if (queuedNodes.TryAdd(node, 0))
 		{
-			queuedWork.Add(new ExpressionWorkItemReset { Node = node });
+			queuedWork.Add(new ExpressionWorkItem { Node = node });
 		}
 	}
 
@@ -399,28 +391,8 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 					try
 					{
 						var workItem = queuedWork.Take(ct);
-						if (workItem is ExpressionWorkItemNode workItemNode)
-						{
-							queuedNodes.TryRemove(workItemNode.Node, out _);
-						}
-
-						if (workItem is ExpressionWorkItemInitialize init)
-						{
-							_ = InitializeNow(init.Node, ct);
-							continue;
-						}
-
-						if (workItem is ExpressionWorkItemCalculate calculate)
-						{
-							_ = CalculateNow(calculate.Node, ct);
-							continue;
-						}
-
-						if (workItem is ExpressionWorkItemReset reset)
-						{
-							_ = ResetNow(reset.Node, ct);
-							continue;
-						}
+						ExpressionNode node = workItem.Node;
+						queuedNodes.TryRemove(node, out _);
 
 						if (workItem is ExpressionWorkItemQuit quit)
 						{
@@ -435,6 +407,36 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 
 							isRunning = false;
 							break;
+						}
+
+						switch (node.ValueKind)
+						{
+							case ExpressionValueKind.Uninitialized:
+							case ExpressionValueKind.PendingParsing:
+								if (!InitializeNow(node, ct))
+								{
+									Logger?.LogError("Failed to initialize {NodeRef}'s expression {Expression}", node.NodeRef, node.Expression);
+									continue;
+								}
+								CalculateNow(node, ct);
+								continue;
+							case ExpressionValueKind.Folder:
+							case ExpressionValueKind.UserInput:
+							case ExpressionValueKind.Calculated:
+							case ExpressionValueKind.PendingCalculation:
+								CalculateNow(node, ct);
+								continue;
+							case ExpressionValueKind.PendingReset:
+							case ExpressionValueKind.Default:
+								ResetNow(node, ct);
+								break;
+							case ExpressionValueKind.ResetError:
+							case ExpressionValueKind.ParseError:
+							case ExpressionValueKind.CalculateError:
+							default:
+								// Do nothing, won't be re-enqueued
+								Logger?.LogWarning("Node {NodeRef} is in error state ({ValueKind}), skipping calculation", node.NodeRef, node.ValueKind);
+								break;
 						}
 					}
 					catch (OperationCanceledException)
@@ -452,7 +454,7 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 		}, ct);
 	}
 
-	bool InitializeNow(IExpressionNode node, CancellationToken ct)
+	bool InitializeNow(ExpressionNode node, CancellationToken ct)
 	{
 		var parser = new ExpressionParser(ParserPlugin);
 		if (!string.IsNullOrEmpty(node.DefaultExpression))
@@ -476,11 +478,10 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 			node.SetTokens(parser.Tokens);
 			UpdateDependencyGraph(node);
 		}
-
-		return CalculateNow(node, ct);
+		return true;
 	}
 
-	bool CalculateNow(IExpressionNode node, CancellationToken ct)
+	bool CalculateNow(ExpressionNode node, CancellationToken ct)
 	{
 		switch (node.ValueKind)
 		{
@@ -518,7 +519,7 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 		return true;
 	}
 
-	bool ResetNow(IExpressionNode node, CancellationToken ct)
+	bool ResetNow(ExpressionNode node, CancellationToken ct)
 	{
 		switch (node.ValueKind)
 		{
@@ -569,12 +570,12 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 		}
 
 		isRunning = false;
-		queuedWork.Add(new ExpressionWorkItemQuit { RunId = currentRunId });
+		queuedWork.Add(new ExpressionWorkItemQuit { RunId = currentRunId, Node = ExpressionNode.Empty });
 		await task;
 		runningTask = null;
 	}
 
-	void UpdateDependencyGraph(IExpressionNode node)
+	void UpdateDependencyGraph(ExpressionNode node)
 	{
 		foreach (var inputNodeRef in node.GetInputNodeRefs())
 		{

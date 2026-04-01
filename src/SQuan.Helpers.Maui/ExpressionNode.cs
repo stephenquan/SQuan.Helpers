@@ -8,13 +8,18 @@ namespace SQuan.Helpers.Maui;
 
 /// <summary>
 /// Represents a single value or expression in the expression graph.
-/// The value of an <see cref="ExpressionNode{T}"/> can be set by user input or by evaluating the expression defined by the node.
-/// The <see cref="ExpressionManager"/> manages a collection of <see cref="ExpressionNode{T}"/>s and their dependencies,
+/// The value of an <see cref="ExpressionNode"/> can be set by user input or by evaluating the expression defined by the node.
+/// The <see cref="ExpressionManager"/> manages a collection of <see cref="ExpressionNode"/>s and their dependencies,
 /// and is responsible for evaluating the expressions and updating the values of the nodes accordingly.
 /// </summary>
-public partial class ExpressionNode<T> : ObservableObject, IExpressionNode
+public partial class ExpressionNode : ObservableObject
 {
 	static ILogger? logger;
+
+	/// <summary>
+	/// An empty expression node.
+	/// </summary>
+	public static ExpressionNode Empty { get; } = new();
 
 	/// <summary>
 	/// Logger used for diagnostics, tracing, and error reporting.
@@ -51,7 +56,7 @@ public partial class ExpressionNode<T> : ObservableObject, IExpressionNode
 	public string NodeRef { get; set; } = string.Empty;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="ExpressionNode{T}"/> class.
+	/// Initializes a new instance of the <see cref="ExpressionNode"/> class.
 	/// </summary>
 	public ExpressionNode()
 	{
@@ -63,7 +68,7 @@ public partial class ExpressionNode<T> : ObservableObject, IExpressionNode
 	public object? Value
 	{
 		get => InternalValue;
-		set => Owner?.SetValue<T>(this, value, ExpressionValueKind.UserInput);
+		set => Owner?.SetValue(this, value, ExpressionValueKind.UserInput);
 	}
 
 	/// <summary>
@@ -72,7 +77,7 @@ public partial class ExpressionNode<T> : ObservableObject, IExpressionNode
 	public string? TextValue
 	{
 		get => InternalValue?.ToString();
-		set => Owner?.SetValue<T>(this, value, ExpressionValueKind.UserInput);
+		set => Owner?.SetValue(this, value, ExpressionValueKind.UserInput);
 	}
 
 	/// <summary>
@@ -100,19 +105,24 @@ public partial class ExpressionNode<T> : ObservableObject, IExpressionNode
 		{
 			return SetNull();
 		}
-		if (value is string strValue && string.IsNullOrEmpty(strValue) && typeof(T) != typeof(string))
+		if (value is string strValue && string.IsNullOrEmpty(strValue) && ValueType != typeof(string))
 		{
 			return SetNull();
 		}
-		if (value is T typedValue)
+		if (!value.TryConvert(ValueType, out var convertedValue))
 		{
-			return SetInternalValue(typedValue);
+			return false;
 		}
-		if (value.TryConvert<T>(out var convertedValue) && convertedValue is not null)
+		if (convertedValue is null)
 		{
-			return SetInternalValue(convertedValue);
+			return SetNull();
 		}
-		return false;
+		if (convertedValue.Equals(InternalValue))
+		{
+			return false;
+		}
+		InternalValue = convertedValue;
+		return true;
 	}
 
 	bool SetNull()
@@ -122,20 +132,6 @@ public partial class ExpressionNode<T> : ObservableObject, IExpressionNode
 			return false;
 		}
 		InternalValue = null;
-		return true;
-	}
-
-	bool SetInternalValue(T? value)
-	{
-		if (value is null && InternalValue is null)
-		{
-			return false;
-		}
-		if (value is not null && value.Equals(InternalValue))
-		{
-			return false;
-		}
-		InternalValue = value;
 		return true;
 	}
 

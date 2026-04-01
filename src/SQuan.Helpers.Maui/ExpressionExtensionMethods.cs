@@ -9,7 +9,7 @@ namespace SQuan.Helpers.Maui;
 /// <summary>
 /// Helper extension methods used by the expression engine for:
 /// type coercion of evaluated values, adapting strongly-typed delegates to an object[] call-site,
-/// and initializing/evaluating <see cref="ExpressionNode{T}"/> instances.
+/// and initializing/evaluating <see cref="ExpressionNode"/> instances.
 /// </summary>
 public static class ExpressionExtensionMethods
 {
