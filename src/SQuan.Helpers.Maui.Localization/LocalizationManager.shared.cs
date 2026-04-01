@@ -99,22 +99,20 @@ public partial class LocalizationManager : ObservableObject
 	/// <summary>
 	/// Gets or sets the current culture used by the application.
 	/// </summary>
-	public partial CultureInfo CurrentCulture { get; set; } = CultureInfo.CurrentCulture;
-	public partial CultureInfo CurrentCulture
+	public CultureInfo CurrentCulture
 	{
-		get => field;
+		get;
 		set => SetProperty(ref field, CultureInfo.CurrentCulture = value);
-	}
+	} = CultureInfo.CurrentCulture;
 
 	/// <summary>
 	/// Gets or sets the current UI culture used by the application.
 	/// </summary>
-	public partial CultureInfo CurrentUICulture { get; set; } = CultureInfo.CurrentUICulture;
-	public partial CultureInfo CurrentUICulture
+	public CultureInfo CurrentUICulture
 	{
-		get => field;
+		get;
 		set => SetProperty(ref field, CultureInfo.CurrentUICulture = value);
-	}
+	} = CultureInfo.CurrentUICulture;
 
 	/// <summary>
 	/// Checks for changes in current culture settings.
