@@ -1,4 +1,8 @@
-﻿namespace SQuan.Helpers.Maui.Localization;
+﻿// LocalizeExtension.shared.cs
+
+using SQuan.Helpers.Internals;
+
+namespace SQuan.Helpers.Maui.Localization;
 
 /// <summary>
 /// A markup extension that provides localized strings based on a specified key.
@@ -8,48 +12,70 @@
 public partial class LocalizeExtension : BindableObject, IMarkupExtension<BindingBase>
 {
 	/// <summary>
-	/// Bindable proeprty for <see cref="Key"/>."/>
-	/// </summary>
-	public static readonly BindableProperty KeyProperty = BindableProperty.Create(nameof(Key), typeof(string), typeof(LocalizeExtension), string.Empty);
-
-	/// <summary>
 	/// Gets or sets the localization key for the string to be translated.
 	/// </summary>
-	public string Key
-	{
-		get => (string)GetValue(KeyProperty);
-		set => SetValue(KeyProperty, value);
-	}
+	[BindableProperty]
+	public partial string Key { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {0} to be used for formatting the localized string.
 	/// </summary>
-	public object? X0 { get; set; }
+	[BindableProperty]
+	public partial object? X0 { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {1} to be used for formatting the localized string.
 	/// </summary>
-	public object? X1 { get; set; }
+	[BindableProperty]
+	public partial object? X1 { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {2} to be used for formatting the localized string.
 	/// </summary>
-	public object? X2 { get; set; }
+	[BindableProperty]
+	public partial object? X2 { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {3} to be used for formatting the localized string.
 	/// </summary>
-	public object? X3 { get; set; }
+	[BindableProperty]
+	public partial object? X3 { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {4} to be used for formatting the localized string.
 	/// </summary>
-	public object? X4 { get; set; }
+	[BindableProperty]
+	public partial object? X4 { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {5} to be used for formatting the localized string.
 	/// </summary>
-	public object? X5 { get; set; }
+	[BindableProperty]
+	public partial object? X5 { get; set; }
+
+	/// <summary>
+	/// Gets or sets the argument value for {6} to be used for formatting the localized string.
+	/// </summary>
+	[BindableProperty]
+	public partial object? X6 { get; set; }
+
+	/// <summary>
+	/// Gets or sets the argument value for {7} to be used for formatting the localized string.
+	/// </summary>
+	[BindableProperty]
+	public partial object? X7 { get; set; }
+
+	/// <summary>
+	/// Gets or sets the argument value for {8} to be used for formatting the localized string.
+	/// </summary>
+	[BindableProperty]
+	public partial object? X8 { get; set; }
+
+	/// <summary>
+	/// Gets or sets the argument value for {9} to be used for formatting the localized string.
+	/// </summary>
+	[BindableProperty]
+	public partial object? X9 { get; set; }
 
 	/// <summary>
 	/// Provides a binding object based on the specified service provider.
@@ -70,11 +96,21 @@ public partial class LocalizeExtension : BindableObject, IMarkupExtension<Bindin
 			}
 		}
 
-		object?[] args = [X0, X1, X2, X3, X4, X5];
-
-		return LocalizeBinding.Create(
+		return LocalizeBindingBase.Create(
 			BindingBase.Create(static (LocalizeExtension ctx) => ctx.Key, BindingMode.OneWay, source: this),
-			args.ToArray());
+			new List<BindingBase>
+			{
+				new Binding("X0", BindingMode.OneWay, source: this),
+				new Binding("X1", BindingMode.OneWay, source: this),
+				new Binding("X2", BindingMode.OneWay, source: this),
+				new Binding("X3", BindingMode.OneWay, source: this),
+				new Binding("X4", BindingMode.OneWay, source: this),
+				new Binding("X5", BindingMode.OneWay, source: this),
+				new Binding("X6", BindingMode.OneWay, source: this),
+				new Binding("X7", BindingMode.OneWay, source: this),
+				new Binding("X8", BindingMode.OneWay, source: this),
+				new Binding("X9", BindingMode.OneWay, source: this),
+			});
 	}
 
 	object IMarkupExtension.ProvideValue(IServiceProvider serviceProvider)
