@@ -22,6 +22,11 @@ public partial class ExpressionParser
 	/// </summary>
 	public bool IsValid { get; private set; } = false;
 
+	/// <summary>
+	/// Indicates whether the parsed expression is deterministic.
+	/// </summary>
+	public bool IsDeterministic { get; private set; } = true;
+
 	ExpressionParserPlugin plugin;
 	string key = string.Empty;
 	string expression = string.Empty;
@@ -49,6 +54,7 @@ public partial class ExpressionParser
 		this.key = key;
 		this.expression = expression;
 		this.index = 0;
+		this.IsDeterministic = true;
 		this.Tokens.Clear();
 
 		IsValid = TryParseExpr();
@@ -145,6 +151,7 @@ public partial class ExpressionParser
 		if (TryParseMatch(plugin.NodeAbsoluteRegex) && match is not null)
 		{
 			Tokens.Add(new ExpressionToken(ExpressionTokenType.Node, match.Groups[1].Value));
+			IsDeterministic = false;
 			return true;
 		}
 		if (TryParseIdentifierOrFunction())
@@ -158,7 +165,6 @@ public partial class ExpressionParser
 		return false;
 	}
 	#endregion
-
 
 	/// <summary>
 	/// Attempts to parse a numeric constant.
@@ -237,6 +243,7 @@ public partial class ExpressionParser
 			{
 				SkipWhitespace();
 				Tokens.Add(new(ExpressionTokenType.Node, nodeName));
+				IsDeterministic = false;
 				return true;
 			}
 			index = __index;
@@ -279,6 +286,10 @@ public partial class ExpressionParser
 			{
 				if (plugin.Functions.TryGetValue(identifier, out var _functionInfo) && _functionInfo is not null && _functionInfo.AritySpec.IsZero)
 				{
+					if (!_functionInfo.IsDeterministic)
+					{
+						IsDeterministic = false;
+					}
 					if (_functionInfo.IsDeterministic)
 					{
 						try
@@ -326,6 +337,10 @@ public partial class ExpressionParser
 			}
 			if (plugin.Functions.TryGetValue(identifier, out var functionInfo) && functionInfo is not null && (functionInfo.AritySpec.Accepts(arity)))
 			{
+				if (!functionInfo.IsDeterministic)
+				{
+					IsDeterministic = false;
+				}
 				if (functionInfo.IsDeterministic
 					&& Tokens.Count >= arity
 					&& Tokens.Skip(Tokens.Count - arity).Take(arity).ToList() is List<ExpressionToken> lastArgs
