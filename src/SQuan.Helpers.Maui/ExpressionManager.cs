@@ -420,6 +420,8 @@ public partial class ExpressionManager : INotifyPropertyChanged, IDisposable
 								}
 								CalculateNow(node, ct);
 								continue;
+							case ExpressionValueKind.Folder:
+							case ExpressionValueKind.UserInput:
 							case ExpressionValueKind.Calculated:
 							case ExpressionValueKind.PendingCalculation:
 								CalculateNow(node, ct);

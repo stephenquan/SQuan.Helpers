@@ -105,23 +105,23 @@ public partial class ExpressionNode : ObservableObject
 		{
 			return SetNull();
 		}
-		if (value is string strValue && string.IsNullOrEmpty(strValue) && typeof(ValueType) != typeof(string))
+		if (value is string strValue && string.IsNullOrEmpty(strValue) && ValueType != typeof(string))
 		{
 			return SetNull();
 		}
-		if (value.TryConvert(ValueType, out var convertedValue) && convertedValue is not null)
-		{
-			value = convertedValue;
-		}
-		if (value is null)
-		{
-			return SetNull();
-		}
-		if (value.Equals(InternalValue))
+		if (!value.TryConvert(ValueType, out var convertedValue))
 		{
 			return false;
 		}
-		InternalValue = value;
+		if (convertedValue is null)
+		{
+			return SetNull();
+		}
+		if (convertedValue.Equals(InternalValue))
+		{
+			return false;
+		}
+		InternalValue = convertedValue;
 		return true;
 	}
 
