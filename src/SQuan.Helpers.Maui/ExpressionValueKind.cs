@@ -3,7 +3,7 @@
 namespace SQuan.Helpers.Maui;
 
 /// <summary>
-/// Represents the lifecycle state of an <see cref="IExpressionNode"/>.
+/// Represents the lifecycle state of an <see cref="ExpressionNode"/>.
 /// </summary>
 public enum ExpressionValueKind
 {

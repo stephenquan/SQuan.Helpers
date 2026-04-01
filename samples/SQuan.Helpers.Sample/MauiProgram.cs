@@ -32,6 +32,7 @@ public static class MauiProgram
 
 #if DEBUG
 		builder.Logging.AddDebug();
+		//builder.Logging.AddFilter("SQuan.Helpers.Maui", LogLevel.Trace);
 #endif
 
 		SamplesHelper.RegisterSample("Aspect Demo", nameof(AspectPage), typeof(AspectPage));

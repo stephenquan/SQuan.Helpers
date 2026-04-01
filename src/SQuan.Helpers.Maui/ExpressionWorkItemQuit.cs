@@ -2,7 +2,7 @@
 
 namespace SQuan.Helpers.Maui;
 
-class ExpressionWorkItemQuit : IExpressionWorkItem
+class ExpressionWorkItemQuit : ExpressionWorkItem
 {
 	public long RunId { get; init; }
 }

@@ -16,14 +16,14 @@ public partial class ExpressionPage : ContentPage
 	public ExpressionManager EM { get; }
 	CancellationTokenSource? cts;
 
-	public ExpressionNode<double> X1 { get; }
-	public ExpressionNode<double> X2 { get; }
-	public ExpressionNode<double> Sum { get; }
-	public ExpressionNode<double> Product { get; }
-	public ExpressionNode<double> Hypotenuse { get; }
-	public ExpressionNode<string> SerialCode { get; }
-	public ExpressionNode<double> BadExpression { get; }
-	public ExpressionNode<double> RandomNumber { get; }
+	public ExpressionNode X1 { get; }
+	public ExpressionNode X2 { get; }
+	public ExpressionNode Sum { get; }
+	public ExpressionNode Product { get; }
+	public ExpressionNode Hypotenuse { get; }
+	public ExpressionNode SerialCode { get; }
+	public ExpressionNode BadExpression { get; }
+	public ExpressionNode RandomNumber { get; }
 
 	public ExpressionPage()
 	{
