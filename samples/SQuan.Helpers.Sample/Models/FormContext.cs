@@ -2,54 +2,23 @@
 
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
+using SQuan.Helpers.Maui;
 using SQuan.Helpers.Maui.Localization;
 
 namespace SQuan.Helpers.Sample;
 
 public partial class FormContext : ObservableObject
 {
-	double? x1 = 3.0;
-	double? x2 = 4.0;
+	public ExpressionManager EM { get; }
 
-	public object? this[string nodeRef]
+	public FormContext(ExpressionManager em)
 	{
-		get => nodeRef switch
-		{
-			"/survey/x1" => x1,
-			"/survey/x2" => x2,
-			"/survey/sum" => (x1, x2) is (double a, double b) ? a + b : null,
-			"/survey/product" => (x1, x2) is (double a, double b) ? a * b : null,
-			_ => null
-		};
-		set => _ = nodeRef switch
-		{
-			"/survey/x1" => SetValueCore(nodeRef, x1, coerceValue(value), (v) => x1 = v),
-			"/survey/x2" => SetValueCore(nodeRef, x2, coerceValue(value), (v) => x2 = v),
-			_ => false
-		};
+		this.EM = em;
+		em.SetValue<double>("/survey/x1", 3);
+		em.SetValue<double>("/survey/x2", 4);
+		em.SetExpression<double>("/survey/sum", "/survey/x1 + /survey/x2");
+		em.SetExpression<double>("/survey/product", "/survey/x1 * /survey/x2");
 	}
-
-	bool SetValueCore(string nodeRef, double? oldValue, double? newValue, Action<double?> setter)
-	{
-		if (newValue != oldValue)
-		{
-			setter(newValue);
-			OnPropertyChanged($"Item[{nodeRef}]");
-			OnPropertyChanged("Item[/survey/sum]");
-			OnPropertyChanged("Item[/survey/product]");
-			return true;
-		}
-		return false;
-	}
-
-	static double? coerceValue(object? value)
-		=> value switch
-		{
-			null => null,
-			double d => d,
-			string s when !string.IsNullOrEmpty(s) && double.TryParse(s, out var parsed) => parsed,
-			_ => null
-		};
 
 	static Dictionary<string, string> itextDictionary = new Dictionary<string, string>
 	{

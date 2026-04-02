@@ -1,15 +1,25 @@
 // LocalizePage.xaml.cs
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using SQuan.Helpers.Maui;
 using SQuan.Helpers.Maui.Localization;
 using SQuan.Helpers.Maui.Mvvm;
 using RelayCommandAttribute = CommunityToolkit.Mvvm.Input.RelayCommandAttribute;
 
 namespace SQuan.Helpers.Sample;
 
+[SuppressMessage(
+	"Design",
+	"CA1001:Types that own disposable fields should be disposable",
+	Justification = "The CancellationTokenSource is created and disposed through the page lifecycle in OnAppearing and OnDisappearing.")]
 public partial class LocalizePage : ContentPage
 {
-	public FormContext FormContext { get; } = new();
+	CancellationTokenSource? cts;
+	ExpressionManager em;
+	bool initialized = false;
+
+	public FormContext FormContext { get; }
 	[ObservableProperty] public partial int Count { get; internal set; } = 0;
 	[BindableProperty] public partial CultureInfo ScopedUICulture { get; set; } = cultureEN;
 	[BindableProperty] public partial CultureInfo FormUICulture { get; set; } = cultureEN;
@@ -20,8 +30,30 @@ public partial class LocalizePage : ContentPage
 
 	public LocalizePage()
 	{
+		em = new ExpressionManager();
+		FormContext = new(em);
 		BindingContext = this;
 		InitializeComponent();
+	}
+
+	protected override void OnAppearing()
+	{
+		base.OnAppearing();
+		if (!initialized)
+		{
+			initialized = true;
+			cts = new CancellationTokenSource();
+			em.StartWorkLoop(cts.Token);
+		}
+	}
+
+	protected override void OnDisappearing()
+	{
+		base.OnDisappearing();
+		cts?.Cancel();
+		cts?.Dispose();
+		cts = null;
+		initialized = false;
 	}
 
 	[RelayCommand]

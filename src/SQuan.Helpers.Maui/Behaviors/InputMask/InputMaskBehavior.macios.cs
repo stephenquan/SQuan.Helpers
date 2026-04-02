@@ -1,10 +1,14 @@
 ﻿// InputMaskBehavior.macios.cs
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace SQuan.Helpers.Maui;
 
-#pragma warning disable CA1001 // Suppress: Type 'InputMaskBehavior' owns disposable field(s) but is not disposable.
-
 /// <inheritdoc />
+[SuppressMessage(
+	"Design",
+	"CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable",
+	Justification = "This behavior does not own delegate lifetimes. UIKit owns delegates; they are swapped and released in OnAttachedTo/OnDetachedFrom.")]
 public partial class InputMaskBehavior : PlatformBehavior<InputView>
 {
 	UIKit.IUITextFieldDelegate? originalTextFieldDelegate;

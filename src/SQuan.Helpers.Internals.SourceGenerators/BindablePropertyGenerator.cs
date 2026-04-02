@@ -16,8 +16,17 @@ namespace SQuan.Helpers.Internals.SourceGenerators;
 [Generator(LanguageNames.CSharp)]
 public sealed class BindablePropertyGenerator : IIncrementalGenerator
 {
-	const string kTargetAttributeMetadataName = "SQuan.Helpers.Internals.BindablePropertyAttribute";
-	const string kTargetAttributeFullyQualifiedName = "global::SQuan.Helpers.Internals.BindablePropertyAttribute";
+	/// <summary>
+	/// Gets or sets the name of the metadata type associated with the target attribute used for property binding.
+	/// </summary>
+	public string TargetAttributeMetadataName { get; set; } = "SQuan.Helpers.Internals.BindablePropertyAttribute";
+
+	/// <summary>
+	/// Gets or sets the name of the target attribute used for property binding, including its fully qualified namespace.
+	/// </summary>
+	public string TargetAttributeFullyQualifiedName { get; set; } = "global::SQuan.Helpers.Internals.BindablePropertyAttribute";
+
+	static readonly string sGeneratedPrefix = "SQGEN_";
 
 	static bool IsVerboseEnabled { get; } = true;
 
@@ -83,9 +92,9 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
 		IncrementalValueProvider<INamedTypeSymbol?> attributeSymbolProvider =
-			context.CompilationProvider.Select(static (compilation, _) =>
+			context.CompilationProvider.Select((compilation, _) =>
 			{
-				return compilation.GetTypeByMetadataName(kTargetAttributeMetadataName);
+				return compilation.GetTypeByMetadataName(TargetAttributeMetadataName);
 			});
 
 		// Validation pipeline: find properties with [BindableProperty] that are NOT partial, report diagnostic.
@@ -131,7 +140,7 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 		IncrementalValuesProvider<(PropertyDeclarationSyntax Syntax, IPropertySymbol Symbol)> invalidAttributedPropertiesVerified =
 			invalidAttributedProperties
 				.Combine(attributeSymbolProvider)
-				.Where(static pair =>
+				.Where(pair =>
 				{
 					// If we can't resolve the attribute type, we can't verify it is *your* attribute.
 					// Still, you likely want to know, so we allow it only when verbose is enabled.
@@ -157,7 +166,7 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 		});
 
 		// Candidate partial properties (must be partial + has attributes)
-		IncrementalValuesProvider<IPropertySymbol> candidateProperties =
+		IncrementalValuesProvider<(PropertyDeclarationSyntax Syntax, IPropertySymbol Symbol)> candidateProperties =
 			context.SyntaxProvider.CreateSyntaxProvider(
 					predicate: static (node, _) =>
 					{
@@ -165,39 +174,41 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 					},
 					transform: static (ctx, _) =>
 					{
-						return GetPropertySymbol(ctx);
+						var syntax = (PropertyDeclarationSyntax)ctx.Node;
+						var symbol = ctx.SemanticModel.GetDeclaredSymbol(syntax) as IPropertySymbol;
+						return (Syntax: syntax, Symbol: symbol);
 					})
-				.Where(static symbol =>
+				.Where(static x =>
 				{
-					return symbol is not null;
+					return x.Symbol is not null;
 				})!
-				.Select(static (symbol, _) =>
+				.Select(static (x, _) =>
 				{
-					return symbol!;
+					return (x.Syntax, x.Symbol!);
 				});
 
 		// Filter to those actually annotated with your attribute
-		IncrementalValuesProvider<IPropertySymbol> annotatedProperties =
+		IncrementalValuesProvider<(PropertyDeclarationSyntax Syntax, IPropertySymbol Symbol)> annotatedProperties =
 			candidateProperties
 				.Combine(attributeSymbolProvider)
-				.Where(static pair =>
+				.Where(pair =>
 				{
 					if (pair.Right is null)
 					{
 						return false;
 					}
 
-					return HasBindablePropertyAttribute(pair.Left, pair.Right);
+					return HasBindablePropertyAttribute(pair.Left.Symbol, pair.Right);
 				})
 				.Select(static (pair, _) =>
 				{
 					return pair.Left;
 				});
 
-		IncrementalValueProvider<ImmutableArray<IPropertySymbol>> candidatesCollected = candidateProperties.Collect();
-		IncrementalValueProvider<ImmutableArray<IPropertySymbol>> annotatedCollected = annotatedProperties.Collect();
+		IncrementalValueProvider<ImmutableArray<(PropertyDeclarationSyntax Syntax, IPropertySymbol Symbol)>> candidatesCollected = candidateProperties.Collect();
+		IncrementalValueProvider<ImmutableArray<(PropertyDeclarationSyntax Syntax, IPropertySymbol Symbol)>> annotatedCollected = annotatedProperties.Collect();
 
-		context.RegisterSourceOutput(attributeSymbolProvider, static (spc, attrSymbol) =>
+		context.RegisterSourceOutput(attributeSymbolProvider, (spc, attrSymbol) =>
 		{
 			if (!IsVerboseEnabled)
 			{
@@ -206,7 +217,7 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 
 			if (attrSymbol is null)
 			{
-				spc.ReportDiagnostic(Diagnostic.Create(sAttributeNotFoundDescriptor, Location.None, kTargetAttributeMetadataName));
+				spc.ReportDiagnostic(Diagnostic.Create(sAttributeNotFoundDescriptor, Location.None, TargetAttributeMetadataName));
 			}
 			else
 			{
@@ -238,7 +249,7 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 		});
 
 		// Output generation (no Cast<> needed anywhere)
-		context.RegisterSourceOutput(annotatedCollected, static (spc, properties) =>
+		context.RegisterSourceOutput(annotatedCollected, (spc, properties) =>
 		{
 			try
 			{
@@ -247,8 +258,8 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 					return;
 				}
 
-				foreach (IGrouping<ISymbol?, IPropertySymbol> _group in
-						 properties.GroupBy(p => p.ContainingType, SymbolEqualityComparer.Default))
+				foreach (IGrouping<ISymbol?, (PropertyDeclarationSyntax Syntax, IPropertySymbol Symbol)> _group in
+						 properties.GroupBy(p => p.Symbol.ContainingType, SymbolEqualityComparer.Default))
 				{
 					if (_group.Key is not INamedTypeSymbol containingType)
 					{
@@ -293,61 +304,7 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 		return true;
 	}
 
-	static IPropertySymbol? GetPropertySymbol(GeneratorSyntaxContext context)
-	{
-		if (context.Node is not PropertyDeclarationSyntax p)
-		{
-			return null;
-		}
-
-		if (p.AccessorList is null)
-		{
-			return null;
-		}
-
-		bool hasGet = false;
-		bool hasSet = false;
-
-		foreach (AccessorDeclarationSyntax a in p.AccessorList.Accessors)
-		{
-			if (a.Body is not null || a.ExpressionBody is not null)
-			{
-				return null;
-			}
-
-			if (a.IsKind(SyntaxKind.GetAccessorDeclaration))
-			{
-				hasGet = true;
-			}
-			else if (a.IsKind(SyntaxKind.SetAccessorDeclaration))
-			{
-				hasSet = true;
-			}
-			else if (a.IsKind(SyntaxKind.InitAccessorDeclaration))
-			{
-				return null;
-			}
-		}
-
-		if (!hasGet || !hasSet)
-		{
-			return null;
-		}
-
-		if (context.SemanticModel.GetDeclaredSymbol(p) is not IPropertySymbol symbol)
-		{
-			return null;
-		}
-
-		if (symbol.IsStatic)
-		{
-			return null;
-		}
-
-		return symbol;
-	}
-
-	static bool HasBindablePropertyAttribute(IPropertySymbol property, INamedTypeSymbol attributeSymbol)
+	bool HasBindablePropertyAttribute(IPropertySymbol property, INamedTypeSymbol attributeSymbol)
 	{
 		foreach (AttributeData a in property.GetAttributes())
 		{
@@ -364,7 +321,7 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 
 			// Robust fallback (multi-targeting / symbol identity oddities)
 			string fqn = cls.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-			if (string.Equals(fqn, kTargetAttributeFullyQualifiedName, StringComparison.Ordinal))
+			if (string.Equals(fqn, TargetAttributeFullyQualifiedName, StringComparison.Ordinal))
 			{
 				return true;
 			}
@@ -394,7 +351,7 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 		return false;
 	}
 
-	static string GenerateForType(INamedTypeSymbol type, ImmutableArray<IPropertySymbol> properties)
+	string GenerateForType(INamedTypeSymbol type, ImmutableArray<(PropertyDeclarationSyntax Syntax, IPropertySymbol Symbol)> properties)
 	{
 		var sb = new StringBuilder();
 		sb.AppendLine("// <auto-generated/>");
@@ -450,16 +407,19 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 			indent++;
 		}
 
-		foreach (ISymbol? s in properties.Distinct(SymbolEqualityComparer.Default))
+		foreach ((PropertyDeclarationSyntax syntax, IPropertySymbol s) in properties)
 		{
 			if (s is not IPropertySymbol p)
 			{
 				continue;
 			}
 
-			bool hasInitializer = true;
+			bool hasInitializer = syntax.Initializer is not null;
 			var pTypeFullyQualifyFormat = p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 			var pTypeWithNullabilityFormat = p.Type.ToDisplayString(sTypeWithNullabilityFormat);
+			AttributeInfo? info = GetBindablePropertyAttributeInfo(p);
+			string getAccessorModifier = GetAccessorModifier(p, isGet: true);
+			string setAccessorModifier = GetAccessorModifier(p, isGet: false);
 
 			AppendIndent(sb, indent);
 			sb.AppendLine("/// <summary>");
@@ -482,11 +442,100 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 			  .Append("), typeof(")
 			  .Append(p.ContainingType?.Name ?? "null")
 			  .Append(")");
+
+			if (info is not null)
+			{
+				if (info.UseStaticCallbacks)
+				{
+					if (info.PropertyChangedMethodName is string _propertyChangedMethodName
+						&& !string.IsNullOrWhiteSpace(_propertyChangedMethodName))
+					{
+						sb.AppendLine(",");
+						AppendIndent(sb, indent + 1);
+						sb.Append("propertyChanged: ")
+						  .Append(_propertyChangedMethodName);
+					}
+
+					if (info.PropertyChangingMethodName is string _propertyChangingMethodName
+						&& !string.IsNullOrWhiteSpace(_propertyChangingMethodName))
+					{
+						sb.AppendLine(",");
+						AppendIndent(sb, indent + 1);
+						sb.Append("propertyChanging: ")
+						  .Append(_propertyChangingMethodName);
+					}
+
+					if (info.CoerceValueMethodName is string _coerceValueMethodName
+						&& !string.IsNullOrWhiteSpace(_coerceValueMethodName))
+					{
+						sb.AppendLine(",");
+						AppendIndent(sb, indent + 1);
+						sb.Append("coerceValue: ")
+						  .Append(_coerceValueMethodName);
+					}
+				}
+				else
+				{
+					sb.AppendLine(",");
+					AppendIndent(sb, indent + 1);
+					sb.AppendLine("propertyChanged: (b,o,n) =>");
+					AppendIndent(sb, indent + 1);
+					sb.AppendLine("{");
+					AppendIndent(sb, indent + 2);
+					sb.Append("((")
+					  .Append(tName)
+					  .Append(")b).On")
+					  .Append(p.Name)
+					  .Append("Changed((")
+					  .Append(tName)
+					  .AppendLine(")n);");
+					AppendIndent(sb, indent + 2);
+					sb.Append("((")
+					  .Append(tName)
+					  .Append(")b).On")
+					  .Append(p.Name)
+					  .Append("Changed((")
+					  .Append(tName)
+					  .Append(")o, (")
+					  .Append(tName)
+					  .AppendLine(")n);");
+					AppendIndent(sb, indent + 1);
+					sb.Append("}");
+					sb.AppendLine(",");
+					AppendIndent(sb, indent + 1);
+					sb.AppendLine("propertyChanging: (b,o,n) =>");
+					AppendIndent(sb, indent + 1);
+					sb.AppendLine("{");
+					AppendIndent(sb, indent + 2);
+					sb.Append("((")
+					  .Append(tName)
+					  .Append(")b).On")
+					  .Append(p.Name)
+					  .Append("Changing((")
+					  .Append(tName)
+					  .AppendLine(")n);");
+					AppendIndent(sb, indent + 2);
+					sb.Append("((")
+					  .Append(tName)
+					  .Append(")b).On")
+					  .Append(p.Name)
+					  .Append("Changing((")
+					  .Append(tName)
+					  .Append(")o, (")
+					  .Append(tName)
+					  .AppendLine(")n);");
+					AppendIndent(sb, indent + 1);
+					sb.Append("}");
+				}
+			}
+
 			if (hasInitializer)
 			{
 				sb.AppendLine(",");
 				AppendIndent(sb, indent + 1);
-				sb.Append("defaultValueCreator: createDefault")
+				sb.Append("defaultValueCreator: ")
+				  .Append(sGeneratedPrefix)
+				  .Append("CreateDefault")
 				  .Append(p.Name);
 			}
 			sb.AppendLine(");");
@@ -494,7 +543,9 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 			if (hasInitializer)
 			{
 				AppendIndent(sb, indent);
-				sb.Append("bool isInitializing")
+				sb.Append("bool ")
+				  .Append(sGeneratedPrefix)
+				  .Append("IsInitializing")
 				  .Append(p.Name)
 				  .AppendLine(" = false;");
 			}
@@ -512,15 +563,19 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 			sb.AppendLine("{");
 
 			AppendIndent(sb, indent + 1);
-			sb.Append("get => ");
+			sb.Append(getAccessorModifier)
+			  .Append("get => ");
+
 			if (hasInitializer)
 			{
-				sb.Append("isInitializing")
+				sb.Append(sGeneratedPrefix)
+				  .Append("IsInitializing")
 				  .Append(p.Name)
 				  .Append(" ? (")
 				  .Append(pTypeWithNullabilityFormat)
 				  .Append(")field : ");
 			}
+
 			sb.Append("(")
 				.Append(pTypeWithNullabilityFormat)
 				.Append(")GetValue(")
@@ -528,7 +583,8 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 				.AppendLine("Property);");
 
 			AppendIndent(sb, indent + 1);
-			sb.Append("set => SetValue(")
+			sb.Append(setAccessorModifier)
+				.Append("set => SetValue(")
 				.Append(p.Name)
 				.AppendLine("Property, value);");
 
@@ -538,7 +594,9 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 			if (hasInitializer)
 			{
 				AppendIndent(sb, indent);
-				sb.Append("static object? createDefault")
+				sb.Append("static object? ")
+				  .Append(sGeneratedPrefix)
+				  .Append("CreateDefault")
 				  .Append(p.Name)
 				  .AppendLine("(global::Microsoft.Maui.Controls.BindableObject b)");
 				AppendIndent(sb, indent);
@@ -546,7 +604,9 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 				AppendIndent(sb, indent + 1);
 				sb.Append("((")
 				  .Append(tName)
-				  .Append(")b).isInitializing")
+				  .Append(")b).")
+				  .Append(sGeneratedPrefix)
+				  .Append("IsInitializing")
 				  .Append(p.Name)
 				  .AppendLine(" = true;");
 				AppendIndent(sb, indent + 1);
@@ -558,13 +618,47 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 				AppendIndent(sb, indent + 1);
 				sb.Append("((")
 				  .Append(tName)
-				  .Append(")b).isInitializing")
+				  .Append(")b).")
+				  .Append(sGeneratedPrefix)
+				  .Append("IsInitializing")
 				  .Append(p.Name)
 				  .AppendLine(" = false;");
 				AppendIndent(sb, indent + 1);
 				sb.AppendLine("return result;");
 				AppendIndent(sb, indent);
 				sb.AppendLine("}");
+			}
+
+			if (info is not null && !info.UseStaticCallbacks)
+			{
+				AppendIndent(sb, indent);
+				sb.Append("partial void On")
+				  .Append(p.Name)
+				  .Append("Changed(")
+				  .Append(pTypeWithNullabilityFormat)
+				  .AppendLine(" value);");
+				AppendIndent(sb, indent);
+				sb.Append("partial void On")
+				  .Append(p.Name)
+				  .Append("Changed(")
+				  .Append(pTypeWithNullabilityFormat)
+				  .Append(" oldValue, ")
+				  .Append(pTypeWithNullabilityFormat)
+				  .AppendLine(" newValue);");
+				AppendIndent(sb, indent);
+				sb.Append("partial void On")
+				  .Append(p.Name)
+				  .Append("Changing(")
+				  .Append(pTypeWithNullabilityFormat)
+				  .AppendLine(" value);");
+				AppendIndent(sb, indent);
+				sb.Append("partial void On")
+				  .Append(p.Name)
+				  .Append("Changing(")
+				  .Append(pTypeWithNullabilityFormat)
+				  .Append(" oldValue, ")
+				  .Append(pTypeWithNullabilityFormat)
+				  .AppendLine(" newValue);");
 			}
 
 			sb.AppendLine();
@@ -619,5 +713,86 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 		}
 
 		return string.Join(".", names).Replace('<', '_').Replace('>', '_');
+	}
+
+
+	AttributeData? GetBindablePropertyAttributeData(IPropertySymbol property)
+	{
+		foreach (AttributeData a in property.GetAttributes())
+		{
+			INamedTypeSymbol? cls = a.AttributeClass;
+			if (cls is null)
+			{
+				continue;
+			}
+
+			// Primary check (symbol identity)
+			// NOTE: At generation time annotated properties already passed the symbol check,
+			// but this method is called without access to that symbol, so we also keep the robust fallback.
+			string fqn = cls.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+			if (string.Equals(fqn, TargetAttributeFullyQualifiedName, StringComparison.Ordinal))
+			{
+				return a;
+			}
+		}
+
+		return null;
+	}
+
+	AttributeInfo? GetBindablePropertyAttributeInfo(IPropertySymbol property)
+	{
+		AttributeData? a = GetBindablePropertyAttributeData(property);
+		if (a is null)
+		{
+			return null;
+		}
+
+		AttributeInfo info = new();
+		foreach (KeyValuePair<string, TypedConstant> kvp in a.NamedArguments)
+		{
+			object? _ = (kvp.Key, kvp.Value.Value) switch
+			{
+				("UseStaticCallbacks", bool b) => info.UseStaticCallbacks = b,
+				("PropertyChangingMethodName", string s) when !string.IsNullOrWhiteSpace(s) => info.PropertyChangingMethodName = s,
+				("CoerceValueMethodName", string s) when !string.IsNullOrWhiteSpace(s) => info.CoerceValueMethodName = s,
+				("PropertyChangedMethodName", string s) when !string.IsNullOrWhiteSpace(s) => info.PropertyChangedMethodName = s,
+				_ => null,
+			};
+		}
+
+		return info;
+	}
+
+	class AttributeInfo
+	{
+		public bool UseStaticCallbacks { get; set; } = false;
+		public string? PropertyChangedMethodName { get; set; }
+		public string? PropertyChangingMethodName { get; set; }
+		public string? CoerceValueMethodName { get; set; }
+	}
+
+	static string GetAccessorModifier(IPropertySymbol property, bool isGet)
+	{
+		IMethodSymbol? method = isGet ? property.GetMethod : property.SetMethod;
+		if (method is null)
+		{
+			return string.Empty;
+		}
+
+		Accessibility accessorAccessibility = method.DeclaredAccessibility;
+
+		// If same as property accessibility, no need to repeat on accessor.
+		if (accessorAccessibility == property.DeclaredAccessibility)
+		{
+			return string.Empty;
+		}
+
+		// NotApplicable can show up in odd cases (eg explicit interface impl); emit nothing.
+		if (accessorAccessibility == Accessibility.NotApplicable)
+		{
+			return string.Empty;
+		}
+
+		return GetAccessibility(accessorAccessibility) + " ";
 	}
 }

@@ -1,14 +1,12 @@
-﻿using System.Globalization;
+﻿// AppThemeConverter.cs
+
+using System.Globalization;
 
 namespace SQuan.Helpers.Maui;
 
 /// <summary>
 /// Provides a mechanism to convert values based on the application's theme (light or dark).
 /// </summary>
-/// <remarks>This converter is designed for use in multi-binding scenarios where the application's theme
-/// determines which value to return. The first input value must be of type <see cref="AppTheme"/>, representing the
-/// current theme. The second and third input values correspond to the values for light and dark themes,
-/// respectively.</remarks>
 public class AppThemeConverter : IMultiValueConverter
 {
 	/// <summary>

@@ -1,6 +1,7 @@
 ﻿// AspectView.cs
 
 using System.Globalization;
+using SQuan.Helpers.Internals;
 
 namespace SQuan.Helpers.Maui;
 
@@ -10,40 +11,20 @@ namespace SQuan.Helpers.Maui;
 public partial class AspectView : ContentView
 {
 	/// <summary>
-	/// Bindable property for the <see cref="AspectRatio"/>.
-	/// </summary>
-	public static readonly BindableProperty AspectRatioProperty
-		= BindableProperty.Create(nameof(AspectRatio), typeof(double), typeof(AspectView), 1.0,
-			coerceValue: CoerceAspectRatio);
-
-	/// <summary>
 	/// Gets or sets the aspect ratio (width divided by height) for the content.
 	/// This property is used to constrain the size of the content within the available space while maintaining the specified aspect ratio.
 	/// </summary>
-	public double AspectRatio
-	{
-		get => (double)GetValue(AspectRatioProperty);
-		set => SetValue(AspectRatioProperty, value);
-	}
+	[BindableProperty(UseStaticCallbacks = true, CoerceValueMethodName = nameof(CoerceAspectRatio))]
+	public partial double AspectRatio { get; set; } = 1.0;
 
 	static object CoerceAspectRatio(BindableObject bindable, object value)
 		=> (value is double aspectRatio && aspectRatio > 0.0) ? aspectRatio : 1.0;
 
 	/// <summary>
-	/// The size of the content within the <see cref="AspectView"/>.
-	/// This property is used to calculate the appropriate size of the content based on the specified aspect ratio and the available space.
-	/// </summary>
-	public static readonly BindableProperty ContentSizeProperty
-		= BindableProperty.Create(nameof(ContentSize), typeof(Size), typeof(AspectView), default(Size));
-
-	/// <summary>
 	/// Gets the size of the content within the <see cref="AspectView"/>.
 	/// </summary>
-	public Size ContentSize
-	{
-		get => (Size)GetValue(ContentSizeProperty);
-		internal set => SetValue(ContentSizeProperty, value);
-	}
+	[BindableProperty(UseStaticCallbacks = true)]
+	public partial Size ContentSize { get; internal set; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AspectView"/> class.
@@ -54,7 +35,7 @@ public partial class AspectView : ContentView
 		{
 			var cp = new ContentPresenter();
 			var topGrid = new Grid { cp };
-			this.SetBinding(ContentSizeProperty,
+			this.Bind(ContentSizeProperty,
 				new MultiBinding
 				{
 					Bindings =
@@ -66,12 +47,8 @@ public partial class AspectView : ContentView
 					Mode = BindingMode.OneWay,
 					Converter = new ContentSizeConverter()
 				});
-			cp.SetBinding(
-				WidthRequestProperty,
-				BindingBase.Create<AspectView, double>(static a => a.ContentSize.Width, BindingMode.OneWay, source: this));
-			cp.SetBinding(
-				HeightRequestProperty,
-				BindingBase.Create<AspectView, double>(static a => a.ContentSize.Height, BindingMode.OneWay, source: this));
+			cp.Bind(WidthRequestProperty, BindingBase.Create<AspectView, double>(static a => a.ContentSize.Width, BindingMode.OneWay, source: this))
+			  .Bind(HeightRequestProperty, BindingBase.Create<AspectView, double>(static a => a.ContentSize.Height, BindingMode.OneWay, source: this));
 			return topGrid;
 		});
 	}

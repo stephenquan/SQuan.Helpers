@@ -13,20 +13,21 @@ public partial class ThemePage : ContentPage
 	{
 		InitializeComponent();
 
-		AppThemeMethodExtensions.SetAppTheme(
-			logoImage,
+		logoImage.Bind(
 			Image.SourceProperty,
-			BindingBase.Create(static (ImageSource s) => s, BindingMode.OneWay, source: Sun),
-			BindingBase.Create(static (ImageSource s) => s, BindingMode.OneWay, source: Moon));
+			AppThemeBindingBase.Create(
+				BindingBase.Create(static (object o) => o, BindingMode.OneWay, source: Sun),
+				BindingBase.Create(static (object o) => o, BindingMode.OneWay, source: Moon),
+				this));
 	}
 
 	void OnToggleTheme(object sender, EventArgs e)
 	{
-		AppThemeManager.Current.UserAppTheme = AppThemeManager.Current.UserAppTheme switch
+		ArgumentNullException.ThrowIfNull(Application.Current);
+		Application.Current.UserAppTheme = Application.Current.UserAppTheme switch
 		{
-			AppTheme.Light => AppTheme.Dark,
 			AppTheme.Dark => AppTheme.Light,
-			_ => AppTheme.Dark
+			_ => AppTheme.Dark,
 		};
 	}
 }
