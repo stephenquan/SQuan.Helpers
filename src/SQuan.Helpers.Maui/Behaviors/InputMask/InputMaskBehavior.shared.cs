@@ -1,5 +1,7 @@
 ﻿// InputMaskBehavior.shared.cs
 
+using SQuan.Helpers.Internals;
+
 namespace SQuan.Helpers.Maui;
 
 /// <summary>
@@ -8,33 +10,16 @@ namespace SQuan.Helpers.Maui;
 public partial class InputMaskBehavior : PlatformBehavior<InputView>
 {
 	/// <summary>
-	/// Bindable property for the <see cref="Regex"/>.
-	/// </summary>
-	public static readonly BindableProperty RegexProperty
-		= BindableProperty.Create(nameof(Regex), typeof(string), typeof(InputMaskBehavior), string.Empty);
-
-	/// <summary>
 	/// Gets or sets the regular expression that defines the allowed input pattern.
 	/// If specified, the behavior will prevent any input that does not match this regular expression.
 	/// </summary>
-	public string Regex
-	{
-		get => (string)GetValue(RegexProperty);
-		set => SetValue(RegexProperty, value);
-	}
-
-	/// <summary>
-	/// Bindable property for the <see cref="Keys"/>.
-	/// </summary>
-	public static readonly BindableProperty KeysProperty
-		= BindableProperty.Create(nameof(Keys), typeof(string), typeof(InputMaskBehavior), string.Empty);
+	[BindableProperty(UseStaticCallbacks = true)]
+	public partial string Regex { get; set; }
 
 	/// <summary>
 	/// Gets or sets a string containing the allowed characters for input. This is used on platforms that support key filtering (e.g., Android).
 	/// </summary>
-	public string Keys
-	{
-		get => (string)GetValue(KeysProperty);
-		set => SetValue(KeysProperty, value);
-	}
+	[BindableProperty(UseStaticCallbacks = true)]
+	public partial string Keys { get; set; } = string.Empty;
 }
+

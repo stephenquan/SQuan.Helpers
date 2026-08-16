@@ -82,16 +82,16 @@
                     UICulture="{Binding FormUICulture}">
 
                     <Label Text="{i18n:Localize '/survey/x1:label'}" />
-                    <Entry Text="{Binding FormContext[/survey/x1], Mode=TwoWay}" />
+                    <Entry Text="{Binding FormContext.EM[/survey/x1], Mode=TwoWay}" />
 
                     <Label Text="{i18n:Localize '/survey/x2:label'}" />
-                    <Entry Text="{Binding FormContext[/survey/x2], Mode=TwoWay}" />
+                    <Entry Text="{Binding FormContext.EM[/survey/x2], Mode=TwoWay}" />
 
                     <Label Text="{i18n:Localize '/survey/sum:label'}" />
-                    <Entry Text="{Binding FormContext[/survey/sum], Mode=OneWay}" />
+                    <Entry Text="{Binding FormContext.EM[/survey/sum], Mode=OneWay}" />
 
                     <Label Text="{i18n:Localize '/survey/product:label'}" />
-                    <Entry Text="{Binding FormContext[/survey/product], Mode=OneWay}" />
+                    <Entry Text="{Binding FormContext.EM[/survey/product], Mode=OneWay}" />
 
                     <Button
                         Command="{Binding ToggleFormCultureCommand}"

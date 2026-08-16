@@ -14,67 +14,67 @@ public partial class LocalizeExtension : BindableObject, IMarkupExtension<Bindin
 	/// <summary>
 	/// Gets or sets the localization key for the string to be translated.
 	/// </summary>
-	[BindableProperty]
+	[BindableProperty(UseStaticCallbacks = true)]
 	public partial string Key { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {0} to be used for formatting the localized string.
 	/// </summary>
-	[BindableProperty]
+	[BindableProperty(UseStaticCallbacks = true)]
 	public partial object? X0 { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {1} to be used for formatting the localized string.
 	/// </summary>
-	[BindableProperty]
+	[BindableProperty(UseStaticCallbacks = true)]
 	public partial object? X1 { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {2} to be used for formatting the localized string.
 	/// </summary>
-	[BindableProperty]
+	[BindableProperty(UseStaticCallbacks = true)]
 	public partial object? X2 { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {3} to be used for formatting the localized string.
 	/// </summary>
-	[BindableProperty]
+	[BindableProperty(UseStaticCallbacks = true)]
 	public partial object? X3 { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {4} to be used for formatting the localized string.
 	/// </summary>
-	[BindableProperty]
+	[BindableProperty(UseStaticCallbacks = true)]
 	public partial object? X4 { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {5} to be used for formatting the localized string.
 	/// </summary>
-	[BindableProperty]
+	[BindableProperty(UseStaticCallbacks = true)]
 	public partial object? X5 { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {6} to be used for formatting the localized string.
 	/// </summary>
-	[BindableProperty]
+	[BindableProperty(UseStaticCallbacks = true)]
 	public partial object? X6 { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {7} to be used for formatting the localized string.
 	/// </summary>
-	[BindableProperty]
+	[BindableProperty(UseStaticCallbacks = true)]
 	public partial object? X7 { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {8} to be used for formatting the localized string.
 	/// </summary>
-	[BindableProperty]
+	[BindableProperty(UseStaticCallbacks = true)]
 	public partial object? X8 { get; set; }
 
 	/// <summary>
 	/// Gets or sets the argument value for {9} to be used for formatting the localized string.
 	/// </summary>
-	[BindableProperty]
+	[BindableProperty(UseStaticCallbacks = true)]
 	public partial object? X9 { get; set; }
 
 	/// <summary>
