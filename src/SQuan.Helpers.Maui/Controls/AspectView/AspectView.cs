@@ -35,7 +35,7 @@ public partial class AspectView : ContentView
 		{
 			var cp = new ContentPresenter();
 			var topGrid = new Grid { cp };
-			this.Bind(ContentSizeProperty,
+			this.SetBinding(ContentSizeProperty,
 				new MultiBinding
 				{
 					Bindings =
@@ -47,8 +47,8 @@ public partial class AspectView : ContentView
 					Mode = BindingMode.OneWay,
 					Converter = new ContentSizeConverter()
 				});
-			cp.Bind(WidthRequestProperty, BindingBase.Create<AspectView, double>(static a => a.ContentSize.Width, BindingMode.OneWay, source: this))
-			  .Bind(HeightRequestProperty, BindingBase.Create<AspectView, double>(static a => a.ContentSize.Height, BindingMode.OneWay, source: this));
+			cp.SetBinding(WidthRequestProperty, BindingBase.Create<AspectView, double>(static a => a.ContentSize.Width, BindingMode.OneWay, source: this));
+			cp.SetBinding(HeightRequestProperty, BindingBase.Create<AspectView, double>(static a => a.ContentSize.Height, BindingMode.OneWay, source: this));
 			return topGrid;
 		});
 	}
