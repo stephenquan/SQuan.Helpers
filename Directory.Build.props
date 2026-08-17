@@ -18,22 +18,22 @@
     <NuGetAuditMode>all</NuGetAuditMode>
 
     <!-- MAUI Specific -->
-    <MauiVersion>10.0.41</MauiVersion>
-    <MauiPackageVersion>10.0.41</MauiPackageVersion>
-    <MicrosoftExtensionsLoggingDebugVersion>10.0.3</MicrosoftExtensionsLoggingDebugVersion>
+    <MauiVersion>10.0.90</MauiVersion>
+    <MauiPackageVersion>10.0.90</MauiPackageVersion>
+    <MicrosoftExtensionsLoggingDebugVersion>10.0.11</MicrosoftExtensionsLoggingDebugVersion>
     <NextMauiPackageVersion>10.0.0</NextMauiPackageVersion>
     <MauiStrictXamlCompilation>true</MauiStrictXamlCompilation>
     <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
     <MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
 
     <!-- CommunityToolkits -->
-    <CommunityToolkitMauiVersion>14.0.1</CommunityToolkitMauiVersion>
-    <CommunityToolkitMauiMarkupVersion>7.0.0</CommunityToolkitMauiMarkupVersion>
-    <CommunityToolkitMvvmVersion>8.4.0</CommunityToolkitMvvmVersion>
+    <CommunityToolkitMauiVersion>15.0.0</CommunityToolkitMauiVersion>
+    <CommunityToolkitMauiMarkupVersion>8.0.0</CommunityToolkitMauiMarkupVersion>
+    <CommunityToolkitMvvmVersion>8.4.2</CommunityToolkitMvvmVersion>
     <NoWarn>$(NoWarn);MCTEXP001</NoWarn>
 
     <!-- GitVersion -->
-    <GitVersionMsBuildVersion>6.4.0</GitVersionMsBuildVersion>
+    <GitVersionMsBuildVersion>6.8.2</GitVersionMsBuildVersion>
 
     <!-- https://learn.microsoft.com/dotnet/core/deploying/native-aot/?tabs=net8plus%2Cwindows -->
     <StripSymbols>false</StripSymbols>
