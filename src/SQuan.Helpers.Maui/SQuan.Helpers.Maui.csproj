@@ -70,21 +70,13 @@
 	<ItemGroup Label="Package">
 		<PackageReference Include="GitVersion.MsBuild" Version="$(GitVersionMsBuildVersion)" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Essentials" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.11" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="$(MicrosoftExtensionsLoggingDebugVersion)" />
 	</ItemGroup>
-	
-	<ItemGroup>
-		<Folder Include="Platforms\Android\" />
-		<Folder Include="Platforms\iOS\" />
-		<Folder Include="Platforms\MacCatalyst\" />
-		<Folder Include="Platforms\Tizen\" />
-		<Folder Include="Platforms\Windows\" />
-	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\SQuan.Helpers.Internals.SourceGenerators\SQuan.Helpers.Internals.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
 		<ProjectReference Include="..\SQuan.Helpers.Internals\SQuan.Helpers.Internals.csproj" />
