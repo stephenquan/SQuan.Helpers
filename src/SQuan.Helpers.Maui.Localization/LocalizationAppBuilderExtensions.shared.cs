@@ -20,8 +20,8 @@ public static class LocalizationAppBuilderExtensions
 	[Obsolete("This method is deprecated. Use the UseSQuanHelpersMauiLocalization(Func<string, CultureInfo?, string?>) overload instead.")]
 	public static MauiAppBuilder UseSQuanHelperMauiLocalization(this MauiAppBuilder builder, LocalizationOptions? options = null, params Type[] resourceTypes)
 		=> resourceTypes.Length > 0
-			? builder.UseSQuanHelperMauiLocalization(options, resourceTypes[0])
-			: builder.UseSQuanHelperMauiLocalization();
+			? UseSQuanHelperMauiLocalization(builder, options, resourceTypes[0])
+			: UseSQuanHelperMauiLocalization(builder);
 
 	/// <summary>
 	/// Configures the Maui application to use localization services with the specified localization options.
@@ -44,8 +44,8 @@ public static class LocalizationAppBuilderExtensions
 	[Obsolete("This method is deprecated. Use the UseSQuanHelpersMauiLocalization(Func<string, CultureInfo?, string?>) overload instead.")]
 	public static MauiAppBuilder UseSQuanHelpersMauiLocalization(this MauiAppBuilder builder, LocalizationOptions? options = null, params Type[] resourceTypes)
 		=> resourceTypes.Length > 0
-			? builder.UseSQuanHelperMauiLocalization(options, resourceTypes[0])
-			: builder.UseSQuanHelperMauiLocalization();
+			? UseSQuanHelperMauiLocalization(builder, options, resourceTypes[0])
+			: UseSQuanHelperMauiLocalization(builder);
 
 	/// <summary>
 	/// Configures the Maui application to use localization services with the specified localization options.
@@ -85,7 +85,7 @@ public static class LocalizationAppBuilderExtensions
 	/// <returns>The same MauiAppBuilder instance, allowing for method chaining.</returns>
 	[Obsolete("This method is deprecated. Use the UseSQuanHelpersMauiLocalization(Func<string, CultureInfo?, string?>) overload instead.")]
 	public static MauiAppBuilder UseSQuanHelpersMauiLocalization<T>(this MauiAppBuilder builder)
-		=> builder.UseSQuanHelpersMauiLocalization(typeof(T));
+		=> UseSQuanHelpersMauiLocalization(builder, typeof(T));
 
 	/// <summary>
 	/// Configures the Maui application to use localization services with a custom localization provider function.
