@@ -247,6 +247,7 @@ public partial class MapView : SKCanvasView
 			text,
 			(float)((viewPoint.X + 12) * dpiScale),
 			(float)((viewPoint.Y + 12) * dpiScale),
+			SKTextAlign.Left,
 			font,
 			paint);
 		return this;
@@ -284,6 +285,7 @@ public partial class MapView : SKCanvasView
 		{
 			return this;
 		}
+
 		using SKPaint paint = new SKPaint
 		{
 			Style = SKPaintStyle.Stroke,
@@ -291,19 +293,26 @@ public partial class MapView : SKCanvasView
 			IsAntialias = true,
 			StrokeWidth = 2
 		};
-		using SKPath path = new SKPath();
-		var dpiScale = (float)(DeviceDisplay.Current.MainDisplayInfo.Density);
-		path.MoveTo(
+
+		var dpiScale = (float)DeviceDisplay.Current.MainDisplayInfo.Density;
+		using SKPathBuilder pathBuilder = new SKPathBuilder();
+
+		pathBuilder.MoveTo(
 			(float)(viewPoints[0].X * dpiScale),
 			(float)(viewPoints[0].Y * dpiScale));
+
 		for (int i = 1; i < viewPoints.Count; i++)
 		{
-			path.LineTo(
+			pathBuilder.LineTo(
 				(float)(viewPoints[i].X * dpiScale),
 				(float)(viewPoints[i].Y * dpiScale));
 		}
-		path.Close();
+
+		pathBuilder.Close();
+
+		using SKPath path = pathBuilder.Detach();
 		canvas.DrawPath(path, paint);
+
 		return this;
 	}
 }
