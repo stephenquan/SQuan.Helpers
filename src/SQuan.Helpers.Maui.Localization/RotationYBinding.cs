@@ -1,4 +1,6 @@
-﻿namespace SQuan.Helpers.Maui.Localization;
+﻿// RotationYBinding.cs
+
+namespace SQuan.Helpers.Maui.Localization;
 
 /// <summary>
 /// Provides functionality to create a binding that dynamically determines a rotation value on the Y-axis based on the
@@ -7,6 +9,7 @@
 /// <remarks>This class is useful for scenarios where an element, such as an image, needs to be flipped
 /// horizontally depending on the layout direction. The binding evaluates to <see langword="180.0"/> for right-to-left
 /// (RTL) layouts and <see langword="0.0"/> for left-to-right (LTR) layouts.</remarks>
+[Obsolete("This class is not currently used and may be removed in future versions.")]
 public static class RotationYBinding
 {
 	/// <summary>

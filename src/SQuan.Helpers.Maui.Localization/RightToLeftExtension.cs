@@ -1,10 +1,13 @@
-﻿namespace SQuan.Helpers.Maui.Localization;
+﻿// RightToLeftExtension.cs
+
+namespace SQuan.Helpers.Maui.Localization;
 
 /// <summary>
 /// Provides an extension method for creating a binding that supports right-to-left text layout.
 /// </summary>
 /// <remarks>This extension is typically used in XAML to create bindings that adapt to right-to-left text layouts.
 /// It implements the <see cref="IMarkupExtension{T}"/> interface to provide a binding instance.</remarks>
+[Obsolete("This markup extension is deprecated. Please use FlowDirection markup extension instead.")]
 [AcceptEmptyServiceProvider]
 [ContentProperty(nameof(Converter))]
 public class RightToLeftExtension : IMarkupExtension<BindingBase>

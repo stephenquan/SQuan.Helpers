@@ -18,8 +18,9 @@ public partial class LocalizationManager : ObservableObject
 	/// <summary>
 	/// Gets or sets the resolver used to provide localized resources.
 	/// </summary>
+	[Obsolete("This property is not currently used and may be removed in future versions.")]
 	[ObservableProperty]
-	public partial LocalizeResolver? ResolverX { get; set; }
+	public partial LocalizeResolver? Resolver { get; set; }
 
 	/// <summary>
 	/// Gets the current instance of the <see cref="LocalizationManager"/>.
@@ -108,19 +109,21 @@ public partial class LocalizationManager : ObservableObject
 	/// <param name="args">Optional arguments for string formatting.</param>
 	/// <returns>The localized string.</returns>
 	public string? GetString(string key, CultureInfo? culture = null, params object?[] args)
+		=> GetString(key, culture, CultureInfo.CurrentCulture, args);
+
+	/// <summary>
+	/// Gets a localized string for the specified key using the provided UI culture and culture, with optional formatting arguments.
+	/// </summary>
+	/// <param name="currentUICulture">The current UI culture to use for localization.</param>
+	/// <param name="currentCulture">The current culture to use for string formatting.</param>
+	/// <param name="key">The key of the string resource.</param>
+	/// <param name="args">Optional arguments for string formatting.</param>
+	/// <returns>The localized string.</returns>
+	public string? GetString(string key, CultureInfo? currentUICulture, CultureInfo? currentCulture, params object?[] args)
 	{
-		CultureInfo? _culture = culture ?? CultureInfo.CurrentUICulture;
-		string? localizedString = null;
-		if (LocalizationProvider is not null)
-		{
-			localizedString = LocalizationProvider(key, _culture);
-		}
-
-		if (!string.IsNullOrEmpty(localizedString) && args.Length > 0)
-		{
-			localizedString = string.Format(localizedString, args);
-		}
-
-		return localizedString;
+		string? localizedString = LocalizationProvider?.Invoke(key, currentUICulture ?? CultureInfo.CurrentUICulture);
+		return !string.IsNullOrEmpty(localizedString) && args.Length > 0
+			? string.Format(currentCulture ?? CultureInfo.CurrentCulture, localizedString, args)
+			: localizedString;
 	}
 }

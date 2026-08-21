@@ -19,10 +19,9 @@ public static class LocalizationAppBuilderExtensions
 	/// <returns>The same MauiAppBuilder instance, allowing for method chaining.</returns>
 	[Obsolete("This method is deprecated. Use the UseSQuanHelpersMauiLocalization(Func<string, CultureInfo?, string?>) overload instead.")]
 	public static MauiAppBuilder UseSQuanHelperMauiLocalization(this MauiAppBuilder builder, LocalizationOptions? options = null, params Type[] resourceTypes)
-	{
-		builder.Services.AddLocalization();
-		return builder;
-	}
+		=> resourceTypes.Length > 0
+			? builder.UseSQuanHelperMauiLocalization(options, resourceTypes[0])
+			: builder.UseSQuanHelperMauiLocalization();
 
 	/// <summary>
 	/// Configures the Maui application to use localization services with the specified localization options.
@@ -33,9 +32,7 @@ public static class LocalizationAppBuilderExtensions
 	/// <returns>The same MauiAppBuilder instance, allowing for method chaining.</returns>
 	[Obsolete("This method is deprecated. Use the UseSQuanHelpersMauiLocalization(Func<string, CultureInfo?, string?>) overload instead.")]
 	public static MauiAppBuilder UseSQuanHelperMauiLocalization<T>(this MauiAppBuilder builder, LocalizationOptions? options = null)
-	{
-		return UseSQuanHelperMauiLocalization(builder, options, typeof(T));
-	}
+		=> UseSQuanHelperMauiLocalization(builder, options, typeof(T));
 
 	/// <summary>
 	/// Configures the Maui application to use localization services with the specified localization options and resource types.
@@ -46,13 +43,9 @@ public static class LocalizationAppBuilderExtensions
 	/// <returns>The same MauiAppBuilder instance, allowing for method chaining.</returns>
 	[Obsolete("This method is deprecated. Use the UseSQuanHelpersMauiLocalization(Func<string, CultureInfo?, string?>) overload instead.")]
 	public static MauiAppBuilder UseSQuanHelpersMauiLocalization(this MauiAppBuilder builder, LocalizationOptions? options = null, params Type[] resourceTypes)
-	{
-		if (resourceTypes.Length > 0)
-		{
-			return builder.UseSQuanHelperMauiLocalization(options, resourceTypes[0]);
-		}
-		return builder.UseSQuanHelperMauiLocalization();
-	}
+		=> resourceTypes.Length > 0
+			? builder.UseSQuanHelperMauiLocalization(options, resourceTypes[0])
+			: builder.UseSQuanHelperMauiLocalization();
 
 	/// <summary>
 	/// Configures the Maui application to use localization services with the specified localization options.
@@ -63,9 +56,7 @@ public static class LocalizationAppBuilderExtensions
 	/// <returns>The same MauiAppBuilder instance, allowing for method chaining.</returns>
 	[Obsolete("This method is deprecated. Use the UseSQuanHelpersMauiLocalization(Func<string, CultureInfo?, string?>) overload instead.")]
 	public static MauiAppBuilder UseSQuanHelpersMauiLocalization<T>(this MauiAppBuilder builder, LocalizationOptions? options = null)
-	{
-		return UseSQuanHelpersMauiLocalization(builder, options, typeof(T));
-	}
+		=> UseSQuanHelpersMauiLocalization(builder, options, typeof(T));
 
 	/// <summary>
 	/// Configures the Maui application to use localization services with the specified string resource type.
@@ -76,8 +67,7 @@ public static class LocalizationAppBuilderExtensions
 	/// <returns>The same MauiAppBuilder instance, allowing for method chaining.</returns>
 	[Obsolete("This method is deprecated. Use the UseSQuanHelpersMauiLocalization(Func<string, CultureInfo?, string?>) overload instead.")]
 	public static MauiAppBuilder UseSQuanHelpersMauiLocalization(this MauiAppBuilder builder, Type stringResource)
-	{
-		return builder.UseSQuanHelpersMauiLocalization(
+		=> builder.UseSQuanHelpersMauiLocalization(
 			new Func<string, CultureInfo?, string?>((key, culture) =>
 			{
 				var stringLocalizerType = typeof(IStringLocalizer<>).MakeGenericType(new Type[] { stringResource });
@@ -85,7 +75,6 @@ public static class LocalizationAppBuilderExtensions
 				var localizedString = stringLocalizer?.GetString(key);
 				return localizedString?.Value;
 			}));
-	}
 
 	/// <summary>
 	/// Configures the Maui application to use localization services with the specified string resource type.
@@ -94,10 +83,9 @@ public static class LocalizationAppBuilderExtensions
 	/// which will be registered with the localization manager.</typeparam>
 	/// <param name="builder">The Maui application builder to configure with SQuanHelpers localization support.</param>
 	/// <returns>The same MauiAppBuilder instance, allowing for method chaining.</returns>
+	[Obsolete("This method is deprecated. Use the UseSQuanHelpersMauiLocalization(Func<string, CultureInfo?, string?>) overload instead.")]
 	public static MauiAppBuilder UseSQuanHelpersMauiLocalization<T>(this MauiAppBuilder builder)
-	{
-		return UseSQuanHelpersMauiLocalization(builder, typeof(T));
-	}
+		=> builder.UseSQuanHelpersMauiLocalization(typeof(T));
 
 	/// <summary>
 	/// Configures the Maui application to use localization services with a custom localization provider function.
