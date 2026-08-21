@@ -29,19 +29,8 @@ class LocalizeMultiValueConverter : IMultiValueConverter
 			&& !string.IsNullOrEmpty(key)
 			&& values[1] is CultureInfo globalCulture
 			&& values[3] is CultureInfo globalUICulture
-			&& values[6] is LocalizeResolver stringResourceResolver
 			&& values[8] is object?[] args)
 		{
-			var resolver = stringResourceResolver;
-			if (values[7] is LocalizeResolver scopedResolver)
-			{
-				resolver = scopedResolver;
-			}
-			else if (values[5] is LocalizeResolver globalResolver)
-			{
-				resolver = globalResolver;
-			}
-
 			var currentCulture = globalCulture;
 			if (values[2] is CultureInfo scopedCulture)
 			{
@@ -53,11 +42,7 @@ class LocalizeMultiValueConverter : IMultiValueConverter
 				currentUICulture = scopedUICulture;
 			}
 
-			var value = resolver(key, currentUICulture);
-			if (args.Length > 0)
-			{
-				value = string.Format(globalCulture, value, args);
-			}
+			var value = LocalizationManager.Current.GetString(key, currentUICulture, args);
 
 			return value;
 		}

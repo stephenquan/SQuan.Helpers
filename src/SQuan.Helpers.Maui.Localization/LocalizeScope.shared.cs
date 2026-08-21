@@ -8,6 +8,7 @@ namespace SQuan.Helpers.Maui.Localization;
 /// <summary>
 /// Represents a layout container that applies a specific culture to its child elements for localization purposes.
 /// </summary>
+[Obsolete("This class is experimental and may be removed or changed in future versions.")]
 public partial class LocalizeScope : StackLayout
 {
 	/// <summary>

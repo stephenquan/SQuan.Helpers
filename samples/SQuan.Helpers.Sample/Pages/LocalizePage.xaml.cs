@@ -5,6 +5,7 @@ using System.Globalization;
 using SQuan.Helpers.Maui;
 using SQuan.Helpers.Maui.Localization;
 using SQuan.Helpers.Maui.Mvvm;
+using SQuan.Helpers.Sample.Resources.Strings;
 using RelayCommandAttribute = CommunityToolkit.Mvvm.Input.RelayCommandAttribute;
 
 namespace SQuan.Helpers.Sample;
@@ -32,7 +33,19 @@ public partial class LocalizePage : ContentPage
 	{
 		em = new ExpressionManager();
 		FormContext = new(em);
+
+		LocalizationManager.Current.LocalizationProvider = (key, culture) =>
+		{
+			if (key.StartsWith("/"))
+			{
+				return FormContext.GetIText(key, culture ?? CultureInfo.CurrentUICulture);
+			}
+
+			return AppStrings.ResourceManager.GetString(key, culture ?? CultureInfo.CurrentUICulture);
+		};
+
 		BindingContext = this;
+
 		InitializeComponent();
 	}
 
