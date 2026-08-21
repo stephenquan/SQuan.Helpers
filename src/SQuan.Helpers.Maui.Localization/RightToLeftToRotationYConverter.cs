@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿// RightToLeftToRotationYConverter.cs
+
+using System.Globalization;
 
 namespace SQuan.Helpers.Maui.Localization;
 
@@ -9,6 +11,7 @@ namespace SQuan.Helpers.Maui.Localization;
 /// <remarks>This converter is typically used in UI scenarios where a boolean value representing  a right-to-left
 /// layout (e.g., for languages like Arabic or Hebrew) needs to be  translated into a <see cref="FlowDirection"/> value
 /// for layout purposes.</remarks>
+[Obsolete("This class is not currently used and may be removed in future versions.")]
 public class RightToLeftToRotationYConverter : IValueConverter
 {
 	/// <summary>

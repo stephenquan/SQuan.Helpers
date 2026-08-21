@@ -1,10 +1,13 @@
-﻿namespace SQuan.Helpers.Maui.Localization;
+﻿// RotationYExtension.cs
+
+namespace SQuan.Helpers.Maui.Localization;
 
 /// <summary>
 /// Provides a markup extension that creates a binding for the Y-axis rotation property.
 /// </summary>
 /// <remarks>This extension is used to bind a value to the Y-axis rotation property in XAML.  It returns a <see
 /// cref="BindingBase"/> instance that can be used in data binding scenarios.</remarks>
+[Obsolete("This markup extension is deprecated. Please use FlowDirection markup extension instead.")]
 [AcceptEmptyServiceProvider]
 public class RotationYExtension : IMarkupExtension<BindingBase>
 {

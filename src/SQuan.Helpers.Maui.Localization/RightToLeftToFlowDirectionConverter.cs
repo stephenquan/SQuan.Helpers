@@ -1,10 +1,13 @@
-﻿using System.Globalization;
+﻿// RightToLeftToFlowDirectionConverter.cs
+
+using System.Globalization;
 
 namespace SQuan.Helpers.Maui.Localization;
 
 /// <summary>
 /// Converts a <see cref="bool"/> value to a <see cref="FlowDirection"/> value and vice versa.
 /// </summary>
+[Obsolete("This class is not currently used and may be removed in future versions.")]
 public class RightToLeftToFlowDirectionConverter : IValueConverter
 {
 	/// <summary>

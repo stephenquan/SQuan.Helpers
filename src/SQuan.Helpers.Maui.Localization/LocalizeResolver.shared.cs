@@ -1,4 +1,4 @@
-﻿// LocalizeResolver.cs
+﻿// LocalizeResolver.shared.cs
 
 using System.Globalization;
 
@@ -10,4 +10,5 @@ namespace SQuan.Helpers.Maui.Localization;
 /// <param name="key">The string key to resolve.</param>
 /// <param name="culture">The culture to use for resolution.</param>
 /// <returns>The resolved string.</returns>
+[Obsolete("Use LocalizationManager.Current.LocalizationProvider instead.")]
 public delegate string LocalizeResolver(string key, CultureInfo culture);

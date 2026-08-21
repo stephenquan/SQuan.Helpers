@@ -5,16 +5,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:i18n="clr-namespace:SQuan.Helpers.Maui.Localization;assembly=SQuan.Helpers.Maui.Localization"
     xmlns:local="clr-namespace:SQuan.Helpers.Sample"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="{i18n:Localize 'PAG_LOCALIZE_DEMO'}"
     x:DataType="local:LocalizePage"
     FlowDirection="{i18n:FlowDirection}">
+
     <ScrollView>
         <VerticalStackLayout Padding="30,30,30,200" Spacing="25">
             <Image
                 Aspect="AspectFit"
                 HeightRequest="185"
                 HorizontalOptions="Start"
-                RotationY="{i18n:RotationY}"
+                ScaleX="{i18n:FlowDirection LeftToRight=-1,
+                                            RightToLeft=1}"
                 SemanticProperties.Description="dot net bot in a hovercraft number nine"
                 Source="dotnet_bot.png" />
 
@@ -76,10 +79,7 @@
             </Border>
 
             <Border Padding="10">
-                <i18n:LocalizeScope
-                    Resolver="{Binding FormContext.ITextResolver}"
-                    Spacing="25"
-                    UICulture="{Binding FormUICulture}">
+                <i18n:LocalizeScope Spacing="25" UICulture="{Binding FormUICulture}">
 
                     <Label Text="{i18n:Localize '/survey/x1:label'}" />
                     <Entry Text="{Binding FormContext.EM[/survey/x1], Mode=TwoWay}" />

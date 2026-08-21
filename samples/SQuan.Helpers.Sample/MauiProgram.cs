@@ -21,14 +21,12 @@ public static class MauiProgram
 			.UseMauiCommunityToolkitMarkup()
 			.UseSkiaSharp()
 			.UseSQuanHelpersMaui()
-			.UseSQuanHelpersMauiLocalization<AppStrings>()
+			.UseSQuanHelpersMauiLocalization(AppStrings.ResourceManager.GetString)
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
-
-		LocalizationManager.Current.Resolver = (key, culture) => AppStrings.ResourceManager.GetString(key, culture) ?? string.Empty;
 
 #if DEBUG
 		builder.Logging.AddDebug();

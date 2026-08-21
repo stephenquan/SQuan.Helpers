@@ -1,4 +1,4 @@
-﻿// LocalizationOptions.cs
+﻿// LocalizationOptions.shared.cs
 
 namespace SQuan.Helpers.Maui.Localization;
 
@@ -8,10 +8,4 @@ namespace SQuan.Helpers.Maui.Localization;
 [Obsolete]
 public class LocalizationOptions
 {
-	/// <summary>
-	/// Gets or sets a value indicating whether the application should automatically follow changes to the installed UI
-	/// culture.
-	/// </summary>
-	[Obsolete("This property is obsolete and will be removed in future versions. Please manage culture changes manually.")]
-	public bool FollowInstalledUICultureChanges { get; set; } = true;
 }

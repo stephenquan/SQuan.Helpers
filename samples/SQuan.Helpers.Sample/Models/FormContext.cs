@@ -3,7 +3,6 @@
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SQuan.Helpers.Maui;
-using SQuan.Helpers.Maui.Localization;
 
 namespace SQuan.Helpers.Sample;
 
@@ -57,6 +56,4 @@ public partial class FormContext : ObservableObject
 		}
 		return key;
 	}
-
-	public LocalizeResolver ITextResolver => GetIText;
 }
