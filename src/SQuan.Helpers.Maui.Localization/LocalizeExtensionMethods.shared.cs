@@ -1,5 +1,7 @@
 ﻿// LocalizeExtensionMethods.shared.cs
 
+using System.Globalization;
+
 namespace SQuan.Helpers.Maui.Localization;
 
 /// <summary>
@@ -38,6 +40,22 @@ public static class LocalizeExtensionMethods
 	public static BindableObject Localize(this BindableObject bindable, BindableProperty targetProperty, BindingBase keyBinding, params object?[] args)
 	{
 		bindable.SetBinding(targetProperty, LocalizeBindingBase.Create(keyBinding, args));
+		return bindable;
+	}
+
+	/// <summary>
+	/// Applies a localized binding to the specified bindable property of a <see cref="BindableObject"/> using a custom localization provider.
+	/// </summary>
+	/// <typeparam name="TProvider">The type of the localization provider.</typeparam>
+	/// <param name="bindable">The <see cref="BindableObject"/> to which the localized binding will be applied.</param>
+	/// <param name="targetProperty">The <see cref="BindableProperty"/> that will receive the localized value.</param>
+	/// <param name="localizationProvider">A function that provides localized content based on the current culture.</param>
+	/// <param name="args">Optional arguments to format the localized value. These arguments will be used to replace placeholders in the
+	/// localized string, if applicable.</param>
+	/// <returns>The <see cref="BindableObject"/> with the applied localized binding, allowing for method chaining.</returns>
+	public static BindableObject Localize<TProvider>(this BindableObject bindable, BindableProperty targetProperty, Func<CultureInfo, TProvider> localizationProvider, params object?[] args)
+	{
+		bindable.SetBinding(targetProperty, LocalizeBindingBase.Create(localizationProvider, args));
 		return bindable;
 	}
 

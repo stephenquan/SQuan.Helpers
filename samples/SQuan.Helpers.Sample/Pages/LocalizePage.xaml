@@ -22,6 +22,7 @@
                 Source="dotnet_bot.png" />
 
             <Label
+                x:Name="HelloLabel"
                 HorizontalOptions="Start"
                 HorizontalTextAlignment="Start"
                 SemanticProperties.HeadingLevel="Level1"

@@ -1,6 +1,5 @@
 ﻿// FlowDirectionExtension.shared.cs
 
-using System.ComponentModel;
 using System.Globalization;
 using SQuan.Helpers.Internals;
 
@@ -70,42 +69,14 @@ public partial class FlowDirectionExtension : BindableObject, IMarkupExtension<B
 					Mode = BindingMode.OneWay,
 					Converter = new SelectCultureMultiValueConverter()
 				},
-				BindingBase.Create(static (FlowDirectionExtension ctx) => ctx.LeftToRight, BindingMode.OneWay, source: this),
 				BindingBase.Create(static (FlowDirectionExtension ctx) => ctx.RightToLeft, BindingMode.OneWay, source: this),
+				BindingBase.Create(static (FlowDirectionExtension ctx) => ctx.LeftToRight, BindingMode.OneWay, source: this),
 			],
 			Mode = BindingMode.OneWay,
-			Converter = new FlowDirectionMultiValueConverter()
+			Converter = new MultiBoolToObjectConverter()
 		};
 	}
 
 	object IMarkupExtension.ProvideValue(IServiceProvider serviceProvider)
 		=> (this as IMarkupExtension<BindingBase>).ProvideValue(serviceProvider);
-}
-
-class FlowDirectionMultiValueConverter : IMultiValueConverter
-{
-	public object? Convert(object?[] values, Type targetType, object? parameter, CultureInfo culture)
-	{
-		object? result = null;
-		if (values.Length == 3)
-		{
-			result = (values[0] is bool isRightToLeft) && isRightToLeft ? values[2] : values[1];
-		}
-
-		if (result is string text && targetType != typeof(string))
-		{
-			TypeConverter? converter = TypeDescriptor.GetConverter(targetType);
-			if (converter?.CanConvertFrom(typeof(string)) == true)
-			{
-				return converter.ConvertFromInvariantString(text);
-			}
-		}
-
-		return result;
-	}
-
-	public object?[] ConvertBack(object? value, Type[] targetTypes, object? parameter, CultureInfo culture)
-	{
-		throw new NotImplementedException();
-	}
 }
