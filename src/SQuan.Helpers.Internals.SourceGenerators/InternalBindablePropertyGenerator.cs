@@ -1,4 +1,4 @@
-﻿// BindablePropertyGenerator.cs
+﻿// InternalBindablePropertyGenerator.cs
 
 using System.Collections.Immutable;
 using System.Text;
@@ -14,21 +14,26 @@ namespace SQuan.Helpers.Internals.SourceGenerators;
 /// SQuan.Helpers.Internal.BindablePropertyAttribute.
 /// </summary>
 [Generator(LanguageNames.CSharp)]
-public sealed class BindablePropertyGenerator : IIncrementalGenerator
+public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 {
 	/// <summary>
 	/// Gets or sets the name of the metadata type associated with the target attribute used for property binding.
 	/// </summary>
-	public string TargetAttributeMetadataName { get; set; } = "SQuan.Helpers.Internals.BindablePropertyAttribute";
+	public string TargetAttributeMetadataName { get; set; } = "SQuan.Helpers.Internals.InternalBindablePropertyAttribute";
 
 	/// <summary>
 	/// Gets or sets the name of the target attribute used for property binding, including its fully qualified namespace.
 	/// </summary>
-	public string TargetAttributeFullyQualifiedName { get; set; } = "global::SQuan.Helpers.Internals.BindablePropertyAttribute";
+	public string TargetAttributeFullyQualifiedName { get; set; } = "global::SQuan.Helpers.Internals.InternalBindablePropertyAttribute";
+
+	/// <summary>
+	/// Gets or sets the suffix to be used for generated source file names. The default value is ".InternalBindableProperties.g.cs".
+	/// </summary>
+	public string SafeFileNameSuffix { get; set; } = ".InternalBindableProperties.g.cs";
 
 	static readonly string sGeneratedPrefix = "SQGEN_";
 
-	static bool IsVerboseEnabled { get; } = true;
+	static bool IsVerboseEnabled { get; } = false;
 
 	static readonly SymbolDisplayFormat sTypeWithNullabilityFormat =
 		SymbolDisplayFormat.FullyQualifiedFormat
@@ -267,7 +272,7 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 					}
 
 					string src = GenerateForType(containingType, _group.ToImmutableArray());
-					string hintName = GetSafeFileName(containingType) + ".BindableProperties.g.cs";
+					string hintName = GetSafeFileName(containingType) + SafeFileNameSuffix;
 					//System.Diagnostics.Debugger.Launch();
 					spc.AddSource(hintName, SourceText.From(src, Encoding.UTF8));
 				}
@@ -338,10 +343,10 @@ public sealed class BindablePropertyGenerator : IIncrementalGenerator
 			{
 				string name = attr.Name.ToString();
 
-				// Covers: [BindableProperty], [BindablePropertyAttribute], and fully-qualified usage.
-				if (name is "BindableProperty" or "BindablePropertyAttribute"
-					|| name.EndsWith(".BindableProperty", StringComparison.Ordinal)
-					|| name.EndsWith(".BindablePropertyAttribute", StringComparison.Ordinal))
+				// Covers: [InternalBindableProperty], [InternalBindablePropertyAttribute], and fully-qualified usage.
+				if (name is "InternalBindableProperty" or "InternalBindablePropertyAttribute"
+					|| name.EndsWith(".InternalBindableProperty", StringComparison.Ordinal)
+					|| name.EndsWith(".InternalBindablePropertyAttribute", StringComparison.Ordinal))
 				{
 					return true;
 				}

@@ -1,4 +1,4 @@
-﻿// ObservablePropertyGenerator.cs
+﻿// InternalObservablePropertyGenerator.cs
 
 using System.Collections.Immutable;
 using System.Text;
@@ -14,10 +14,10 @@ namespace SQuan.Helpers.Internals.SourceGenerators;
 /// SQuan.Helpers.Internal.ObservablePropertyAttribute.
 /// </summary>
 [Generator(LanguageNames.CSharp)]
-public sealed class ObservablePropertyGenerator : IIncrementalGenerator
+public sealed class InternalObservablePropertyGenerator : IIncrementalGenerator
 {
-	const string kTargetAttributeMetadataName = "SQuan.Helpers.Internals.ObservablePropertyAttribute";
-	const string kTargetAttributeFullyQualifiedName = "global::SQuan.Helpers.Internals.ObservablePropertyAttribute";
+	const string kTargetAttributeMetadataName = "SQuan.Helpers.Internals.InternalObservablePropertyAttribute";
+	const string kTargetAttributeFullyQualifiedName = "global::SQuan.Helpers.Internals.InternalObservablePropertyAttribute";
 
 	static bool IsVerboseEnabled { get; } = false;
 
@@ -256,7 +256,7 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 					}
 
 					string src = GenerateForType(containingType, _group.ToImmutableArray());
-					string hintName = GetSafeFileName(containingType) + ".ObservableProperties.g.cs";
+					string hintName = GetSafeFileName(containingType) + ".InternalObservableProperties.g.cs";
 					//System.Diagnostics.Debugger.Launch();
 					spc.AddSource(hintName, SourceText.From(src, Encoding.UTF8));
 				}
@@ -381,10 +381,10 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 			{
 				string name = attr.Name.ToString();
 
-				// Covers: [ObservableProperty], [ObservablePropertyAttribute], and fully-qualified usage.
-				if (name is "ObservableProperty" or "ObservablePropertyAttribute"
-					|| name.EndsWith(".ObservableProperty", StringComparison.Ordinal)
-					|| name.EndsWith(".ObservablePropertyAttribute", StringComparison.Ordinal))
+				// Covers: [InternalObservableProperty], [InternalObservablePropertyAttribute], and fully-qualified usage.
+				if (name is "InternalObservableProperty" or "InternalObservablePropertyAttribute"
+					|| name.EndsWith(".InternalObservableProperty", StringComparison.Ordinal)
+					|| name.EndsWith(".InternalObservablePropertyAttribute", StringComparison.Ordinal))
 				{
 					return true;
 				}

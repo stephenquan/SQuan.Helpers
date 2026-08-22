@@ -12,13 +12,13 @@ public partial class AppThemeExtension : BindableObject, IMarkupExtension<Bindin
 	/// <summary>
 	/// Gets or sets the value that will be used when the application is in light theme.
 	/// </summary>
-	[BindableProperty(UseStaticCallbacks = true)]
+	[InternalBindableProperty(UseStaticCallbacks = true)]
 	public partial object? Light { get; set; }
 
 	/// <summary>
 	/// Gets or sets the value that will be used when the application is in dark theme.
 	/// </summary>
-	[BindableProperty(UseStaticCallbacks = true)]
+	[InternalBindableProperty(UseStaticCallbacks = true)]
 	public partial object? Dark { get; set; }
 
 	/// <summary>
