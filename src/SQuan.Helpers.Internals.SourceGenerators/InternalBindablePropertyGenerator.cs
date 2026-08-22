@@ -33,7 +33,7 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 
 	static readonly string sGeneratedPrefix = "SQGEN_";
 
-	static bool IsVerboseEnabled { get; } = true;
+	static bool IsVerboseEnabled { get; } = false;
 
 	static readonly SymbolDisplayFormat sTypeWithNullabilityFormat =
 		SymbolDisplayFormat.FullyQualifiedFormat

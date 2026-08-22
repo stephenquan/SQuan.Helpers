@@ -1,5 +1,6 @@
 ﻿// SelectCultureMultiValueConverter.shared.cs
 
+using System.ComponentModel;
 using System.Globalization;
 
 namespace SQuan.Helpers.Maui.Localization;
@@ -20,15 +21,17 @@ public class SelectCultureMultiValueConverter : IMultiValueConverter
 	/// <returns></returns>
 	public object? Convert(object?[] values, Type targetType, object? parameter, CultureInfo culture)
 	{
-		if (values.OfType<CultureInfo>().Count() > 0)
+		object? result = values.FirstOrDefault(v => v is not null);
+
+		if (result is string text && targetType != typeof(string))
 		{
-			return values.OfType<CultureInfo>().FirstOrDefault();
+			TypeConverter? converter = TypeDescriptor.GetConverter(targetType);
+			if (converter?.CanConvertFrom(typeof(string)) == true)
+			{
+				return converter.ConvertFromInvariantString(text);
+			}
 		}
-		if (values.OfType<bool>().Count() > 0)
-		{
-			return values.OfType<bool>().FirstOrDefault();
-		}
-		return values.LastOrDefault();
+		return result;
 	}
 
 	/// <summary>
