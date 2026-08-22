@@ -343,10 +343,10 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 			{
 				string name = attr.Name.ToString();
 
-				// Covers: [BindableProperty], [BindablePropertyAttribute], and fully-qualified usage.
-				if (name is "BindableProperty" or "BindablePropertyAttribute"
-					|| name.EndsWith(".BindableProperty", StringComparison.Ordinal)
-					|| name.EndsWith(".BindablePropertyAttribute", StringComparison.Ordinal))
+				// Covers: [InternalBindableProperty], [InternalBindablePropertyAttribute], and fully-qualified usage.
+				if (name is "InternalBindableProperty" or "InternalBindablePropertyAttribute"
+					|| name.EndsWith(".InternalBindableProperty", StringComparison.Ordinal)
+					|| name.EndsWith(".InternalBindablePropertyAttribute", StringComparison.Ordinal))
 				{
 					return true;
 				}

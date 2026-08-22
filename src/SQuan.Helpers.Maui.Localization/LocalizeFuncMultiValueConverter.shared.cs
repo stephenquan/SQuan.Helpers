@@ -20,6 +20,7 @@ class LocalizeFuncMultiValueConverter<TProvider> : IMultiValueConverter
 			{
 				return string.Format(currentCulture, localizedString, args);
 			}
+			return localizedValue;
 		}
 		return null;
 	}

@@ -381,10 +381,10 @@ public sealed class InternalObservablePropertyGenerator : IIncrementalGenerator
 			{
 				string name = attr.Name.ToString();
 
-				// Covers: [ObservableProperty], [ObservablePropertyAttribute], and fully-qualified usage.
-				if (name is "ObservableProperty" or "ObservablePropertyAttribute"
-					|| name.EndsWith(".ObservableProperty", StringComparison.Ordinal)
-					|| name.EndsWith(".ObservablePropertyAttribute", StringComparison.Ordinal))
+				// Covers: [InternalObservableProperty], [InternalObservablePropertyAttribute], and fully-qualified usage.
+				if (name is "InternalObservableProperty" or "InternalObservablePropertyAttribute"
+					|| name.EndsWith(".InternalObservableProperty", StringComparison.Ordinal)
+					|| name.EndsWith(".InternalObservablePropertyAttribute", StringComparison.Ordinal))
 				{
 					return true;
 				}
