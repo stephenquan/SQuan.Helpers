@@ -34,7 +34,16 @@ public partial class LocalizeGroupBehavior : Behavior<VisualElement>
 			{
 				Bindings =
 				{
-					BindingBase.Create(static (LocalizeGroupBehavior b) => b.CurrentUICulture?.TextInfo.IsRightToLeft, BindingMode.OneWay, source: this),
+					new MultiBinding
+					{
+						Bindings =
+						{
+							BindingBase.Create(static (LocalizeGroupBehavior b) => b.CurrentUICulture?.TextInfo.IsRightToLeft, BindingMode.OneWay, source: this),
+							BindingBase.Create(static (LocalizationManager lm) => lm.CurrentUICulture.TextInfo.IsRightToLeft, BindingMode.OneWay, source: LocalizationManager.Current)
+						},
+						Mode = BindingMode.OneWay,
+						Converter = new SelectCultureMultiValueConverter()
+					},
 					BindingBase.Create(static (FlowDirection d) => d, BindingMode.OneWay, source: FlowDirection.RightToLeft),
 					BindingBase.Create(static (FlowDirection d) => d, BindingMode.OneWay, source: FlowDirection.LeftToRight)
 				},
