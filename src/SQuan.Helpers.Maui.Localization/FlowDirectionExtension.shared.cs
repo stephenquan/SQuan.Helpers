@@ -63,7 +63,7 @@ public partial class FlowDirectionExtension : BindableObject, IMarkupExtension<B
 				{
 					Bindings =
 					{
-						BindingBase.Create(static (FlowDirectionExtension ctx) => ctx.InternalCurrentUICulture, BindingMode.OneWay, source: this),
+						BindingBase.Create(static (FlowDirectionExtension ctx) => ctx.InternalCurrentUICulture?.TextInfo.IsRightToLeft, BindingMode.OneWay, source: this),
 						BindingBase.Create(static (LocalizationManager lm) => lm.CurrentUICulture.TextInfo.IsRightToLeft, BindingMode.OneWay, source: LocalizationManager.Current),
 					},
 					Mode = BindingMode.OneWay,

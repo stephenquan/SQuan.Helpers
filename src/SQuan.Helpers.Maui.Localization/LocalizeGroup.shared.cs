@@ -31,7 +31,7 @@ public partial class LocalizeGroup
 	/// </summary>
 	/// <param name="bindable">The bindable object on which to set the current UI culture.</param>
 	/// <param name="value">The culture info value to set as the current UI culture.</param>
-	public static void SetCurrentUICulture(BindableObject bindable, CultureInfo value)
+	public static void SetCurrentUICulture(BindableObject bindable, CultureInfo? value)
 	{
 		bindable.SetValue(CurrentUICultureProperty, value);
 	}
@@ -48,9 +48,9 @@ public partial class LocalizeGroup
 	/// </summary>
 	/// <param name="bindable">The bindable object from which to get the current culture.</param>
 	/// <returns>The current culture of the specified bindable object.</returns>
-	public static CultureInfo GetCurrentCulture(BindableObject bindable)
+	public static CultureInfo? GetCurrentCulture(BindableObject bindable)
 	{
-		return (CultureInfo)bindable.GetValue(CurrentCultureProperty);
+		return (CultureInfo?)bindable.GetValue(CurrentCultureProperty);
 	}
 
 	/// <summary>
@@ -58,7 +58,7 @@ public partial class LocalizeGroup
 	/// </summary>
 	/// <param name="bindable">The bindable object on which to set the current culture.</param>
 	/// <param name="value">The culture info value to set as the current culture.</param>
-	public static void SetCurrentCulture(BindableObject bindable, CultureInfo value)
+	public static void SetCurrentCulture(BindableObject bindable, CultureInfo? value)
 	{
 		bindable.SetValue(CurrentCultureProperty, value);
 	}
