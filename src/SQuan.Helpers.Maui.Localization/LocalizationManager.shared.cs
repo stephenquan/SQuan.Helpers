@@ -7,7 +7,7 @@ namespace SQuan.Helpers.Maui.Localization;
 /// <summary>
 /// Provides functionality for managing and accessing localized resources.
 /// </summary>
-public partial class LocalizationManager : ObservableObject
+public partial class LocalizationManager : InternalObservableObject
 {
 	/// <summary>
 	/// Gets or sets the options for localization behavior in the application.
@@ -19,7 +19,7 @@ public partial class LocalizationManager : ObservableObject
 	/// Gets or sets the resolver used to provide localized resources.
 	/// </summary>
 	[Obsolete("This property is not currently used and may be removed in future versions.")]
-	[ObservableProperty]
+	[InternalObservableProperty]
 	public partial LocalizeResolver? Resolver { get; set; }
 
 	/// <summary>
@@ -59,7 +59,7 @@ public partial class LocalizationManager : ObservableObject
 
 	/// <summary>Gets or sets a value indicating whether the current UI culture should follow the installed UI culture.</summary>
 	[Obsolete("This property is not currently used and may be removed in future versions.")]
-	[ObservableProperty]
+	[InternalObservableProperty]
 	public partial bool FollowInstalledUICulture { get; set; }
 
 	/// <summary>Gets the current installed UI culture.</summary>

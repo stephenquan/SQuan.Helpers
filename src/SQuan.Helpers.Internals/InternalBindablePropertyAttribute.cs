@@ -8,7 +8,7 @@ namespace SQuan.Helpers.Internals;
 /// </summary>
 [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 [global::System.AttributeUsage(global::System.AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-public sealed partial class BindablePropertyAttribute : global::System.Attribute
+public sealed partial class InternalBindablePropertyAttribute : global::System.Attribute
 {
 	/// <summary>
 	/// Gets or sets a value indicating whether to use the method names specified in the attribute for the generated BindableProperty callbacks.

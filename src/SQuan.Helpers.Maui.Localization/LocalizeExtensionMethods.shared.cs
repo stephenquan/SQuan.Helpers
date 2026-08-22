@@ -40,4 +40,22 @@ public static class LocalizeExtensionMethods
 		bindable.SetBinding(targetProperty, LocalizeBindingBase.Create(keyBinding, args));
 		return bindable;
 	}
+
+	/// <summary>
+	/// Retrieves the <see cref="LocalizeGroupBehavior"/> associated with the specified <see cref="VisualElement"/>.
+	/// </summary>
+	/// <param name="element">The <see cref="VisualElement"/> for which to retrieve the <see cref="LocalizeGroupBehavior"/>.</param>
+	/// <returns>The <see cref="LocalizeGroupBehavior"/> associated with the specified <see cref="VisualElement"/>, or <c>null</c> if none is found.</returns>
+	public static LocalizeGroupBehavior? GetLocalizeBehavior(this VisualElement element)
+	{
+		if (element.Behaviors.OfType<LocalizeGroupBehavior>().FirstOrDefault() is LocalizeGroupBehavior behavior)
+		{
+			return behavior;
+		}
+		if (element.Parent is VisualElement parent)
+		{
+			return GetLocalizeBehavior(parent);
+		}
+		return null;
+	}
 }

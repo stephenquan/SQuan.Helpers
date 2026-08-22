@@ -49,7 +49,7 @@
                 ZIndex="0" />
 
             <Border Padding="10">
-                <i18n:LocalizeScope Spacing="25" UICulture="{Binding ScopedUICulture}">
+                <VerticalStackLayout i18n:LocalizeGroup.CurrentUICulture="{Binding ScopedUICulture}" Spacing="25">
                     <Label
                         HorizontalOptions="Start"
                         HorizontalTextAlignment="Start"
@@ -75,11 +75,11 @@
                         Command="{Binding ToggleScopedCultureCommand}"
                         Text="{Binding ScopedUICulture.Name}"
                         ZIndex="0" />
-                </i18n:LocalizeScope>
+                </VerticalStackLayout>
             </Border>
 
             <Border Padding="10">
-                <i18n:LocalizeScope Spacing="25" UICulture="{Binding FormUICulture}">
+                <VerticalStackLayout i18n:LocalizeGroup.CurrentUICulture="{Binding FormUICulture}" Spacing="25">
 
                     <Label Text="{i18n:Localize '/survey/x1:label'}" />
                     <Entry Text="{Binding FormContext.EM[/survey/x1], Mode=TwoWay}" />
@@ -97,7 +97,7 @@
                         Command="{Binding ToggleFormCultureCommand}"
                         Text="{Binding FormUICulture.Name}"
                         ZIndex="0" />
-                </i18n:LocalizeScope>
+                </VerticalStackLayout>
             </Border>
         </VerticalStackLayout>
     </ScrollView>
