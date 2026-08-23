@@ -59,7 +59,7 @@ public sealed class InternalObservablePropertyGenerator : IIncrementalGenerator
 
 	DiagnosticDescriptor sCandidateCountDescriptor => new(
 		id: "SQGEN101",
-		title: $"${ShortTargetAttributeMetadataName} candidates",
+		title: $"{ShortTargetAttributeMetadataName} candidates",
 		messageFormat: "Candidates: {0}",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Info,
@@ -75,7 +75,7 @@ public sealed class InternalObservablePropertyGenerator : IIncrementalGenerator
 
 	DiagnosticDescriptor sDebugDumpDescriptor => new(
 		id: "SQGEN103",
-		title: $"${ShortTargetAttributeMetadataName} debug dump",
+		title: $"{ShortTargetAttributeMetadataName} debug dump",
 		messageFormat: "{0}",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Info,
@@ -83,7 +83,7 @@ public sealed class InternalObservablePropertyGenerator : IIncrementalGenerator
 
 	DiagnosticDescriptor sGeneratorFailureDescriptor => new(
 		id: "SQGEN901",
-		title: $"${ShortTargetAttributeMetadataName} generator failure",
+		title: $"{ShortTargetAttributeMetadataName} generator failure",
 		messageFormat: "Exception: {0}",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Error,

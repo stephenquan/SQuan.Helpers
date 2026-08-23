@@ -19,9 +19,9 @@ class LocalizeMultiValueConverter : IMultiValueConverter
 	/// <param name="targetType">The type of the binding target property. This parameter is not used in this implementation.</param>
 	/// <param name="parameter">An optional parameter to be used in the conversion. This parameter is not used in this implementation.</param>
 	/// <param name="culture">The culture to use in the conversion. This parameter is not used in this implementation.</param>
-	/// <returns>A localized string corresponding to the specified key and culture. If additional values are provided, they are used
-	/// as formatting arguments. Returns an empty string if the input values are invalid or do not meet the required
-	/// conditions.</returns>
+	/// <returns>A localized string corresponding to the specified key and culture.
+	/// If additional values are provided, they are used as formatting arguments.
+	/// Returns an empty string if the input values are invalid or do not meet the required conditions.</returns>
 	public object? Convert(object?[] values, Type targetType, object? parameter, CultureInfo culture)
 	{
 		if (values.Length >= 4

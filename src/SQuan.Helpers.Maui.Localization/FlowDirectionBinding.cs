@@ -11,7 +11,7 @@ public static class FlowDirectionBinding
 	/// <summary>
 	/// Creates a binding that determines the flow direction based on the current UI culture's text direction.
 	/// </summary>
-	/// <returns>This method is obsolete and will always return null.</returns>
+	/// <returns>An obsolete binding that maps the current UI culture's right-to-left setting to a <see cref="FlowDirection"/>.</returns>
 	[Obsolete("Use a binding to LocalizationManager.Current.CurrentUICulture.TextInfo.IsRightToLeft with CommunityToolkit.Maui's BoolToObjectConverter instead.")]
 	public static BindingBase? Create()
 		=> new MultiBinding
