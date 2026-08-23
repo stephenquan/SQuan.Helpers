@@ -17,6 +17,16 @@ namespace SQuan.Helpers.Internals.SourceGenerators;
 public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 {
 	/// <summary>
+	/// Gets or sets the short name of the metadata type associated with the target attribute used for property binding.
+	/// </summary>
+	public string ShortTargetMetadataName { get; set; } = "InternalBindableProperty";
+
+	/// <summary>
+	/// Gets or sets the short name of the target attribute used for property binding.
+	/// </summary>
+	public string ShortTargetAttributeMetadataName { get; set; } = "InternalBindablePropertyAttribute";
+
+	/// <summary>
 	/// Gets or sets the name of the metadata type associated with the target attribute used for property binding.
 	/// </summary>
 	public string TargetAttributeMetadataName { get; set; } = "SQuan.Helpers.Internals.InternalBindablePropertyAttribute";
@@ -41,51 +51,51 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 				SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier);
 
 	// Existing diagnostics
-	static readonly DiagnosticDescriptor sAttributeNotFoundDescriptor = new(
+	DiagnosticDescriptor sAttributeNotFoundDescriptor => new(
 		id: "SQGEN011",
-		title: "BindablePropertyAttribute not found",
+		title: $"{ShortTargetAttributeMetadataName} not found",
 		messageFormat: "Could not resolve attribute by metadata name: {0}",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Warning,
 		isEnabledByDefault: true);
 
-	static readonly DiagnosticDescriptor sCandidateCountDescriptor = new(
+	DiagnosticDescriptor sCandidateCountDescriptor => new(
 		id: "SQGEN111",
-		title: "BindableProperty candidates",
+		title: $"{ShortTargetMetadataName} candidates",
 		messageFormat: "Candidates: {0}",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Info,
 		isEnabledByDefault: true);
 
-	static readonly DiagnosticDescriptor sAnnotatedCountDescriptor = new(
+	DiagnosticDescriptor sAnnotatedCountDescriptor => new(
 		id: "SQGEN112",
-		title: "BindableProperty annotated",
+		title: $"{ShortTargetMetadataName} annotated",
 		messageFormat: "Annotated: {0}",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Info,
 		isEnabledByDefault: true);
 
-	static readonly DiagnosticDescriptor sDebugDumpDescriptor = new(
+	DiagnosticDescriptor sDebugDumpDescriptor => new(
 		id: "SQGEN113",
-		title: "BindableProperty debug dump",
+		title: $"{ShortTargetMetadataName} debug dump",
 		messageFormat: "{0}",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Info,
 		isEnabledByDefault: true);
 
-	static readonly DiagnosticDescriptor sGeneratorFailureDescriptor = new(
+	DiagnosticDescriptor sGeneratorFailureDescriptor => new(
 		id: "SQGEN911",
-		title: "BindableProperty generator failure",
+		title: $"{ShortTargetMetadataName} generator failure",
 		messageFormat: "Exception: {0}",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
 	// New validation diagnostic: attribute applied to non-partial property
-	static readonly DiagnosticDescriptor sBindablePropertyRequiresPartialDescriptor = new(
+	DiagnosticDescriptor sBindablePropertyRequiresPartialDescriptor => new(
 		id: "SQGEN912",
-		title: "BindablePropertyAttribute requires partial property",
-		messageFormat: "[BindableProperty] can only be applied to partial properties. Property '{0}' is not declared partial.",
+		title: $"{ShortTargetAttributeMetadataName} requires partial property",
+		messageFormat: "[{ShortTargetAttributeMetadataName}] can only be applied to partial properties. Property '{0}' is not declared partial.",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Error, // change to Warning if desired
 		isEnabledByDefault: true);
@@ -105,41 +115,41 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 		// Validation pipeline: find properties with [BindableProperty] that are NOT partial, report diagnostic.
 		IncrementalValuesProvider<(PropertyDeclarationSyntax Syntax, IPropertySymbol Symbol)> invalidAttributedProperties =
 			context.SyntaxProvider.CreateSyntaxProvider(
-					predicate: static (node, _) =>
-					{
-						if (node is not PropertyDeclarationSyntax p)
-						{
-							return false;
-						}
-
-						if (p.AttributeLists.Count == 0)
-						{
-							return false;
-						}
-
-						// Only interested in non-partial properties
-						if (p.Modifiers.Any(SyntaxKind.PartialKeyword))
-						{
-							return false;
-						}
-
-						// Cheap syntax name check to avoid semantic work where not needed
-						return HasBindablePropertyAttributeSyntax(p);
-					},
-					transform: static (ctx, _) =>
-					{
-						var syntax = (PropertyDeclarationSyntax)ctx.Node;
-						var symbol = ctx.SemanticModel.GetDeclaredSymbol(syntax) as IPropertySymbol;
-						return (Syntax: syntax, Symbol: symbol);
-					})
-				.Where(static x =>
+				predicate: (node, _) =>
 				{
-					return x.Symbol is not null;
-				})!
-				.Select(static (x, _) =>
+					if (node is not PropertyDeclarationSyntax p)
+					{
+						return false;
+					}
+
+					if (p.AttributeLists.Count == 0)
+					{
+						return false;
+					}
+
+					// Only interested in non-partial properties
+					if (p.Modifiers.Any(SyntaxKind.PartialKeyword))
+					{
+						return false;
+					}
+
+					// Cheap syntax name check to avoid semantic work where not needed
+					return HasBindablePropertyAttributeSyntax(p);
+				},
+				transform: static (ctx, _) =>
 				{
-					return (x.Syntax, x.Symbol!);
-				});
+					var syntax = (PropertyDeclarationSyntax)ctx.Node;
+					var symbol = ctx.SemanticModel.GetDeclaredSymbol(syntax) as IPropertySymbol;
+					return (Syntax: syntax, Symbol: symbol);
+				})
+			.Where(static x =>
+			{
+				return x.Symbol is not null;
+			})!
+			.Select(static (x, _) =>
+			{
+				return (x.Syntax, x.Symbol!);
+			});
 
 		// Attach semantic check for exact attribute type (your SQuan.Helpers.Internals.BindablePropertyAttribute)
 		IncrementalValuesProvider<(PropertyDeclarationSyntax Syntax, IPropertySymbol Symbol)> invalidAttributedPropertiesVerified =
@@ -161,7 +171,7 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 					return pair.Left;
 				});
 
-		context.RegisterSourceOutput(invalidAttributedPropertiesVerified, static (spc, item) =>
+		context.RegisterSourceOutput(invalidAttributedPropertiesVerified, (spc, item) =>
 		{
 			string propertyName = item.Syntax.Identifier.Text;
 			spc.ReportDiagnostic(Diagnostic.Create(
@@ -173,16 +183,16 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 		// Candidate partial properties (must be partial + has attributes)
 		IncrementalValuesProvider<(PropertyDeclarationSyntax Syntax, IPropertySymbol Symbol)> candidateProperties =
 			context.SyntaxProvider.CreateSyntaxProvider(
-					predicate: static (node, _) =>
-					{
-						return IsCandidate(node);
-					},
-					transform: static (ctx, _) =>
-					{
-						var syntax = (PropertyDeclarationSyntax)ctx.Node;
-						var symbol = ctx.SemanticModel.GetDeclaredSymbol(syntax) as IPropertySymbol;
-						return (Syntax: syntax, Symbol: symbol);
-					})
+				predicate: static (node, _) =>
+				{
+					return IsCandidate(node);
+				},
+				transform: static (ctx, _) =>
+				{
+					var syntax = (PropertyDeclarationSyntax)ctx.Node;
+					var symbol = ctx.SemanticModel.GetDeclaredSymbol(syntax) as IPropertySymbol;
+					return (Syntax: syntax, Symbol: symbol);
+				})
 				.Where(static x =>
 				{
 					return x.Symbol is not null;
@@ -233,7 +243,7 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 			}
 		});
 
-		context.RegisterSourceOutput(candidatesCollected, static (spc, props) =>
+		context.RegisterSourceOutput(candidatesCollected, (spc, props) =>
 		{
 			if (!IsVerboseEnabled)
 			{
@@ -243,7 +253,7 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 			spc.ReportDiagnostic(Diagnostic.Create(sCandidateCountDescriptor, Location.None, props.Length));
 		});
 
-		context.RegisterSourceOutput(annotatedCollected, static (spc, props) =>
+		context.RegisterSourceOutput(annotatedCollected, (spc, props) =>
 		{
 			if (!IsVerboseEnabled)
 			{
@@ -279,7 +289,7 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 
 				if (IsVerboseEnabled)
 				{
-					spc.AddSource("SQGEN_Heartbeat.g.cs", SourceText.From("// generator heartbeat", Encoding.UTF8));
+					spc.AddSource("SQGEN_Heartbeat.g.cs", SourceText.From("// InternalBindableProperty generator heartbeat", Encoding.UTF8));
 				}
 			}
 			catch (Exception ex)
@@ -335,7 +345,7 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 		return false;
 	}
 
-	static bool HasBindablePropertyAttributeSyntax(PropertyDeclarationSyntax property)
+	bool HasBindablePropertyAttributeSyntax(PropertyDeclarationSyntax property)
 	{
 		foreach (AttributeListSyntax list in property.AttributeLists)
 		{
@@ -344,9 +354,10 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 				string name = attr.Name.ToString();
 
 				// Covers: [InternalBindableProperty], [InternalBindablePropertyAttribute], and fully-qualified usage.
-				if (name is "InternalBindableProperty" or "InternalBindablePropertyAttribute"
-					|| name.EndsWith(".InternalBindableProperty", StringComparison.Ordinal)
-					|| name.EndsWith(".InternalBindablePropertyAttribute", StringComparison.Ordinal))
+				if (name.Equals(ShortTargetMetadataName, StringComparison.Ordinal)
+					|| name.Equals(ShortTargetAttributeMetadataName, StringComparison.Ordinal)
+					|| name.EndsWith("." + ShortTargetMetadataName, StringComparison.Ordinal)
+					|| name.EndsWith("." + ShortTargetAttributeMetadataName, StringComparison.Ordinal))
 				{
 					return true;
 				}
