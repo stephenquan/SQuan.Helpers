@@ -11,7 +11,7 @@ namespace SQuan.Helpers.Internals.SourceGenerators;
 
 /// <summary>
 /// Generates observable partial properties for properties annotated with
-/// SQuan.Helpers.Internal.ObservablePropertyAttribute.
+/// SQuan.Helpers.Internal.InternalObservablePropertyAttribute.
 /// </summary>
 [Generator(LanguageNames.CSharp)]
 public sealed class InternalObservablePropertyGenerator : IIncrementalGenerator
@@ -51,7 +51,7 @@ public sealed class InternalObservablePropertyGenerator : IIncrementalGenerator
 	// Existing diagnostics
 	DiagnosticDescriptor sAttributeNotFoundDescriptor => new(
 		id: "SQGEN001",
-		title: $"${ShortTargetAttributeMetadataName} not found",
+		title: $"{ShortTargetAttributeMetadataName} not found",
 		messageFormat: "Could not resolve attribute by metadata name: {0}",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Warning,
