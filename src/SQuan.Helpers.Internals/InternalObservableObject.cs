@@ -1,4 +1,4 @@
-﻿// ObservableObject.cs
+﻿// InternalObservableObject.cs
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -8,7 +8,7 @@ namespace SQuan.Helpers.Internals;
 /// <summary>
 /// Provides a base class that implements the INotifyPropertyChanged interface to support property change notifications.
 /// </summary>
-public partial class ObservableObject : INotifyPropertyChanged
+public partial class InternalObservableObject : INotifyPropertyChanged
 {
 	/// <summary>
 	/// Sets the specified property to a new value and raises a property changed notification if the value has changed.

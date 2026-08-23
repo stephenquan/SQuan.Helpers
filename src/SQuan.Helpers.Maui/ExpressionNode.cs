@@ -12,7 +12,7 @@ namespace SQuan.Helpers.Maui;
 /// The <see cref="ExpressionManager"/> manages a collection of <see cref="ExpressionNode"/>s and their dependencies,
 /// and is responsible for evaluating the expressions and updating the values of the nodes accordingly.
 /// </summary>
-public partial class ExpressionNode : ObservableObject
+public partial class ExpressionNode : InternalObservableObject
 {
 	static ILogger? logger;
 
@@ -143,25 +143,25 @@ public partial class ExpressionNode : ObservableObject
 	/// <summary>
 	/// Describes the current lifecycle state of the node.
 	/// </summary>
-	[ObservableProperty]
+	[InternalObservableProperty]
 	public partial ExpressionValueKind ValueKind { get; set; } = ExpressionValueKind.Uninitialized;
 
 	/// <summary>
 	/// The expected type of the node's value, if constrained.
 	/// </summary>
-	[ObservableProperty]
+	[InternalObservableProperty]
 	public partial Type? ValueType { get; set; } = null;
 
 	/// <summary>
 	/// The expression text associated with this node.
 	/// </summary>
-	[ObservableProperty]
+	[InternalObservableProperty]
 	public partial string Expression { get; set; } = string.Empty;
 
 	/// <summary>
 	/// Indicates whether the node's value is deterministic.
 	/// </summary>
-	[ObservableProperty]
+	[InternalObservableProperty]
 	public partial bool IsDeterministic { get; set; } = true;
 
 	/// <summary>
@@ -182,13 +182,13 @@ public partial class ExpressionNode : ObservableObject
 	/// <summary>
 	/// Gets or sets the default expression that is used for initialization when no other value is provided.
 	/// </summary>
-	[ObservableProperty]
+	[InternalObservableProperty]
 	public partial string DefaultExpression { get; set; } = string.Empty;
 
 	/// <summary>
 	/// Gets or sets a value indicating whether the default expression is deterministic.
 	/// </summary>
-	[ObservableProperty]
+	[InternalObservableProperty]
 	public partial bool IsDefaultExpressionDeterministic { get; set; } = true;
 
 	/// <summary>

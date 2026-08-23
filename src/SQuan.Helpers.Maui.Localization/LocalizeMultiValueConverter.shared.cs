@@ -19,34 +19,20 @@ class LocalizeMultiValueConverter : IMultiValueConverter
 	/// <param name="targetType">The type of the binding target property. This parameter is not used in this implementation.</param>
 	/// <param name="parameter">An optional parameter to be used in the conversion. This parameter is not used in this implementation.</param>
 	/// <param name="culture">The culture to use in the conversion. This parameter is not used in this implementation.</param>
-	/// <returns>A localized string corresponding to the specified key and culture. If additional values are provided, they are used
-	/// as formatting arguments. Returns an empty string if the input values are invalid or do not meet the required
-	/// conditions.</returns>
+	/// <returns>A localized string corresponding to the specified key and culture.
+	/// If additional values are provided, they are used as formatting arguments.
+	/// Returns an empty string if the input values are invalid or do not meet the required conditions.</returns>
 	public object? Convert(object?[] values, Type targetType, object? parameter, CultureInfo culture)
 	{
-		if (values.Length >= 9
+		if (values.Length >= 4
 			&& values[0] is string key
 			&& !string.IsNullOrEmpty(key)
-			&& values[1] is CultureInfo globalCulture
-			&& values[3] is CultureInfo globalUICulture
-			&& values[8] is object?[] args)
+			&& values[1] is CultureInfo currentUICulture
+			&& values[2] is CultureInfo currentCulture
+			&& values[3] is object?[] args)
 		{
-			var currentCulture = globalCulture;
-			if (values[2] is CultureInfo scopedCulture)
-			{
-				currentCulture = scopedCulture;
-			}
-			var currentUICulture = globalUICulture;
-			if (values[4] is CultureInfo scopedUICulture)
-			{
-				currentUICulture = scopedUICulture;
-			}
-
-			var value = LocalizationManager.Current.GetString(key, currentUICulture, args);
-
-			return value;
+			return LocalizationManager.Current.GetString(key, currentUICulture, currentCulture, args);
 		}
-
 		return string.Empty;
 	}
 

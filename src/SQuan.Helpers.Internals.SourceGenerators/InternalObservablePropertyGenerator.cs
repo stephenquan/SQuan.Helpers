@@ -1,4 +1,4 @@
-﻿// ObservablePropertyGenerator.cs
+﻿// InternalObservablePropertyGenerator.cs
 
 using System.Collections.Immutable;
 using System.Text;
@@ -11,13 +11,35 @@ namespace SQuan.Helpers.Internals.SourceGenerators;
 
 /// <summary>
 /// Generates observable partial properties for properties annotated with
-/// SQuan.Helpers.Internal.ObservablePropertyAttribute.
+/// SQuan.Helpers.Internal.InternalObservablePropertyAttribute.
 /// </summary>
 [Generator(LanguageNames.CSharp)]
-public sealed class ObservablePropertyGenerator : IIncrementalGenerator
+public sealed class InternalObservablePropertyGenerator : IIncrementalGenerator
 {
-	const string kTargetAttributeMetadataName = "SQuan.Helpers.Internals.ObservablePropertyAttribute";
-	const string kTargetAttributeFullyQualifiedName = "global::SQuan.Helpers.Internals.ObservablePropertyAttribute";
+	/// <summary>
+	/// Gets or sets the short name of the attribute to look for in the source code.
+	/// </summary>
+	public string ShortTargetMetadataName { get; set; } = "InternalObservableProperty";
+
+	/// <summary>
+	/// Gets the fully qualified name of the attribute to look for in the source code.
+	/// </summary>
+	public string ShortTargetAttributeMetadataName { get; set; } = "InternalObservablePropertyAttribute";
+
+	/// <summary>
+	/// Gets or sets the fully qualified metadata name of the attribute to look for in the source code.
+	/// </summary>
+	public string TargetAttributeMetadataName { get; set; } = "SQuan.Helpers.Internals.InternalObservablePropertyAttribute";
+
+	/// <summary>
+	/// Gets or sets the fully qualified name of the attribute to look for in the source code.
+	/// </summary>
+	public string TargetAttributeFullyQualifiedName { get; set; } = "global::SQuan.Helpers.Internals.InternalObservablePropertyAttribute";
+
+	/// <summary>
+	/// Gets or sets the suffix to be used for generated source file names. The default value is ".InternalObservableProperties.g.cs".
+	/// </summary>
+	public string SafeFileNameSuffix { get; set; } = ".InternalObservableProperties.g.cs";
 
 	static bool IsVerboseEnabled { get; } = false;
 
@@ -27,51 +49,51 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 				SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier);
 
 	// Existing diagnostics
-	static readonly DiagnosticDescriptor sAttributeNotFoundDescriptor = new(
+	DiagnosticDescriptor sAttributeNotFoundDescriptor => new(
 		id: "SQGEN001",
-		title: "ObservablePropertyAttribute not found",
+		title: $"{ShortTargetAttributeMetadataName} not found",
 		messageFormat: "Could not resolve attribute by metadata name: {0}",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Warning,
 		isEnabledByDefault: true);
 
-	static readonly DiagnosticDescriptor sCandidateCountDescriptor = new(
+	DiagnosticDescriptor sCandidateCountDescriptor => new(
 		id: "SQGEN101",
-		title: "ObservableProperty candidates",
+		title: $"{ShortTargetAttributeMetadataName} candidates",
 		messageFormat: "Candidates: {0}",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Info,
 		isEnabledByDefault: true);
 
-	static readonly DiagnosticDescriptor sAnnotatedCountDescriptor = new(
+	DiagnosticDescriptor sAnnotatedCountDescriptor => new(
 		id: "SQGEN102",
-		title: "ObservableProperty annotated",
+		title: $"${ShortTargetAttributeMetadataName} annotated",
 		messageFormat: "Annotated: {0}",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Info,
 		isEnabledByDefault: true);
 
-	static readonly DiagnosticDescriptor sDebugDumpDescriptor = new(
+	DiagnosticDescriptor sDebugDumpDescriptor => new(
 		id: "SQGEN103",
-		title: "ObservableProperty debug dump",
+		title: $"{ShortTargetAttributeMetadataName} debug dump",
 		messageFormat: "{0}",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Info,
 		isEnabledByDefault: true);
 
-	static readonly DiagnosticDescriptor sGeneratorFailureDescriptor = new(
+	DiagnosticDescriptor sGeneratorFailureDescriptor => new(
 		id: "SQGEN901",
-		title: "ObservableProperty generator failure",
+		title: $"{ShortTargetAttributeMetadataName} generator failure",
 		messageFormat: "Exception: {0}",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
 	// New validation diagnostic: attribute applied to non-partial property
-	static readonly DiagnosticDescriptor sObservablePropertyRequiresPartialDescriptor = new(
+	DiagnosticDescriptor sObservablePropertyRequiresPartialDescriptor => new(
 		id: "SQGEN902",
-		title: "ObservablePropertyAttribute requires partial property",
-		messageFormat: "[ObservableProperty] can only be applied to partial properties. Property '{0}' is not declared partial.",
+		title: $"{ShortTargetAttributeMetadataName} requires partial property",
+		messageFormat: $"[{ShortTargetAttributeMetadataName}] can only be applied to partial properties. Property '{0}' is not declared partial.",
 		category: "Usage",
 		defaultSeverity: DiagnosticSeverity.Error, // change to Warning if desired
 		isEnabledByDefault: true);
@@ -83,15 +105,15 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
 		IncrementalValueProvider<INamedTypeSymbol?> attributeSymbolProvider =
-			context.CompilationProvider.Select(static (compilation, _) =>
+			context.CompilationProvider.Select((compilation, _) =>
 			{
-				return compilation.GetTypeByMetadataName(kTargetAttributeMetadataName);
+				return compilation.GetTypeByMetadataName(TargetAttributeMetadataName);
 			});
 
 		// Validation pipeline: find properties with [ObservableProperty] that are NOT partial, report diagnostic.
 		IncrementalValuesProvider<(PropertyDeclarationSyntax Syntax, IPropertySymbol Symbol)> invalidAttributedProperties =
 			context.SyntaxProvider.CreateSyntaxProvider(
-					predicate: static (node, _) =>
+					predicate: (node, _) =>
 					{
 						if (node is not PropertyDeclarationSyntax p)
 						{
@@ -131,7 +153,7 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 		IncrementalValuesProvider<(PropertyDeclarationSyntax Syntax, IPropertySymbol Symbol)> invalidAttributedPropertiesVerified =
 			invalidAttributedProperties
 				.Combine(attributeSymbolProvider)
-				.Where(static pair =>
+				.Where(pair =>
 				{
 					// If we can't resolve the attribute type, we can't verify it is *your* attribute.
 					// Still, you likely want to know, so we allow it only when verbose is enabled.
@@ -147,7 +169,7 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 					return pair.Left;
 				});
 
-		context.RegisterSourceOutput(invalidAttributedPropertiesVerified, static (spc, item) =>
+		context.RegisterSourceOutput(invalidAttributedPropertiesVerified, (spc, item) =>
 		{
 			string propertyName = item.Syntax.Identifier.Text;
 			spc.ReportDiagnostic(Diagnostic.Create(
@@ -180,7 +202,7 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 		IncrementalValuesProvider<IPropertySymbol> annotatedProperties =
 			candidateProperties
 				.Combine(attributeSymbolProvider)
-				.Where(static pair =>
+				.Where(pair =>
 				{
 					if (pair.Right is null)
 					{
@@ -197,7 +219,7 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 		IncrementalValueProvider<ImmutableArray<IPropertySymbol>> candidatesCollected = candidateProperties.Collect();
 		IncrementalValueProvider<ImmutableArray<IPropertySymbol>> annotatedCollected = annotatedProperties.Collect();
 
-		context.RegisterSourceOutput(attributeSymbolProvider, static (spc, attrSymbol) =>
+		context.RegisterSourceOutput(attributeSymbolProvider, (spc, attrSymbol) =>
 		{
 			if (!IsVerboseEnabled)
 			{
@@ -206,7 +228,7 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 
 			if (attrSymbol is null)
 			{
-				spc.ReportDiagnostic(Diagnostic.Create(sAttributeNotFoundDescriptor, Location.None, kTargetAttributeMetadataName));
+				spc.ReportDiagnostic(Diagnostic.Create(sAttributeNotFoundDescriptor, Location.None, TargetAttributeMetadataName));
 			}
 			else
 			{
@@ -217,7 +239,7 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 			}
 		});
 
-		context.RegisterSourceOutput(candidatesCollected, static (spc, props) =>
+		context.RegisterSourceOutput(candidatesCollected, (spc, props) =>
 		{
 			if (!IsVerboseEnabled)
 			{
@@ -227,7 +249,7 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 			spc.ReportDiagnostic(Diagnostic.Create(sCandidateCountDescriptor, Location.None, props.Length));
 		});
 
-		context.RegisterSourceOutput(annotatedCollected, static (spc, props) =>
+		context.RegisterSourceOutput(annotatedCollected, (spc, props) =>
 		{
 			if (!IsVerboseEnabled)
 			{
@@ -238,7 +260,7 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 		});
 
 		// Output generation (no Cast<> needed anywhere)
-		context.RegisterSourceOutput(annotatedCollected, static (spc, properties) =>
+		context.RegisterSourceOutput(annotatedCollected, (spc, properties) =>
 		{
 			try
 			{
@@ -256,7 +278,7 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 					}
 
 					string src = GenerateForType(containingType, _group.ToImmutableArray());
-					string hintName = GetSafeFileName(containingType) + ".ObservableProperties.g.cs";
+					string hintName = GetSafeFileName(containingType) + SafeFileNameSuffix;
 					//System.Diagnostics.Debugger.Launch();
 					spc.AddSource(hintName, SourceText.From(src, Encoding.UTF8));
 				}
@@ -347,7 +369,7 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 		return symbol;
 	}
 
-	static bool HasObservablePropertyAttribute(IPropertySymbol property, INamedTypeSymbol attributeSymbol)
+	bool HasObservablePropertyAttribute(IPropertySymbol property, INamedTypeSymbol attributeSymbol)
 	{
 		foreach (AttributeData a in property.GetAttributes())
 		{
@@ -364,7 +386,7 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 
 			// Robust fallback (multi-targeting / symbol identity oddities)
 			string fqn = cls.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-			if (string.Equals(fqn, kTargetAttributeFullyQualifiedName, StringComparison.Ordinal))
+			if (string.Equals(fqn, TargetAttributeFullyQualifiedName, StringComparison.Ordinal))
 			{
 				return true;
 			}
@@ -373,7 +395,7 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 		return false;
 	}
 
-	static bool HasObservablePropertyAttributeSyntax(PropertyDeclarationSyntax property)
+	bool HasObservablePropertyAttributeSyntax(PropertyDeclarationSyntax property)
 	{
 		foreach (AttributeListSyntax list in property.AttributeLists)
 		{
@@ -381,10 +403,11 @@ public sealed class ObservablePropertyGenerator : IIncrementalGenerator
 			{
 				string name = attr.Name.ToString();
 
-				// Covers: [ObservableProperty], [ObservablePropertyAttribute], and fully-qualified usage.
-				if (name is "ObservableProperty" or "ObservablePropertyAttribute"
-					|| name.EndsWith(".ObservableProperty", StringComparison.Ordinal)
-					|| name.EndsWith(".ObservablePropertyAttribute", StringComparison.Ordinal))
+				// Covers: [InternalObservableProperty], [InternalObservablePropertyAttribute], and fully-qualified usage.
+				if (name.Equals(ShortTargetMetadataName, StringComparison.Ordinal)
+					|| name.Equals(ShortTargetAttributeMetadataName, StringComparison.Ordinal)
+					|| name.EndsWith("." + ShortTargetMetadataName, StringComparison.Ordinal)
+					|| name.EndsWith("." + ShortTargetAttributeMetadataName, StringComparison.Ordinal))
 				{
 					return true;
 				}

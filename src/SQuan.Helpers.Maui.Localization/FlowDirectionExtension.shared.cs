@@ -1,7 +1,5 @@
 ﻿// FlowDirectionExtension.shared.cs
 
-using System.ComponentModel;
-using System.Globalization;
 using SQuan.Helpers.Internals;
 
 namespace SQuan.Helpers.Maui.Localization;
@@ -16,13 +14,13 @@ public partial class FlowDirectionExtension : BindableObject, IMarkupExtension<B
 	/// <summary>
 	/// Gets or sets the value to be used when the current text direction is left-to-right.
 	/// </summary>
-	[BindableProperty(UseStaticCallbacks = true)]
+	[InternalBindableProperty(UseStaticCallbacks = true)]
 	public partial object? LeftToRight { get; set; } = FlowDirection.LeftToRight;
 
 	/// <summary>
 	/// Gets or sets the value to be used when the current text direction is right-to-left.
 	/// </summary>
-	[BindableProperty(UseStaticCallbacks = true)]
+	[InternalBindableProperty(UseStaticCallbacks = true)]
 	public partial object? RightToLeft { get; set; } = FlowDirection.RightToLeft;
 
 	/// <summary>
@@ -38,14 +36,11 @@ public partial class FlowDirectionExtension : BindableObject, IMarkupExtension<B
 	/// </returns>
 	BindingBase IMarkupExtension<BindingBase>.ProvideValue(IServiceProvider serviceProvider)
 	{
-		if (serviceProvider.GetService(typeof(IProvideValueTarget)) is IProvideValueTarget provideValueTarget)
+		if (!IsSet(BindingContextProperty)
+			&& serviceProvider.GetService(typeof(IProvideValueTarget)) is IProvideValueTarget provideValueTarget
+			&& provideValueTarget.TargetObject is BindableObject targetObject)
 		{
-			if (provideValueTarget.TargetObject is BindableObject targetObject)
-			{
-				this.SetBinding(
-					BindableObject.BindingContextProperty,
-					static (BindableObject t) => t.BindingContext, BindingMode.OneWay, source: targetObject);
-			}
+			this.SetBinding(BindingContextProperty, static (BindableObject t) => t.BindingContext, BindingMode.OneWay, source: targetObject);
 		}
 
 		return new MultiBinding
@@ -53,42 +48,14 @@ public partial class FlowDirectionExtension : BindableObject, IMarkupExtension<B
 			Bindings =
 			[
 				BindingBase.Create(static (LocalizationManager lm) => lm.CurrentUICulture.TextInfo.IsRightToLeft, BindingMode.OneWay, source: LocalizationManager.Current),
-				BindingBase.Create(static (FlowDirectionExtension ctx) => ctx.LeftToRight, BindingMode.OneWay, source: this),
 				BindingBase.Create(static (FlowDirectionExtension ctx) => ctx.RightToLeft, BindingMode.OneWay, source: this),
+				BindingBase.Create(static (FlowDirectionExtension ctx) => ctx.LeftToRight, BindingMode.OneWay, source: this),
 			],
 			Mode = BindingMode.OneWay,
-			Converter = new FlowDirectionMultiValueConverter()
+			Converter = new MultiBoolToObjectConverter()
 		};
 	}
 
 	object IMarkupExtension.ProvideValue(IServiceProvider serviceProvider)
 		=> (this as IMarkupExtension<BindingBase>).ProvideValue(serviceProvider);
-
-	class FlowDirectionMultiValueConverter : IMultiValueConverter
-	{
-		public object? Convert(object?[] values, Type targetType, object? parameter, CultureInfo culture)
-		{
-			object? result = null;
-			if (values.Length == 3)
-			{
-				result = (values[0] is bool isRightToLeft) && isRightToLeft ? values[2] : values[1];
-			}
-
-			if (result is string text && targetType != typeof(string))
-			{
-				TypeConverter? converter = TypeDescriptor.GetConverter(targetType);
-				if (converter?.CanConvertFrom(typeof(string)) == true)
-				{
-					return converter.ConvertFromInvariantString(text);
-				}
-			}
-
-			return result;
-		}
-
-		public object?[] ConvertBack(object? value, Type[] targetTypes, object? parameter, CultureInfo culture)
-		{
-			throw new NotImplementedException();
-		}
-	}
 }
