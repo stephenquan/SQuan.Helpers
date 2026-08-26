@@ -52,7 +52,7 @@ public class BindablePropertyInstanceMethodsGenerator : IIncrementalGenerator
 					var propertySymbol = ctx.SemanticModel.GetDeclaredSymbol(propertySyntax) as IPropertySymbol;
 					if (propertySymbol is null)
 					{
-						return null;
+						return (Property: (IPropertySymbol?)null, HasBindableProperty: false, HasBindablePropertyInstanceMethods: false);
 					}
 
 					bool hasBindablePropertyExtrasAttribute = false;
