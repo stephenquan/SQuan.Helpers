@@ -6,7 +6,6 @@ namespace SQuan.Helpers.Maui.Mvvm;
 /// Indicates that a property is bindable, allowing it to be used in data binding scenarios.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-[System.Diagnostics.Conditional("SQUAN_HELPERS_MAUI_MVVM_KEEP_ATTRIBUTES")]
 [Obsolete("Use CommunityToolkit.Maui or .NET MAUI BindableProperty together with [BindablePropertyInstanceMethods].")]
 public class BindablePropertyAttribute : Attribute
 {

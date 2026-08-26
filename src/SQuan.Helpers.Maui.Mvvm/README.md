@@ -80,7 +80,6 @@ The following example turns `Count` into a bindable property and adds a property
 changes in the `Count` property.
 
 ```c#
-using CommunityToolkit.Maui.Markup;
 using BindablePropertyAttribute = CommunityToolkit.Maui.BindablePropertyAttribute;
 using BindablePropertyInstanceMethodsAttribute = SQuan.Helpers.Maui.Mvvm.BindablePropertyInstanceMethodsAttribute;
 using RelayCommandAttribute = CommunityToolkit.Mvvm.Input.RelayCommandAttribute;
@@ -99,11 +98,15 @@ public partial class MainPage : ContentPage
     public MainPage()
     {
         BindingContext = this;
+
         InitializeComponent();
-        CounterBtn.Bind(
+
+        CounterBtn.SetBinding(
             Button.TextProperty,
-            static (MainPage ctx) => ctx.Count,
-            stringFormat: "Clicked {0} times");
+            BindingBase.Create(
+                static (MainPage ctx) => ctx.Count,
+                BindingMode.OneWay,
+                stringFormat: "Clicked {0} times"));
     }
 
     [RelayCommand]
