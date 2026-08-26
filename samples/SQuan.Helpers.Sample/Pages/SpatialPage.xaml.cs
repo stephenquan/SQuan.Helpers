@@ -11,7 +11,8 @@ namespace SQuan.Helpers.Sample;
 
 public partial class SpatialPage : ContentPage
 {
-	SQLiteSpatialConnection db = new(":memory:");
+	SQLiteNetSpatialConnection db = new(":memory:");
+
 	NetTopologySuite.Geometries.Geometry? selection;
 	bool loaded = false;
 
@@ -30,14 +31,14 @@ public partial class SpatialPage : ContentPage
 		await LoadSchema(db, "usa_states.sql");
 
 		// Do some test spatial queries
-		double? area_50_units = db.ExecuteScalar<double?>("SELECT ST_Area('POLYGON((10 10,20 10,20 20,10 10))')");
-		string? centroid_at_5_5 = db.ExecuteScalar<string?>("SELECT ST_Centroid('POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))')");
-		string? circle_buffer = db.ExecuteScalar<string?>("SELECT ST_Buffer('POINT(10 10)', 5)");
-		double? distance_5_units = db.ExecuteScalar<double?>("SELECT ST_Distance('POINT(0 0)', 'POINT(3 4)')");
-		double? area_100_units = db.ExecuteScalar<double?>("SELECT ST_Area(ST_Envelope(ST_Buffer('POINT(10 10)', 5)))");
+		double? area_50_units = db.ExecuteScalar<double?>("SELECT ST_Area(ST_GeomFromText('POLYGON((10 10,20 10,20 20,10 10))'))");
+		string? centroid_at_5_5 = db.ExecuteScalar<string?>("SELECT ST_AsText(ST_Centroid(ST_GeomFromText('POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))')))");
+		string? circle_buffer = db.ExecuteScalar<string?>("SELECT ST_AsText(ST_Buffer(ST_GeomFromText('POINT(10 10)'), 5))");
+		double? distance_5_units = db.ExecuteScalar<double?>("SELECT ST_Distance(ST_GeomFromText('POINT(0 0)'), ST_GeomFromText('POINT(3 4)'))");
+		double? area_100_units = db.ExecuteScalar<double?>("SELECT ST_Area(ST_Envelope(ST_Buffer(ST_GeomFromText('POINT(10 10)'), 5)))");
 
 		// Retrieve cities in order of distance, starting with those nearest to Los Angeles.
-		var results = db.Query<SpatialData>("SELECT * FROM UsaCities ORDER BY ST_Distance(WKT, 'POINT(-118.243683 34.052235)')");
+		var results = db.Query<SpatialData>("SELECT * FROM UsaCities ORDER BY ST_Distance(Geometry, ST_GeomFromText('POINT(-118.243683 34.052235)'))");
 		foreach (var result in results)
 		{
 			System.Diagnostics.Trace.WriteLine("City (spatial sort): " + result.Name);
@@ -94,21 +95,31 @@ public partial class SpatialPage : ContentPage
 		var mapExtent = mapView.EffectiveMapExtent;
 
 		canvas.Clear();
-		int statesDrawn = DrawSpatialData(canvas, $@"
-SELECT s.*
-FROM   UsaStates s,
-       UsaStates_rtree r
-WHERE  r.MinX <= {mapExtent.MaxX} AND r.MaxX >= {mapExtent.MinX}
-AND    r.MinY <= {mapExtent.MaxY} AND r.MaxY >= {mapExtent.MinY}
-AND    s.Id = r.Id");
-		mapView.DrawMapGeometry(canvas, selection, "", Colors.Orange);
-		int citiesDrawn = DrawSpatialData(canvas, $@"
-SELECT c.*
-FROM   UsaCities c,
-       UsaCities_rtree r
-WHERE  r.MinX <= {mapExtent.MaxX} AND r.MaxX >= {mapExtent.MinX}
-AND    r.MinY <= {mapExtent.MaxY} AND r.MaxY >= {mapExtent.MinY}
-AND    c.Id = r.Id");
+
+		int statesDrawn = DrawSpatialData(
+			canvas,
+			$$"""
+			SELECT s.*
+			FROM   UsaStates s,
+				   UsaStates_rtree r
+			WHERE  r.MinX <= {{mapExtent.MaxX}} AND r.MaxX >= {{mapExtent.MinX}}
+			AND    r.MinY <= {{mapExtent.MaxY}} AND r.MaxY >= {{mapExtent.MinY}}
+			AND    s.Id = r.Id
+			""");
+
+		mapView.DrawMapGeometry(canvas, selection?.AsBinary(), "", Colors.Orange);
+
+		int citiesDrawn = DrawSpatialData(
+			canvas,
+			$$"""
+			SELECT c.*
+			FROM   UsaCities c,
+				   UsaCities_rtree r
+			WHERE  r.MinX <= {{mapExtent.MaxX}} AND r.MaxX >= {{mapExtent.MinX}}
+			AND    r.MinY <= {{mapExtent.MaxY}} AND r.MaxY >= {{mapExtent.MinY}}
+			AND    c.Id = r.Id
+			""");
+
 		System.Diagnostics.Trace.WriteLine($"Drawn {statesDrawn} states and {citiesDrawn} cities.");
 	}
 
@@ -116,7 +127,7 @@ AND    c.Id = r.Id");
 		=> db.Query<SpatialData>(sqlQuery)
 			.Select(item => mapView.DrawMapGeometry(
 				canvas,
-				item.WKT.ToGeometry(),
+				item.Geometry,
 				item.Name,
 				Color.FromArgb(item.Color)))
 			.Count();

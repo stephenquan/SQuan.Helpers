@@ -4,7 +4,7 @@ using Microsoft.Maui.Graphics.Converters;
 
 namespace SQuan.Helpers.Maui.UnitTests;
 
-public class IconButtonTests
+public partial class IconButtonTests : BaseTest
 {
 	[Theory]
 	[InlineData("Red", "Red")]
@@ -12,7 +12,6 @@ public class IconButtonTests
 	[InlineData("Blue", "Blue")]
 	public void IconButton_WhenTextColorIsSet_IconColorMatchesTextColor(string textColorName, string iconColorName)
 	{
-		DispatcherProvider.SetCurrent(new Mocks.MockDispatcherProvider());
 		ColorTypeConverter converter = new ColorTypeConverter();
 		Color? textColor = (Color?)(converter.ConvertFromInvariantString(textColorName));
 		Assert.NotNull(textColor);
@@ -26,7 +25,6 @@ public class IconButtonTests
 	[Fact]
 	public void IconButton_IconDefaultValue_IsSetCorrectly()
 	{
-		DispatcherProvider.SetCurrent(new Mocks.MockDispatcherProvider());
 		var button = new IconButton();
 		Assert.Equal(1, button.Icon.Length);
 		Assert.NotNull(button.Icon);
@@ -37,7 +35,6 @@ public class IconButtonTests
 	[Fact]
 	public void IconButton_IconColorDefaultValue_IsSetCorrectly()
 	{
-		DispatcherProvider.SetCurrent(new Mocks.MockDispatcherProvider());
 		var button = new IconButton();
 		Assert.Equal(Colors.Black.ToString(), button.IconColor.ToString());
 	}
@@ -45,7 +42,6 @@ public class IconButtonTests
 	[Fact]
 	public void IconButton_IconFontFamilyDefaultValue_IsSetCorrectly()
 	{
-		DispatcherProvider.SetCurrent(new Mocks.MockDispatcherProvider());
 		var button = new IconButton();
 		Assert.Equal(LucideIcons.FontFamily, button.IconFontFamily);
 	}
@@ -53,7 +49,6 @@ public class IconButtonTests
 	[Fact]
 	public void IconButton_IconSizeDefaultValue_IsSetCorrectly()
 	{
-		DispatcherProvider.SetCurrent(new Mocks.MockDispatcherProvider());
 		var button = new IconButton();
 		Assert.Equal(24.0, button.IconSize);
 	}

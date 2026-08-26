@@ -3,6 +3,7 @@
 using SkiaSharp;
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
+using SQuan.Helpers.SQLite.Spatial;
 
 namespace SQuan.Helpers.Sample;
 
@@ -206,12 +207,19 @@ public partial class MapView : SKCanvasView
 	/// </summary>
 	/// <remarks>Currently, only polygon geometries are supported. Other geometry types will not be drawn.</remarks>
 	/// <param name="canvas">The canvas on which to draw the geometry. Cannot be null.</param>
-	/// <param name="geometry">The geometry to be drawn. Must be a valid NetTopologySuite geometry object.</param>
+	/// <param name="geometry">The Well-Known Text (WKT) representation of the geometry to be drawn. Can be null.</param>
 	/// <param name="text">The text label associated with the geometry.</param>
 	/// <param name="color">The color to use for drawing the geometry.</param>
-	public MapView DrawMapGeometry(SKCanvas canvas, NetTopologySuite.Geometries.Geometry? geometry, string text, Color color)
+	public MapView DrawMapGeometry(SKCanvas canvas, byte[]? geometry, string text, Color color)
 	{
-		switch (geometry)
+		if (geometry is null)
+		{
+			return this;
+		}
+
+		var _geometry = ST.FromEWKB(geometry);
+
+		switch (_geometry)
 		{
 			case NetTopologySuite.Geometries.Point mapPoint:
 				return DrawMapPoint(canvas, mapPoint, text, color);

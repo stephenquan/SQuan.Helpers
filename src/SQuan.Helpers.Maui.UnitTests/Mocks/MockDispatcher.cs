@@ -2,7 +2,7 @@
 
 namespace SQuan.Helpers.Maui.UnitTests.Mocks;
 
-public sealed class MockDispatcher : IDispatcher
+public sealed partial class MockDispatcher : IDispatcher
 {
 	public MockDispatcher() => ManagedThreadId = Environment.CurrentManagedThreadId;
 
@@ -24,10 +24,11 @@ public sealed class MockDispatcher : IDispatcher
 
 	public bool DispatchDelayed(TimeSpan delay, Action action)
 	{
-		return false;
+		action();
+		return true;
 	}
 
-	sealed class DispatcherTimerStub : IDispatcherTimer, IDisposable
+	sealed partial class DispatcherTimerStub : IDispatcherTimer, IDisposable
 	{
 		readonly IDispatcher dispatcher;
 
