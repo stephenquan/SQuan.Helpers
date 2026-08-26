@@ -1,4 +1,4 @@
-﻿// BPExtrasGenerator.cs
+﻿// BindablePropertyInstanceMethodsGenerator.cs
 
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -11,12 +11,26 @@ namespace SQuan.Helpers.Maui.Mvvm.SourceGenerators;
 
 /// <summary>
 /// Generates static wrapper methods for instance or partial methods defined in a class with properties decorated with
-/// both CommunityToolkit.Maui's [BindableProperty] and SQuan.Helpers.Maui.Mvvm [BPExtras] attributes, enabling simpler integration
-/// with the BindableProperty's PropertyChanged and PropertyChanging callbacks without needing to define static methods manually.
+/// both CommunityToolkit.Maui's [BindableProperty] and SQuan.Helpers.Maui.Mvvm [BindablePropertyInstanceMethods] attributes,
+/// enabling simpler integration with the BindableProperty's PropertyChanged and PropertyChanging callbacks without
+/// needing to define static methods manually.
 /// </summary>
 [Generator]
-public class BPExtrasGenerator : IIncrementalGenerator
+public class BindablePropertyInstanceMethodsGenerator : IIncrementalGenerator
 {
+	static readonly SymbolDisplayFormat sTypeWithNullabilityFormat =
+		SymbolDisplayFormat.FullyQualifiedFormat
+			.WithMiscellaneousOptions(
+				SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier);
+
+	static readonly DiagnosticDescriptor sBindablePropertyRequiredDescriptor = new(
+		id: "SQGEN914",
+		title: "BindableProperty attribute is required",
+		messageFormat: "[BindablePropertyInstanceMethods] requires a supported [BindableProperty] on property '{0}'",
+		category: "Usage",
+		defaultSeverity: DiagnosticSeverity.Error,
+		isEnabledByDefault: true);
+
 	/// <summary>
 	/// Initializes the incremental source generator by configuring the syntax provider to identify properties with
 	/// specific attributes and registering the source output for code generation.
@@ -38,7 +52,7 @@ public class BPExtrasGenerator : IIncrementalGenerator
 					var propertySymbol = ctx.SemanticModel.GetDeclaredSymbol(propertySyntax) as IPropertySymbol;
 					if (propertySymbol is null)
 					{
-						return null;
+						return (Property: (IPropertySymbol?)null, HasBindableProperty: false, HasBindablePropertyInstanceMethods: false);
 					}
 
 					bool hasBindablePropertyExtrasAttribute = false;
@@ -52,32 +66,49 @@ public class BPExtrasGenerator : IIncrementalGenerator
 							continue;
 						}
 
-						if (attr.AttributeClass?.Name == "SQuan.Helpers.Maui.Mvvm.BPExtrasAttribute" ||
-							attr.AttributeClass?.ToDisplayString() == "SQuan.Helpers.Maui.Mvvm.BPExtrasAttribute")
+						if (attr.AttributeClass?.Name == "SQuan.Helpers.Maui.Mvvm.BindablePropertyInstanceMethodsAttribute" ||
+							attr.AttributeClass?.ToDisplayString() == "SQuan.Helpers.Maui.Mvvm.BindablePropertyInstanceMethodsAttribute")
 						{
 							hasBindablePropertyExtrasAttribute = true;
 							continue;
 						}
 					}
 
-					return (hasBindablePropertyAttribute && hasBindablePropertyExtrasAttribute) ? propertySymbol : null;
+					return (Property: propertySymbol, HasBindableProperty: hasBindablePropertyAttribute, HasBindablePropertyInstanceMethods: hasBindablePropertyExtrasAttribute);
 				})
-			.Where(static symbol => symbol is not null);
+			.Where(static propertyInfo => propertyInfo.Property is not null);
 
-		context.RegisterSourceOutput(properties, (spc, propertySymbol) =>
+		context.RegisterSourceOutput(properties, static (spc, propertyInfo) =>
 		{
+			if (propertyInfo.HasBindablePropertyInstanceMethods && !propertyInfo.HasBindableProperty)
+			{
+				spc.ReportDiagnostic(
+					Diagnostic.Create(
+						sBindablePropertyRequiredDescriptor,
+						propertyInfo.Property!.Locations.Length > 0 ? propertyInfo.Property.Locations[0] : Location.None,
+						propertyInfo.Property.Name));
+			}
+		});
+
+		context.RegisterSourceOutput(
+			properties.Where(static propertyInfo => propertyInfo.HasBindableProperty && propertyInfo.HasBindablePropertyInstanceMethods),
+			(spc, propertyInfo) =>
+		{
+			var propertySymbol = propertyInfo.Property!;
 			var propertyAttributes = propertySymbol!.GetAttributes();
 			var classSymbol = propertySymbol!.ContainingType;
 			var className = classSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
 			var bareClassName = classSymbol.Name;
 			var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
 			var propertyName = propertySymbol.Name;
-			var typeName = propertySymbol.Type.ToDisplayString();
+			var typeName = propertySymbol.Type.ToDisplayString(sTypeWithNullabilityFormat);
 
 			bool hasPropertyChangedMethod = false;
 			string propertyChangedMethodName = string.Empty;
 			bool hasPropertyChangingMethod = false;
 			string propertyChangingMethodName = string.Empty;
+			bool hasCoerceValueMethod = false;
+			string coerceValueMethodName = string.Empty;
 
 			foreach (var attr in propertyAttributes)
 			{
@@ -94,6 +125,11 @@ public class BPExtrasGenerator : IIncrementalGenerator
 							hasPropertyChangingMethod = true;
 							propertyChangingMethodName = changingMethodName;
 						}
+						if (attr.GetAttributeValueByName("CoerceValueMethodName").Value is string coerceMethodName && !string.IsNullOrEmpty(coerceMethodName))
+						{
+							hasCoerceValueMethod = true;
+							coerceValueMethodName = coerceMethodName;
+						}
 						break;
 				}
 			}
@@ -105,6 +141,9 @@ public class BPExtrasGenerator : IIncrementalGenerator
 			{
 				staticWrappers +=
 					$$"""
+						/// <summary>
+						/// Generated bridge from the static bindable property changed callback to {{propertyChangedMethodName}} partial method on the class.
+						/// </summary>
 						static void {{propertyChangedMethodName}}(Microsoft.Maui.Controls.BindableObject b, object o, object n)
 						{
 							(({{className}})b).{{propertyChangedMethodName}}(({{typeName}})o, ({{typeName}})n);
@@ -112,6 +151,7 @@ public class BPExtrasGenerator : IIncrementalGenerator
 						}
 						partial void {{propertyChangedMethodName}}({{typeName}} oldValue, {{typeName}} newValue);
 						partial void {{propertyChangedMethodName}}({{typeName}} value);
+
 					""";
 				hasStaticWrappers = true;
 			}
@@ -120,6 +160,9 @@ public class BPExtrasGenerator : IIncrementalGenerator
 			{
 				staticWrappers +=
 					$$"""
+						/// <summary>
+						/// Generated bridge from the static bindable property changing callback to {{propertyChangingMethodName}}.
+						/// </summary>
 						static void {{propertyChangingMethodName}}(Microsoft.Maui.Controls.BindableObject b, object o, object n)
 						{
 							(({{className}})b).{{propertyChangingMethodName}}(({{typeName}})o, ({{typeName}})n);
@@ -127,6 +170,23 @@ public class BPExtrasGenerator : IIncrementalGenerator
 						}
 						partial void {{propertyChangingMethodName}}({{typeName}} oldValue, {{typeName}} newValue);
 						partial void {{propertyChangingMethodName}}({{typeName}} value);
+
+					""";
+				hasStaticWrappers = true;
+			}
+
+			if (hasCoerceValueMethod)
+			{
+				staticWrappers +=
+					$$"""
+						/// <summary>
+						/// Generated bridge from the static bindable property coercion callback to {{coerceValueMethodName}}.
+						/// </summary>
+						static object {{coerceValueMethodName}}(Microsoft.Maui.Controls.BindableObject b, object value)
+						{
+							return (({{className}})b).{{coerceValueMethodName}}(({{typeName}})value);
+						}
+
 					""";
 				hasStaticWrappers = true;
 			}
@@ -135,20 +195,17 @@ public class BPExtrasGenerator : IIncrementalGenerator
 			{
 				var source =
 					$$"""
-					using System.ComponentModel;
-
 					// <auto-generated/>
+					// See: SQuan.Helpers.Maui.Mvvm.SourceGenerators.BindablePropertyInstanceMethodsGenerator
 					#pragma warning disable
 					#nullable enable
-
 					namespace {{namespaceName}};
-
 					partial class {{className}}
 					{
-						{{staticWrappers}}
+					{{staticWrappers}}
 					}
 					""";
-				spc.AddSource($"{namespaceName}_{bareClassName}_{propertyName}_BPExtras.g.cs", SourceText.From(source, Encoding.UTF8));
+				spc.AddSource($"{namespaceName}_{bareClassName}_{propertyName}_BindablePropertyInstanceMethods.g.cs", SourceText.From(source, Encoding.UTF8));
 			}
 		});
 	}

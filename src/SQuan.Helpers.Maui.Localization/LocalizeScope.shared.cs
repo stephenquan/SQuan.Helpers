@@ -14,19 +14,19 @@ public partial class LocalizeScope : StackLayout
 	/// <summary>
 	/// Gets or sets the scope-specific numeric, date, and string formatting culture.
 	/// </summary>
-	[InternalBindableProperty(UseStaticCallbacks = true)]
+	[InternalBindableProperty(InstanceMethods = false)]
 	public partial CultureInfo? Culture { get; set; }
 
 	/// <summary>
 	/// Gets or sets the scope-specific culture for retrieving localized resources, such as strings.
 	/// </summary>
-	[InternalBindableProperty(UseStaticCallbacks = true)]
+	[InternalBindableProperty(InstanceMethods = false)]
 	public partial CultureInfo? UICulture { get; set; }
 
 	/// <summary>
 	/// Gets or sets the resolver used to provide localized resources.
 	/// </summary>
-	[InternalBindableProperty(UseStaticCallbacks = true)]
+	[InternalBindableProperty(InstanceMethods = false)]
 	public partial LocalizeResolver? Resolver { get; set; }
 
 	/// <summary>

@@ -1,6 +1,7 @@
 ﻿// GaugeView.cs
 
-using SQuan.Helpers.Maui.Mvvm;
+using BindablePropertyAttribute = CommunityToolkit.Maui.BindablePropertyAttribute;
+using BindablePropertyInstanceMethodsAttribute = SQuan.Helpers.Maui.Mvvm.BindablePropertyInstanceMethodsAttribute;
 
 namespace SQuan.Helpers.Sample;
 
@@ -12,7 +13,8 @@ public partial class GaugeView : ContentView
 	/// <summary>
 	/// Gets or sets the angle of the gauge.
 	/// </summary>
-	[BindableProperty(CoerceValue = nameof(CoerceAngle))]
+	[BindableProperty(CoerceValueMethodName = nameof(CoerceAngle))]
+	[BindablePropertyInstanceMethods]
 	public partial double Angle { get; set; } = 0;
 
 	/// <summary>

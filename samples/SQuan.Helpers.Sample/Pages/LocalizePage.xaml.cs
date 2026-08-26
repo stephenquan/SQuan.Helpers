@@ -6,6 +6,7 @@ using SQuan.Helpers.Maui;
 using SQuan.Helpers.Maui.Localization;
 using SQuan.Helpers.Maui.Mvvm;
 using SQuan.Helpers.Sample.Resources.Strings;
+using BindablePropertyAttribute = CommunityToolkit.Maui.BindablePropertyAttribute;
 using RelayCommandAttribute = CommunityToolkit.Mvvm.Input.RelayCommandAttribute;
 
 namespace SQuan.Helpers.Sample;

@@ -13,13 +13,13 @@ public partial class InputMaskBehavior : PlatformBehavior<InputView>
 	/// Gets or sets the regular expression that defines the allowed input pattern.
 	/// If specified, the behavior will prevent any input that does not match this regular expression.
 	/// </summary>
-	[InternalBindableProperty(UseStaticCallbacks = true)]
+	[InternalBindableProperty(InstanceMethods = false)]
 	public partial string Regex { get; set; }
 
 	/// <summary>
 	/// Gets or sets a string containing the allowed characters for input. This is used on platforms that support key filtering (e.g., Android).
 	/// </summary>
-	[InternalBindableProperty(UseStaticCallbacks = true)]
+	[InternalBindableProperty(InstanceMethods = false)]
 	public partial string Keys { get; set; } = string.Empty;
 }
 

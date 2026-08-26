@@ -1,6 +1,9 @@
-﻿using SQuan.Helpers.Maui.Mvvm;
+﻿// MyTextEntry.cs
+
+using CommunityToolkit.Maui;
 
 namespace SQuan.Helpers.Sample;
+
 public partial class MyTextEntry : Entry
 {
 	[BindableProperty] public partial string? Value { get; set; }

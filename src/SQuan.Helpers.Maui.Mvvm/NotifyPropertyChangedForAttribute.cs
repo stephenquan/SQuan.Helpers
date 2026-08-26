@@ -1,8 +1,10 @@
-﻿namespace SQuan.Helpers.Maui.Mvvm;
+﻿// NotifyPropertyChangedForAttribute.cs
+
+namespace SQuan.Helpers.Maui.Mvvm;
 
 /// <summary>
 /// This attribute is used to support <see cref="ObservablePropertyAttribute"/> and <see cref="BindablePropertyAttribute"/> in generated properties.
-/// When used, the generated property setter will also call observable object's OnPropertyChanged(string?)/>
+/// When used, the generated property setter will also call observable object's OnPropertyChanged(string?)
 /// for the properties specified in the attribute data.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = false)]

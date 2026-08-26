@@ -1,7 +1,9 @@
+// PopupPage.xaml.cs
+
+using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Views;
-using SQuan.Helpers.Maui.Mvvm;
 
 namespace SQuan.Helpers.Sample;
 

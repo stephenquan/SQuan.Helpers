@@ -14,7 +14,7 @@ public partial class AspectView : ContentView
 	/// Gets or sets the aspect ratio (width divided by height) for the content.
 	/// This property is used to constrain the size of the content within the available space while maintaining the specified aspect ratio.
 	/// </summary>
-	[InternalBindableProperty(UseStaticCallbacks = true, CoerceValueMethodName = nameof(CoerceAspectRatio))]
+	[InternalBindableProperty(InstanceMethods = false, CoerceValueMethodName = nameof(CoerceAspectRatio))]
 	public partial double AspectRatio { get; set; } = 1.0;
 
 	static object CoerceAspectRatio(BindableObject bindable, object value)
@@ -23,7 +23,7 @@ public partial class AspectView : ContentView
 	/// <summary>
 	/// Gets the size of the content within the <see cref="AspectView"/>.
 	/// </summary>
-	[InternalBindableProperty(UseStaticCallbacks = true)]
+	[InternalBindableProperty(InstanceMethods = false)]
 	public partial Size ContentSize { get; internal set; }
 
 	/// <summary>

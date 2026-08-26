@@ -1,4 +1,6 @@
-using SQuan.Helpers.Maui.Mvvm;
+// SearchCard.xaml.cs
+
+using CommunityToolkit.Maui;
 
 namespace SQuan.Helpers.Sample;
 

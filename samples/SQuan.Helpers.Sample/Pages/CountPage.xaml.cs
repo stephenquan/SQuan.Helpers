@@ -2,14 +2,15 @@
 
 using CommunityToolkit.Maui.Markup;
 using BindablePropertyAttribute = CommunityToolkit.Maui.BindablePropertyAttribute;
-using BPExtrasAttribute = SQuan.Helpers.Maui.Mvvm.BPExtrasAttribute;
+using BindablePropertyInstanceMethodsAttribute = SQuan.Helpers.Maui.Mvvm.BindablePropertyInstanceMethodsAttribute;
 using RelayCommandAttribute = CommunityToolkit.Mvvm.Input.RelayCommandAttribute;
 
 namespace SQuan.Helpers.Sample;
 
 public partial class CountPage : ContentPage
 {
-	[BindableProperty(PropertyChangedMethodName = nameof(OnCountChanged)), BPExtras]
+	[BindableProperty(PropertyChangedMethodName = nameof(OnCountChanged))]
+	[BindablePropertyInstanceMethods]
 	public partial int Count { get; set; } = 0;
 
 	partial void OnCountChanged(int oldValue, int newValue)

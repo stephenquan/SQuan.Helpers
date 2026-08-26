@@ -1,4 +1,6 @@
-using SQuan.Helpers.Maui.Mvvm;
+// MyNumericEntry.cs
+
+using CommunityToolkit.Maui;
 
 namespace SQuan.Helpers.Sample;
 
