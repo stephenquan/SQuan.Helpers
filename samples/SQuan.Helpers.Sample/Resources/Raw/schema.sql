@@ -41,22 +41,28 @@ CREATE VIRTUAL TABLE UsaCities_rtree USING rtree(Id, MinX, MaxX, MinY, MaxY);
 CREATE TRIGGER UsaStates_insert AFTER INSERT ON UsaStates
 BEGIN
     INSERT INTO UsaStates_rtree (Id, MinX, MaxX, MinY, MaxY)
-    VALUES (
+    SELECT
         NEW.Id,
         ST_MinX(NEW.Geometry),
         ST_MaxX(NEW.Geometry),
         ST_MinY(NEW.Geometry),
-        ST_MaxY(NEW.Geometry));
+        ST_MaxY(NEW.Geometry)
+    WHERE NEW.Geometry IS NOT NULL;
 END;
 
 CREATE TRIGGER UsaStates_update AFTER UPDATE OF Geometry ON UsaStates
 BEGIN
-    UPDATE UsaStates_rtree
-    SET MinX = ST_MinX(NEW.Geometry),
-        MaxX = ST_MaxX(NEW.Geometry),
-        MinY = ST_MinY(NEW.Geometry),
-        MaxY = ST_MaxY(NEW.Geometry)
+    DELETE FROM UsaStates_rtree
     WHERE Id = NEW.Id;
+
+    INSERT INTO UsaStates_rtree (Id, MinX, MaxX, MinY, MaxY)
+    SELECT
+        NEW.Id,
+        ST_MinX(NEW.Geometry),
+        ST_MaxX(NEW.Geometry),
+        ST_MinY(NEW.Geometry),
+        ST_MaxY(NEW.Geometry)
+    WHERE NEW.Geometry IS NOT NULL;
 END;
 
 CREATE TRIGGER UsaStates_delete AFTER DELETE ON UsaStates
