@@ -6,6 +6,7 @@
 /// for the properties specified in the attribute data.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
+[System.Diagnostics.Conditional("SQUAN_HELPERS_MAUI_MVVM_KEEP_ATTRIBUTES")]
 public sealed class NotifyPropertyChangedForAttribute : Attribute
 {
 	/// <summary>

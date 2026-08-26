@@ -10,6 +10,8 @@ This is necessary because the generated code for `[ObservableProperty]` and `[Bi
 
 Be sure to add `<LangVersion>preview</LangVersion>` (or higher) to your `.csproj` file.
 
+The source-generator attributes are omitted from compiled application metadata by default so that the linker can remove the helper assembly when it is otherwise unused. Define `SQUAN_HELPERS_MAUI_MVVM_KEEP_ATTRIBUTES` in the consuming project to retain the attributes for runtime reflection.
+
 ## CardView Example
 
 You can use [BindableProperty] to reduce the code needed to extend `ContentView` to create a custom control. The following example shows the `CardTitle` bindable property in the code-behind file to the `CardView` class:

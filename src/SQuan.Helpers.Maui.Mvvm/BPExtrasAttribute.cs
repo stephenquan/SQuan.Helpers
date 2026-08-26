@@ -8,6 +8,7 @@ namespace SQuan.Helpers.Maui.Mvvm;
 /// wrappers for corresponding instance or partial methods.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+[System.Diagnostics.Conditional("SQUAN_HELPERS_MAUI_MVVM_KEEP_ATTRIBUTES")]
 public class BPExtrasAttribute : Attribute
 {
 }
