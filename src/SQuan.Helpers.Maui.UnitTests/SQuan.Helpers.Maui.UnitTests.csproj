@@ -1,33 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">net10.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <PublishTrimmed>false</PublishTrimmed>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <EnableMauiImageProcessing>false</EnableMauiImageProcessing>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="10.0.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="CommunityToolkit.Maui" Version="$(CommunityToolkitMauiVersion)" />
+    <PackageReference Include="CommunityToolkit.Maui.Markup" Version="$(CommunityToolkitMauiMarkupVersion)" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
-    <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.10.0" />
+    <PackageReference Include="xunit.v3.mtp-v2" Version="3.2.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\samples\SQuan.Helpers.Sample\SQuan.Helpers.Sample.csproj" />
     <ProjectReference Include="..\SQuan.Helpers.Maui\SQuan.Helpers.Maui.csproj" />
     <ProjectReference Include="..\SQuan.Helpers.Maui.Mvvm\SQuan.Helpers.Maui.Mvvm.csproj" />
     <ProjectReference Include="..\SQuan.Helpers.Maui.Mvvm.SourceGenerators\SQuan.Helpers.Maui.Mvvm.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\samples\SQuan.Helpers.Sample\Views\BalanceView.cs" Link="SampleControls\BalanceView.cs" />
+    <Compile Include="..\..\samples\SQuan.Helpers.Sample\Views\GaugeView.cs" Link="SampleControls\GaugeView.cs" />
   </ItemGroup>
 
   <ItemGroup>

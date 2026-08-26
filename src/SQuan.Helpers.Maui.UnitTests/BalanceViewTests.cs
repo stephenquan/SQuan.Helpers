@@ -1,17 +1,15 @@
 ﻿// BalanceViewTests.cs
 
 using Microsoft.Maui.Graphics.Converters;
-using SQuan.Helpers.Maui.UnitTests.Mocks;
 namespace SQuan.Helpers.Maui.UnitTests;
 
-public class BalanceViewTests
+public partial class BalanceViewTests : BaseTest
 {
 	[Theory]
 	[InlineData(123.45, "Green")]
 	[InlineData(-432.10, "Red")]
 	public void BalanceView_SetsTextColor_BasedOnBalance(double balance, string expectedColorName)
 	{
-		DispatcherProvider.SetCurrent(new MockDispatcherProvider());
 		var control = new SQuan.Helpers.Sample.BalanceView()
 		{
 			Balance = balance
@@ -30,7 +28,6 @@ public class BalanceViewTests
 	[InlineData(-999.99, "zh-CN", "-¥999.99")]
 	public void BalanceView_SetsText_BasedOnBalanceAndCulture(double balance, string cultureName, string expectedText)
 	{
-		DispatcherProvider.SetCurrent(new MockDispatcherProvider());
 		var control = new SQuan.Helpers.Sample.BalanceView
 		{
 			Balance = balance,
@@ -42,7 +39,6 @@ public class BalanceViewTests
 	[Fact]
 	public void BalanceView_DefaultValues_AreSetCorrectly()
 	{
-		DispatcherProvider.SetCurrent(new MockDispatcherProvider());
 		var control = new SQuan.Helpers.Sample.BalanceView()
 		{
 			Culture = new System.Globalization.CultureInfo("en-US")
@@ -60,7 +56,6 @@ public class BalanceViewTests
 	[InlineData(104.0, "en-US", -50.0, "en-AU", 1, 1)]
 	public void BalanceView_PropertyChanged_UpdatesTextAndTextColor(int initialBalance, string initialCulture, int newBalance, string newCulture, int expectedTextChanges, int expectedTextColorChanges)
 	{
-		DispatcherProvider.SetCurrent(new MockDispatcherProvider());
 		var control = new SQuan.Helpers.Sample.BalanceView
 		{
 			Balance = initialBalance,

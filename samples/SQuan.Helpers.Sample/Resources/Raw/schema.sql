@@ -18,7 +18,7 @@ CREATE TABLE UsaStates
     Id INTEGER PRIMARY KEY,
     Name TEXT NOT NULL,
     Color TEXT NOT NULL,
-    WKT TEXT NULL
+    Geometry GEOMETRY NULL
 );
 
 CREATE INDEX idx_UsaStates_Name ON UsaStates(Name);
@@ -28,7 +28,7 @@ CREATE TABLE UsaCities
     Id INTEGER PRIMARY KEY,
     Name TEXT NOT NULL,
     Color TEXT NOT NULL,
-    WKT TEXT NULL
+    Geometry GEOMETRY NULL
 );
 
 CREATE INDEX idx_UsaCities ON UsaCities(Name);
@@ -41,22 +41,28 @@ CREATE VIRTUAL TABLE UsaCities_rtree USING rtree(Id, MinX, MaxX, MinY, MaxY);
 CREATE TRIGGER UsaStates_insert AFTER INSERT ON UsaStates
 BEGIN
     INSERT INTO UsaStates_rtree (Id, MinX, MaxX, MinY, MaxY)
-    VALUES (
+    SELECT
         NEW.Id,
-        ST_MinX(NEW.WKT),
-        ST_MaxX(NEW.WKT),
-        ST_MinY(NEW.WKT),
-        ST_MaxY(NEW.WKT));
+        ST_MinX(NEW.Geometry),
+        ST_MaxX(NEW.Geometry),
+        ST_MinY(NEW.Geometry),
+        ST_MaxY(NEW.Geometry)
+    WHERE NEW.Geometry IS NOT NULL;
 END;
 
-CREATE TRIGGER UsaStates_update AFTER UPDATE OF WKT ON UsaStates
+CREATE TRIGGER UsaStates_update AFTER UPDATE OF Geometry ON UsaStates
 BEGIN
-    UPDATE UsaStates_rtree
-    SET MinX = ST_MinX(NEW.WKT),
-        MaxX = ST_MaxX(NEW.WKT),
-        MinY = ST_MinY(NEW.WKT),
-        MaxY = ST_MaxY(NEW.WKT)
+    DELETE FROM UsaStates_rtree
     WHERE Id = NEW.Id;
+
+    INSERT INTO UsaStates_rtree (Id, MinX, MaxX, MinY, MaxY)
+    SELECT
+        NEW.Id,
+        ST_MinX(NEW.Geometry),
+        ST_MaxX(NEW.Geometry),
+        ST_MinY(NEW.Geometry),
+        ST_MaxY(NEW.Geometry)
+    WHERE NEW.Geometry IS NOT NULL;
 END;
 
 CREATE TRIGGER UsaStates_delete AFTER DELETE ON UsaStates
@@ -67,21 +73,22 @@ END;
 CREATE TRIGGER UsaCities_insert AFTER INSERT ON UsaCities
 BEGIN
     INSERT INTO UsaCities_rtree (Id, MinX, MaxX, MinY, MaxY)
-    VALUES (
+    SELECT
         NEW.Id,
-        ST_MinX(NEW.WKT),
-        ST_MaxX(NEW.WKT),
-        ST_MinY(NEW.WKT),
-        ST_MaxY(NEW.WKT));
+        ST_MinX(NEW.Geometry),
+        ST_MaxX(NEW.Geometry),
+        ST_MinY(NEW.Geometry),
+        ST_MaxY(NEW.Geometry)
+    WHERE NEW.Geometry IS NOT NULL;
 END;
 
-CREATE TRIGGER UsaCities_update AFTER UPDATE OF WKT ON UsaCities
+CREATE TRIGGER UsaCities_update AFTER UPDATE OF Geometry ON UsaCities
 BEGIN
     UPDATE UsaCities_rtree
-    SET MinX = ST_MinX(NEW.WKT),
-        MaxX = ST_MaxX(NEW.WKT),
-        MinY = ST_MinY(NEW.WKT),
-        MaxY = ST_MaxY(NEW.WKT)
+    SET MinX = ST_MinX(NEW.Geometry),
+        MaxX = ST_MaxX(NEW.Geometry),
+        MinY = ST_MinY(NEW.Geometry),
+        MaxY = ST_MaxY(NEW.Geometry)
     WHERE Id = NEW.Id;
 END;
 
