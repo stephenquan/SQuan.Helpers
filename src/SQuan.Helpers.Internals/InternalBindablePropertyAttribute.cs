@@ -11,7 +11,7 @@ namespace SQuan.Helpers.Internals;
 public sealed partial class InternalBindablePropertyAttribute : global::System.Attribute
 {
 	/// <summary>
-	/// Gets or sets a value indicating whether to generate instance partial-method callbacks or use the explicit static callback method names specified in the attribute.
+	/// Gets or sets a value indicating whether to generate instance partial-method callbacks when set to <see langword="true"/>, or use the explicit static callback method names specified in the attribute when set to <see langword="false"/>.
 	/// </summary>
 	public bool InstanceMethods { get; set; } = true;
 
