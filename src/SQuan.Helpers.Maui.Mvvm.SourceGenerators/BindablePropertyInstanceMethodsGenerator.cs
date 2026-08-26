@@ -1,4 +1,4 @@
-﻿// BPExtrasGenerator.cs
+﻿// BindablePropertyInstanceMethodsGenerator.cs
 
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -11,11 +11,12 @@ namespace SQuan.Helpers.Maui.Mvvm.SourceGenerators;
 
 /// <summary>
 /// Generates static wrapper methods for instance or partial methods defined in a class with properties decorated with
-/// both CommunityToolkit.Maui's [BindableProperty] and SQuan.Helpers.Maui.Mvvm [BPExtras] attributes, enabling simpler integration
-/// with the BindableProperty's PropertyChanged and PropertyChanging callbacks without needing to define static methods manually.
+/// both CommunityToolkit.Maui's [BindableProperty] and SQuan.Helpers.Maui.Mvvm [BindablePropertyInstanceMethods] attributes,
+/// enabling simpler integration with the BindableProperty's PropertyChanged and PropertyChanging callbacks without
+/// needing to define static methods manually.
 /// </summary>
 [Generator]
-public class BPExtrasGenerator : IIncrementalGenerator
+public class BindablePropertyInstanceMethodsGenerator : IIncrementalGenerator
 {
 	/// <summary>
 	/// Initializes the incremental source generator by configuring the syntax provider to identify properties with
@@ -52,8 +53,8 @@ public class BPExtrasGenerator : IIncrementalGenerator
 							continue;
 						}
 
-						if (attr.AttributeClass?.Name == "SQuan.Helpers.Maui.Mvvm.BPExtrasAttribute" ||
-							attr.AttributeClass?.ToDisplayString() == "SQuan.Helpers.Maui.Mvvm.BPExtrasAttribute")
+						if (attr.AttributeClass?.Name == "SQuan.Helpers.Maui.Mvvm.BindablePropertyInstanceMethodsAttribute" ||
+							attr.AttributeClass?.ToDisplayString() == "SQuan.Helpers.Maui.Mvvm.BindablePropertyInstanceMethodsAttribute")
 						{
 							hasBindablePropertyExtrasAttribute = true;
 							continue;
@@ -78,6 +79,8 @@ public class BPExtrasGenerator : IIncrementalGenerator
 			string propertyChangedMethodName = string.Empty;
 			bool hasPropertyChangingMethod = false;
 			string propertyChangingMethodName = string.Empty;
+			bool hasCoerceValueMethod = false;
+			string coerceValueMethodName = string.Empty;
 
 			foreach (var attr in propertyAttributes)
 			{
@@ -93,6 +96,11 @@ public class BPExtrasGenerator : IIncrementalGenerator
 						{
 							hasPropertyChangingMethod = true;
 							propertyChangingMethodName = changingMethodName;
+						}
+						if (attr.GetAttributeValueByName("CoerceValueMethodName").Value is string coerceMethodName && !string.IsNullOrEmpty(coerceMethodName))
+						{
+							hasCoerceValueMethod = true;
+							coerceValueMethodName = coerceMethodName;
 						}
 						break;
 				}
@@ -127,6 +135,18 @@ public class BPExtrasGenerator : IIncrementalGenerator
 						}
 						partial void {{propertyChangingMethodName}}({{typeName}} oldValue, {{typeName}} newValue);
 						partial void {{propertyChangingMethodName}}({{typeName}} value);
+					""";
+				hasStaticWrappers = true;
+			}
+
+			if (hasCoerceValueMethod)
+			{
+				staticWrappers +=
+					$$"""
+						static object {{coerceValueMethodName}}(Microsoft.Maui.Controls.BindableObject b, object value)
+						{
+							return (({{className}})b).{{coerceValueMethodName}}(({{typeName}})value);
+						}
 					""";
 				hasStaticWrappers = true;
 			}

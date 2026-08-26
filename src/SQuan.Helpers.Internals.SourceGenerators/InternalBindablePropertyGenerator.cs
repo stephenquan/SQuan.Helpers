@@ -461,7 +461,7 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 
 			if (info is not null)
 			{
-				if (info.UseStaticCallbacks)
+				if (!info.InstanceMethods)
 				{
 					if (info.PropertyChangedMethodName is string _propertyChangedMethodName
 						&& !string.IsNullOrWhiteSpace(_propertyChangedMethodName))
@@ -480,15 +480,6 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 						sb.Append("propertyChanging: ")
 						  .Append(_propertyChangingMethodName);
 					}
-
-					if (info.CoerceValueMethodName is string _coerceValueMethodName
-						&& !string.IsNullOrWhiteSpace(_coerceValueMethodName))
-					{
-						sb.AppendLine(",");
-						AppendIndent(sb, indent + 1);
-						sb.Append("coerceValue: ")
-						  .Append(_coerceValueMethodName);
-					}
 				}
 				else
 				{
@@ -503,7 +494,7 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 					  .Append(")b).On")
 					  .Append(p.Name)
 					  .Append("Changed((")
-					  .Append(tName)
+					  .Append(pTypeWithNullabilityFormat)
 					  .AppendLine(")n);");
 					AppendIndent(sb, indent + 2);
 					sb.Append("((")
@@ -511,9 +502,9 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 					  .Append(")b).On")
 					  .Append(p.Name)
 					  .Append("Changed((")
-					  .Append(tName)
+					  .Append(pTypeWithNullabilityFormat)
 					  .Append(")o, (")
-					  .Append(tName)
+					  .Append(pTypeWithNullabilityFormat)
 					  .AppendLine(")n);");
 					AppendIndent(sb, indent + 1);
 					sb.Append("}");
@@ -528,7 +519,7 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 					  .Append(")b).On")
 					  .Append(p.Name)
 					  .Append("Changing((")
-					  .Append(tName)
+					  .Append(pTypeWithNullabilityFormat)
 					  .AppendLine(")n);");
 					AppendIndent(sb, indent + 2);
 					sb.Append("((")
@@ -536,12 +527,21 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 					  .Append(")b).On")
 					  .Append(p.Name)
 					  .Append("Changing((")
-					  .Append(tName)
+					  .Append(pTypeWithNullabilityFormat)
 					  .Append(")o, (")
-					  .Append(tName)
+					  .Append(pTypeWithNullabilityFormat)
 					  .AppendLine(")n);");
 					AppendIndent(sb, indent + 1);
 					sb.Append("}");
+				}
+
+				if (info.CoerceValueMethodName is string _coerceValueMethodName
+					&& !string.IsNullOrWhiteSpace(_coerceValueMethodName))
+				{
+					sb.AppendLine(",");
+					AppendIndent(sb, indent + 1);
+					sb.Append("coerceValue: ")
+					  .Append(_coerceValueMethodName);
 				}
 			}
 
@@ -645,7 +645,7 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 				sb.AppendLine("}");
 			}
 
-			if (info is not null && !info.UseStaticCallbacks)
+			if (info is not null && info.InstanceMethods)
 			{
 				AppendIndent(sb, indent);
 				sb.Append("partial void On")
@@ -768,10 +768,10 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 		{
 			object? _ = (kvp.Key, kvp.Value.Value) switch
 			{
-				("UseStaticCallbacks", bool b) => info.UseStaticCallbacks = b,
+				("InstanceMethods", bool b) => info.InstanceMethods = b,
 				("PropertyChangingMethodName", string s) when !string.IsNullOrWhiteSpace(s) => info.PropertyChangingMethodName = s,
-				("CoerceValueMethodName", string s) when !string.IsNullOrWhiteSpace(s) => info.CoerceValueMethodName = s,
 				("PropertyChangedMethodName", string s) when !string.IsNullOrWhiteSpace(s) => info.PropertyChangedMethodName = s,
+				("CoerceValueMethodName", string s) when !string.IsNullOrWhiteSpace(s) => info.CoerceValueMethodName = s,
 				_ => null,
 			};
 		}
@@ -781,7 +781,7 @@ public sealed class InternalBindablePropertyGenerator : IIncrementalGenerator
 
 	class AttributeInfo
 	{
-		public bool UseStaticCallbacks { get; set; } = false;
+		public bool InstanceMethods { get; set; } = true;
 		public string? PropertyChangedMethodName { get; set; }
 		public string? PropertyChangingMethodName { get; set; }
 		public string? CoerceValueMethodName { get; set; }

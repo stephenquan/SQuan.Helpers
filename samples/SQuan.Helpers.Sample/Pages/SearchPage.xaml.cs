@@ -14,8 +14,10 @@ public partial class SearchPage : ContentPage
 	[BindableProperty]
 	public partial string SearchText { get; set; } = "Statue of Liberty";
 
-	[BindableProperty(PropertyChangedMethodName = nameof(IsSearchingChanged)), BPExtras]
+	[BindableProperty(PropertyChangedMethodName = nameof(IsSearchingChanged))]
+	[BindablePropertyInstanceMethods]
 	public partial bool IsSearching { get; internal set; } = false;
+
 	partial void IsSearchingChanged(bool value)
 		=> OnPropertyChanged(nameof(IsNotSearching));
 

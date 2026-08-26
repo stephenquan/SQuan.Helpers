@@ -1,4 +1,4 @@
-﻿// BindablePropertyAttribute.cs
+﻿// InternalBindablePropertyAttribute.cs
 
 namespace SQuan.Helpers.Internals;
 
@@ -13,7 +13,7 @@ public sealed partial class InternalBindablePropertyAttribute : global::System.A
 	/// <summary>
 	/// Gets or sets a value indicating whether to use the method names specified in the attribute for the generated BindableProperty callbacks.
 	/// </summary>
-	public bool UseStaticCallbacks { get; set; } = false;
+	public bool InstanceMethods { get; set; } = true;
 
 	/// <summary>
 	/// Gets the name of the method to invoke when the BindableProperty value changes.

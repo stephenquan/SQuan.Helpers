@@ -14,13 +14,13 @@ public partial class FlowDirectionExtension : BindableObject, IMarkupExtension<B
 	/// <summary>
 	/// Gets or sets the value to be used when the current text direction is left-to-right.
 	/// </summary>
-	[InternalBindableProperty(UseStaticCallbacks = true)]
+	[InternalBindableProperty(InstanceMethods = false)]
 	public partial object? LeftToRight { get; set; } = FlowDirection.LeftToRight;
 
 	/// <summary>
 	/// Gets or sets the value to be used when the current text direction is right-to-left.
 	/// </summary>
-	[InternalBindableProperty(UseStaticCallbacks = true)]
+	[InternalBindableProperty(InstanceMethods = false)]
 	public partial object? RightToLeft { get; set; } = FlowDirection.RightToLeft;
 
 	/// <summary>

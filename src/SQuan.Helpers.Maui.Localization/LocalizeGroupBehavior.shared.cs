@@ -14,14 +14,14 @@ public partial class LocalizeGroupBehavior : Behavior<VisualElement>
 	/// Gets or sets the current UI culture for localization.
 	/// This property allows you to specify the culture to be used for retrieving localized resources within the scope of this behavior.
 	/// </summary>
-	[InternalBindableProperty(UseStaticCallbacks = true)]
+	[InternalBindableProperty(InstanceMethods = false)]
 	public partial CultureInfo? CurrentUICulture { get; set; }
 
 	/// <summary>
 	/// Gets or sets the current culture for localization.
 	/// This property allows you to specify the culture to be used for formatting dates, numbers, and other culture-specific data within the scope of this behavior.
 	/// </summary>
-	[InternalBindableProperty(UseStaticCallbacks = true)]
+	[InternalBindableProperty(InstanceMethods = false)]
 	public partial CultureInfo? CurrentCulture { get; set; }
 
 	/// <inheritdoc />
