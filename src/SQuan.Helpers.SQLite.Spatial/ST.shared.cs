@@ -6,7 +6,7 @@ using NetTopologySuite.IO;
 namespace SQuan.Helpers.SQLite.Spatial;
 
 /// <summary>
-/// Provides extension methods for enabling spatial extensions on <see cref="Microsoft.Data.Sqlite.SqliteConnection"/> instances.
+/// Provides extension methods for working with spatial data in SQLite using NetTopologySuite.
 /// </summary>
 public static class ST
 {
