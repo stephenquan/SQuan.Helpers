@@ -73,12 +73,13 @@ END;
 CREATE TRIGGER UsaCities_insert AFTER INSERT ON UsaCities
 BEGIN
     INSERT INTO UsaCities_rtree (Id, MinX, MaxX, MinY, MaxY)
-    VALUES (
+    SELECT
         NEW.Id,
         ST_MinX(NEW.Geometry),
         ST_MaxX(NEW.Geometry),
         ST_MinY(NEW.Geometry),
-        ST_MaxY(NEW.Geometry));
+        ST_MaxY(NEW.Geometry)
+    WHERE NEW.Geometry IS NOT NULL;
 END;
 
 CREATE TRIGGER UsaCities_update AFTER UPDATE OF Geometry ON UsaCities
