@@ -67,7 +67,6 @@ public static class ST
 		return string.Empty;
 	}
 
-	//?.AsText() ?? string.Empty;
 
 	/// <summary>
 	/// Creates a geometry object from the specified Well-Known Text (WKT) representation and returns its Extended Well-Known Binary (EWKB) representation.
