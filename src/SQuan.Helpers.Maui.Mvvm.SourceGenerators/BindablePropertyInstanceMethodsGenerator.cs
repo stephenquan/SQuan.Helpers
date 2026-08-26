@@ -193,10 +193,10 @@ public class BindablePropertyInstanceMethodsGenerator : IIncrementalGenerator
 
 					partial class {{className}}
 					{
-						{{staticWrappers}}
+					{{staticWrappers}}
 					}
 					""";
-				spc.AddSource($"{namespaceName}_{bareClassName}_{propertyName}_BPExtras.g.cs", SourceText.From(source, Encoding.UTF8));
+				spc.AddSource($"{namespaceName}_{bareClassName}_{propertyName}_BindablePropertyInstanceMehotds.g.cs", SourceText.From(source, Encoding.UTF8));
 			}
 		});
 	}
