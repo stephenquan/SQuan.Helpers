@@ -12,7 +12,7 @@ using SQuan.Helpers.SQLite.Spatial;
 
 ```c#
 // Create an in-memory SQLite database with spatial support.
-SQLiteSpatialConnection db = new(":memory:");
+SQLiteNetSpatialConnection db = new(":memory:");
 
 // Example spatial queries
 double area_50_units = db.ExecuteScalar<double>("SELECT ST_Area(ST_GeomFromText('POLYGON((10 10,20 10,20 20,10 10))'))");
