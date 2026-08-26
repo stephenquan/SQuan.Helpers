@@ -18,6 +18,19 @@ namespace SQuan.Helpers.Maui.Mvvm.SourceGenerators;
 [Generator]
 public class BindablePropertyInstanceMethodsGenerator : IIncrementalGenerator
 {
+	static readonly SymbolDisplayFormat sTypeWithNullabilityFormat =
+		SymbolDisplayFormat.FullyQualifiedFormat
+			.WithMiscellaneousOptions(
+				SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier);
+
+	static readonly DiagnosticDescriptor sBindablePropertyRequiredDescriptor = new(
+		id: "SQGEN914",
+		title: "BindableProperty attribute is required",
+		messageFormat: "[BindablePropertyInstanceMethods] requires a supported [BindableProperty] on property '{0}'.",
+		category: "Usage",
+		defaultSeverity: DiagnosticSeverity.Error,
+		isEnabledByDefault: true);
+
 	/// <summary>
 	/// Initializes the incremental source generator by configuring the syntax provider to identify properties with
 	/// specific attributes and registering the source output for code generation.
@@ -61,19 +74,34 @@ public class BindablePropertyInstanceMethodsGenerator : IIncrementalGenerator
 						}
 					}
 
-					return (hasBindablePropertyAttribute && hasBindablePropertyExtrasAttribute) ? propertySymbol : null;
+					return (Property: propertySymbol, HasBindableProperty: hasBindablePropertyAttribute, HasBindablePropertyInstanceMethods: hasBindablePropertyExtrasAttribute);
 				})
-			.Where(static symbol => symbol is not null);
+			.Where(static propertyInfo => propertyInfo.Property is not null);
 
-		context.RegisterSourceOutput(properties, (spc, propertySymbol) =>
+		context.RegisterSourceOutput(properties, static (spc, propertyInfo) =>
 		{
+			if (propertyInfo.HasBindablePropertyInstanceMethods && !propertyInfo.HasBindableProperty)
+			{
+				spc.ReportDiagnostic(
+					Diagnostic.Create(
+						sBindablePropertyRequiredDescriptor,
+						propertyInfo.Property!.Locations.Length > 0 ? propertyInfo.Property.Locations[0] : Location.None,
+						propertyInfo.Property.Name));
+			}
+		});
+
+		context.RegisterSourceOutput(
+			properties.Where(static propertyInfo => propertyInfo.HasBindableProperty && propertyInfo.HasBindablePropertyInstanceMethods),
+			(spc, propertyInfo) =>
+		{
+			var propertySymbol = propertyInfo.Property!;
 			var propertyAttributes = propertySymbol!.GetAttributes();
 			var classSymbol = propertySymbol!.ContainingType;
 			var className = classSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
 			var bareClassName = classSymbol.Name;
 			var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
 			var propertyName = propertySymbol.Name;
-			var typeName = propertySymbol.Type.ToDisplayString();
+			var typeName = propertySymbol.Type.ToDisplayString(sTypeWithNullabilityFormat);
 
 			bool hasPropertyChangedMethod = false;
 			string propertyChangedMethodName = string.Empty;
