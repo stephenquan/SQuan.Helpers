@@ -93,42 +93,4 @@ public class MicrosoftDataSqliteSpatialConnection : SqliteConnection, ISpatialCo
 		CreateFunction("ST_Width", (byte[] ewkb) => ST.ST_Width(ewkb), isDeterministic: true);
 		CreateFunction("ST_Within", (byte[] ewkb, byte[] other) => ST.ST_Within(ewkb, other), isDeterministic: true);
 	}
-
-	///// <summary>
-	///// Executes a scalar SQL query and returns the result as the specified type <typeparamref name="T"/>.
-	///// </summary>
-	///// <typeparam name="T">The type of the result.</typeparam>
-	///// <param name="connection">The SQLite connection to use.</param>
-	///// <param name="sql">The SQL query to execute.</param>
-	///// <param name="args">The parameters for the SQL query.</param>
-	///// <returns>The result of the query cast to the specified type.</returns>
-	//public static T ExecuteScalar<T>(this Microsoft.Data.Sqlite.SqliteConnection connection, string sql, params Microsoft.Data.Sqlite.SqliteParameter[] args)
-	//{
-	//	using var command = connection.CreateCommand();
-	//	command.CommandText = sql;
-	//	foreach (var arg in args)
-	//	{
-	//		command.Parameters.Add(arg.ParameterName, arg.SqliteType);
-	//	}
-	//	command.Prepare();
-	//	foreach (var arg in args)
-	//	{
-	//		command.Parameters[arg.ParameterName].Value = arg.Value;
-	//	}
-	//	var result = command.ExecuteScalar();
-	//	if (result is T resultT)
-	//	{
-	//		return resultT;
-	//	}
-	//	if (result?.ToString() is string resultS)
-	//	{
-	//		TypeConverter? converter = TypeDescriptor.GetConverter(typeof(T));
-	//		if (converter?.CanConvertFrom(typeof(string)) == true)
-	//		{
-	//			return (T)converter.ConvertFromInvariantString(resultS);
-	//		}
-	//	}
-	//	return default(T)!;
-
-	//}
 }
