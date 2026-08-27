@@ -10,7 +10,7 @@ using SQuan.Helpers.SQLite.Spatial;
 
 ## ST functions in C#
 
-There is a C# static class called ST which provide static functions as well as extension methods for working with geometry stored in Extended Well-Known Binary blob (EWKB). There are marshalling functions that convert between EWKB to NetTopologySuite's geometry format.
+There is a C# static class called ST which provide static functions as well as extension methods for working with geometry stored in Extended Well-Known Binary blob (EWKB). There are marshalling functions that convert between EWKB to NetTopologySuite's Geometry class.
 
 ```c#
 public static class ST
@@ -86,9 +86,9 @@ SQLiteNetSpatialConnection is a spatial wrapper for sqlite-net-pcl's SQLiteConne
 
 ## MicrosoftDataSqliteSpatialConnection
 
-MicrosoftDataSqliteSpatialConnection is a spatial wrapper for Microsoft.Data.SqLite's SqliteConnection with the ST functions added to the SQLiteConnection.
+MicrosoftDataSqliteSpatialConnection is a spatial wrapper for Microsoft.Data.SqLite's SqliteConnection with the ST functions added to the SqliteConnection.
 
-## Example
+## Example - Using ST functions in SQLite
 
 ```c#
 // Create an in-memory SQLite database with spatial support.

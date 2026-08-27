@@ -4,7 +4,7 @@ This library provides a localization manager, a XAML markup extension, and Fluen
 
 ## Configure the LocalizationManager.Current.LocalizationProvider
 
-LocalizationManger will need your to set the LocalizationProvider to perform string lookups. You can do this by using your ResourceManager's GetString function, for example:
+Set the `LocalizationProvider` on `LocalizationManager.Current` to perform string lookups. You can use your `ResourceManager.GetString` method, for example:
 
 ```c#
 LocalizationManager.Current.LocalizationProvider = AppStrings.ResourceManager.GetString;
@@ -28,17 +28,17 @@ using SQuan.Helpers.Maui.Localization;
 
 ## Get/Set culture values through the LocalizationManager
 
-The LocalizationManager provides wrappers for CurrentCulture and CurrentUICulture. These wrappers have property change and other event notification to ensure changes in culture are broadcasted to localized strings.
+The LocalizationManager provides wrappers for CurrentCulture and CurrentUICulture. These wrappers raise property-change and other event notifications so that culture changes propagate to localized strings.
 
 ```c#
 var de_DE = new CultureInfo("de-DE");
 LocalizationManager.Current.CurrentUICulture = de_DE; // Set localized strings to German.
-LocalizationManager.Current.CurrentCulture = de_DE; // Set date, time, currency to Germany.
+LocalizationManager.Current.CurrentCulture = de_DE; // Set date, time, and currency for Germany.
 ```
 
 ## XAML Localize markup extension example
 
-You can use the Localize markup extension in XAML to assign localize string resources to your text properties, e.g.
+You can use the Localize markup extension in XAML to assign localized string resources to your text properties, e.g.
 
 ```xaml
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
