@@ -43,11 +43,12 @@ You can use the Localize markup extension in XAML to assign localize string reso
 ```xaml
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:i18n="clr-namespace:SQuan.Helpers.Maui.Localization;assembly=SQuan.Helpers.Maui.Localization">
+             xmlns:i18n="clr-namespace:SQuan.Helpers.Maui.Localization;assembly=SQuan.Helpers.Maui.Localization"
+             Title="{i18n:Localize TITLE_HOME}">
     <ScrollView>
         <VerticalStackLayout>
            <Label Text="{i18n:Localize LABEL_HELLO_WORLD}" />
-           <Label Text="{i18n:LocalizeLABEL_WELCOME}" />
+           <Label Text="{i18n:Localize LABEL_WELCOME}" />
            <Button x:Name="CounterBtn" Text="{i18n:Localize BUTTON_CLICK_ME}" />
         </VerticalStackLayout>
     </ScrollView>
