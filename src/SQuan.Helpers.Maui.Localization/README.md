@@ -1,6 +1,6 @@
 # SQuan.Helpers.Maui.Localization
 
-This library provides a localization manager, a XAML markup extension and a Fluent C# extension methods to make it easier to build .NET MAUI application that react to localization changes at runtime.
+This library provides a localization manager, a XAML markup extension, and Fluent C# extension methods to make it easier to build .NET MAUI applications that react to localization changes at runtime.
 
 ## Configure the LocalizationManager.Current.LocalizationProvider
 
