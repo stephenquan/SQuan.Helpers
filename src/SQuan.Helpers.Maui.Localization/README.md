@@ -41,7 +41,9 @@ LocalizationManager.Current.CurrentCulture = de_DE; // Set date, time, currency 
 You can use the Localize markup extension in XAML to assign localize string resources to your text properties, e.g.
 
 ```xaml
-<ContentPage xmlns:i18n="clr-namespace:SQuan.Helpers.Maui.Localization;assembly=SQuan.Helpers.Maui.Localization">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:i18n="clr-namespace:SQuan.Helpers.Maui.Localization;assembly=SQuan.Helpers.Maui.Localization">
     <ScrollView>
         <VerticalStackLayout>
            <Label Text="{i18n:Localize LABEL_HELLO_WORLD}" />
