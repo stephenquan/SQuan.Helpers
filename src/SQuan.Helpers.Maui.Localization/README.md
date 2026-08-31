@@ -83,5 +83,5 @@ CounterBtn.Localize(
 
 For more information please visit:
 
- - Documentation: https://github.com/stephenquan/SQuan.Helpers/wiki/Localization
+ - Documentation: https://stephenquan.github.io/SQuan.Helpers/Maui.Localization/
  - GitHub repository: https://github.com/stephenquan/SQuan.Helpers
