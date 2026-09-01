@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `FuncToConverter` is a base class that simplifies the creation of IMultiValueConverters. It allows you to supply a `Func<T,TReturn>` to the constructor and it builds a IValueConverter based on the supplied Func. You specify up to 4 input types and 1 output type for your Func.
+The `FuncToConverter` is a helper that simplifies creating an `IValueConverter` by wrapping a supplied `Func<T, TReturn>` (single input value).
 
 !!! warning "Experimental Feature"
 
