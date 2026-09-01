@@ -64,7 +64,7 @@ public partial class CompareExtension : BaseBindableObjectMarkupExtension
 				(value, comparingValue, comparisonOperator, trueObject, falseObject)
 					=> new CompareConverter
 					{
-						ComparingValue = double.Parse(comparingValue.ToString() ?? "0"),
+						ComparingValue = System.Convert.ToDouble(comparingValue, CultureInfo.CurrentCulture),
 						ComparisonOperator = comparisonOperator,
 						TrueObject = trueObject,
 						FalseObject = falseObject,
