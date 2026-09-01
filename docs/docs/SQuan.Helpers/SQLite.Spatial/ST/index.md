@@ -994,7 +994,7 @@ real ST_XMin(blob ewkb)
 === "C#"
 
     ```c#
-    byte[] geometry = ST.ST_GeomFromText("POLYGON((30 40, 50 40, 50 60, 30 60, 30 40));
+    byte[] geometry = ST.ST_GeomFromText("POLYGON((30 40, 50 40, 50 60, 30 60, 30 40))");
     double xmin_30 = geometry.ST_XMin();
     ```
 
