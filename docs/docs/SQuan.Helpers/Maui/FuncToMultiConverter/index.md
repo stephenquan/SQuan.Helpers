@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `FuncToMultiConverter` is a base class that simplifies the creation of IMultiValueConverters. It allows you to supply a `Func<T1...Tn,TReturn>` to the constructor and it builds a IMultiValueConverter based on the supplied Func. You specify up to 4 input types and 1 output type for your Func.
+The `FuncToMultiConverter` is a helper that simplifies creating `IMultiValueConverter` instances by wrapping a supplied `Func<T1..Tn, TReturn>` (supports 1 to 9 input values).
 
 !!! warning "Experimental Feature"
 
