@@ -35,11 +35,15 @@ using SQuan.Helpers.Maui.Localization;
 
 `LocalizationManager.Current.CurrentCulture` provides access to the culture used for formatting numbers, currency values, dates, and other culture-sensitive data. It acts as a wrapper around CultureInfo.CurrentCulture, allowing applications to both read and change the active formatting culture at runtime. When this value is updated, LocalizationManager raises the appropriate notifications so that culture-aware UI elements and data bindings can automatically refresh throughout the application.
 
-    public CultureInfo CurrentCulture { get; set; }
+```c#
+public CultureInfo CurrentCulture { get; set; }
+```
+
+Example
 
 ```c#
 // Follow numeric, currency and date formatting used in France.
-LocalizationManager.Current.CurrentUICulture = new CultureInfo("fr-FR");
+LocalizationManager.Current.CurrentCulture = new CultureInfo("fr-FR");
 ```
 
 ## CurrentUICulture Property

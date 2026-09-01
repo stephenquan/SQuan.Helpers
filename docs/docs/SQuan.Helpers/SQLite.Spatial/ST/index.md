@@ -99,7 +99,7 @@ text ST_AsText(blob ewkb)
 === "SQLite"
 
     ```sql
-    SELECT ST_AsText(ST_Point(40,30))
+    SELECT ST_AsText(ST_Point(40, 30))
     ```
 
 === "C#"
@@ -286,7 +286,7 @@ integer ST_Crosses(blob ewkb, blob other)
     ```c#
     byte[] geometry = ST.ST_GeomFromText("POLYGON((0 0, 40 30, 40 0, 0 0))");
     byte[] other = ST.ST_GeomFromText("POLYGON((0 0, 0 30, 40 0, 0 0))");
-    int crosses = geometry.ST_Covers(other);
+    int crosses = geometry.ST_Crosses(other);
     ```
 
 ## ST_Difference
