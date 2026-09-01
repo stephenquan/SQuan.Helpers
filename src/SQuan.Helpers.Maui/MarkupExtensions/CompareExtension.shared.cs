@@ -44,7 +44,7 @@ public partial class CompareExtension : BaseBindableObjectMarkupExtension
 	public partial object? FalseObject { get; set; }
 
 	/// <summary>
-	/// Returns the MultiBinding that uses the <see cref="BoolToObjectConverter"/> to convert the boolean value to an object based on the specified true and false values.
+	/// Returns the MultiBinding that uses the <see cref="CompareConverter"/> to compare the bound value against the specified comparison value.
 	/// </summary>
 	/// <param name="serviceProvider">The service provider used to retrieve services.</param>
 	/// <returns>The binding for the markup extension.</returns>
