@@ -357,7 +357,7 @@ real ST_Distance(blob ewkb, blob other)
 
     ```c#
     byte[] geometry = ST.ST_GeomFromText("POLYGON((0 0, 40 30, 40 0, 0 0))");
-    byte[] other = ST.ST_POINT(0, 30);
+    byte[] other = ST.ST_Point(0, 30);
     double distance = geometry.ST_Distance(other);
     ```
 
