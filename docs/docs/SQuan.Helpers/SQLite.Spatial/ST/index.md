@@ -126,7 +126,7 @@ blob ST_Boundary(blob ewkb)
 === "C#"
 
     ```c#
-    byte[] geometry = ST.ST_GeomFromText()"POLYGON((0 0, 40 30, 40 0, 0 0))");
+    byte[] geometry = ST.ST_GeomFromText("POLYGON((0 0, 40 30, 40 0, 0 0))");
     byte[] boundary = geometry.ST_Boundary();
     ```
 
