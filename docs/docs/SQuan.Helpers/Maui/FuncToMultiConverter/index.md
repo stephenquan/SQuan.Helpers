@@ -25,7 +25,7 @@ You supply your Func to the constructor.
 ## Example
 
 ```c#
-// Creates a Red, Green, Blue markup extension for quickly converting R, G, B values to a Color.
+// A Red, Green, Blue, Alpha to Color converter.
 public class RgbaToColorConverter : FuncToMultiConverter<int, int, int, int, Color>
 {
     public RgbaToColorConverter() : base(Color.FromRgba) { }

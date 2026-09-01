@@ -17,6 +17,7 @@ using SQuan.Helpers.Maui;
 ## Example
 
 ```c#
+// Set the Color of a BoxView from a mashup of Red, Green, Blue, Alpha components.
 boxView.SetBinding(
     BoxView.ColorProperty,
     new MultiBinding
