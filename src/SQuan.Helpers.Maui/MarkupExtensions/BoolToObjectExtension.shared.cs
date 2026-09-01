@@ -23,13 +23,13 @@ public partial class BoolToObjectExtension : BaseBindableObjectMarkupExtension
 	/// Gets or sets the value to return when the bound boolean value is true.
 	/// </summary>
 	[BindableProperty]
-	public partial object? TrueValue { get; set; }
+	public partial object? TrueObject { get; set; }
 
 	/// <summary>
 	/// Gets or sets the value to return when the bound boolean value is false.
 	/// </summary>
 	[BindableProperty]
-	public partial object? FalseValue { get; set; }
+	public partial object? FalseObject { get; set; }
 
 	/// <summary>
 	/// Returns the MultiBinding that uses the <see cref="BoolToObjectConverter"/> to convert the boolean value to an object based on the specified true and false values.
@@ -42,13 +42,17 @@ public partial class BoolToObjectExtension : BaseBindableObjectMarkupExtension
 			Bindings =
 			{
 				BindingBase.Create(static (BoolToObjectExtension ctx) => ctx.Value, BindingMode.OneWay, source: this),
-				BindingBase.Create(static (BoolToObjectExtension ctx) => ctx.TrueValue, BindingMode.OneWay, source: this),
-				BindingBase.Create(static (BoolToObjectExtension ctx) => ctx.FalseValue, BindingMode.OneWay, source: this)
+				BindingBase.Create(static (BoolToObjectExtension ctx) => ctx.TrueObject, BindingMode.OneWay, source: this),
+				BindingBase.Create(static (BoolToObjectExtension ctx) => ctx.FalseObject, BindingMode.OneWay, source: this)
 			},
 			Mode = BindingMode.OneWay,
 			Converter = new FuncToMultiConverter<bool, object?, object?, object?>(
-				(v, t, f)
-					=> new BoolToObjectConverter { TrueObject = t, FalseObject = f }
-						.ConvertFrom(v, CultureInfo.CurrentCulture)),
+				(value, trueObject, falseObject)
+					=> new BoolToObjectConverter
+					{
+						TrueObject = trueObject,
+						FalseObject = falseObject
+					}
+					.ConvertFrom(value, CultureInfo.CurrentCulture)),
 		};
 }

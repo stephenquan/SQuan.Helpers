@@ -1,4 +1,4 @@
-﻿// FuncToMultiConverter.cs
+﻿// FuncToMultiConverter.shared.cs
 
 using System.ComponentModel;
 using System.Globalization;

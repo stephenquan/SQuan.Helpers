@@ -20,19 +20,19 @@ xmlns:sqm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
 
 | Name                | Description                          |
 | ------------------- | ------------------------------------ |
-| FalseValueProperty | Bindable property for [FalseValue](#falsevalue-property). |
-| TrueValueProperty | Bindable property for [TrueValue](#truevalue-property). |
+| FalseObjectProperty | Bindable property for [FalseObject](#falseobject-property). |
+| TrueObjectProperty | Bindable property for [TrueObject](#trueobject-property). |
 | ValueProperty | Bindable property for [Value](#value-property). |
 
 ## Properties
 
 | Name        | Description |
 | ---         | ----------- |
-| [FalseValue](#falsevalue-property) | Gets or sets the false value. |
-| [TrueValue](#truevalue-property) | Gets or sets the true value. |
+| [FalseObject](#falseobject-property) | Gets or sets the false value. |
+| [TrueObject](#trueobject-property) | Gets or sets the true value. |
 | [Value](#value-property) | Gets or sets the controlling boolean value. |
 
-## FalseValue Property
+## FalseObject Property
 
 Gets or sets the value that will be returned if the controlling boolean value is false.
 
@@ -40,7 +40,7 @@ Gets or sets the value that will be returned if the controlling boolean value is
 public object? FalseValue { get; set; }
 ```
 
-## TrueValue Property
+## TrueObject Property
 
 Gets or sets the value that will be returned if the controlling boolean value is true.
 
@@ -72,8 +72,8 @@ public bool Value { get; set; }
             Color="{sqm:BoolToObject Value={Binding IsChecked,
                                                     x:DataType=CheckBox,
                                                     Source={Reference chk}},
-                                     TrueValue={Binding Source=Green},
-                                     FalseValue={Binding Source=Red}" />
+                                     TrueObject={Binding Source=Green},
+                                     FalseObject={Binding Source=Red}" />
     </VerticalStackLayout>
 </ContentPage>
 ```
