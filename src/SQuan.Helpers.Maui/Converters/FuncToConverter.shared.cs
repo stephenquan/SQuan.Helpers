@@ -3,7 +3,7 @@
 using System.ComponentModel;
 using System.Globalization;
 
-namespace SQuan.Helpers.Maui.Converters;
+namespace SQuan.Helpers.Maui;
 
 /// <summary>
 /// A converter that uses a specified function to convert a value of type <typeparamref name="T"/> to a value of type <typeparamref name="TReturn"/>.
