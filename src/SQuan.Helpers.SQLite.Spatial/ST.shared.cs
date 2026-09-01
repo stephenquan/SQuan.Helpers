@@ -41,6 +41,9 @@ public static class ST
 	/// <returns>A <see cref="Geometry"/> object created from the EWKB representation.</returns>
 	public static Geometry ToGeometry(this byte[] ewkb) => new WKBReader().Read(ewkb);
 
+	[Obsolete("Use ToGeometry(byte[]) instead.")]
+	public static Geometry FromEWKB(byte[] ewkb) => ewkb.ToGeometry();
+
 	/// <summary>
 	/// Calculates the area of a geometry represented in Extended Well-Known Binary (EWKB) format.
 	/// </summary>
