@@ -55,13 +55,15 @@
     <PackageReference Include="GitVersion.MsBuild" Version="$(GitVersionMsBuildVersion)" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />
     <None Include="..\SQuan.Helpers.Maui.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0\SQuan.Helpers.Maui.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="true" />
   </ItemGroup>
-  
+
+  <!--
   <ItemGroup>
     <ProjectReference Include="..\SQuan.Helpers.Maui.Mvvm.SourceGenerators\SQuan.Helpers.Maui.Mvvm.SourceGenerators.csproj">
       <OutputItemType>Analyzer</OutputItemType>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
+  -->
 
   <ItemGroup>
     <Folder Include="msbuild\" />

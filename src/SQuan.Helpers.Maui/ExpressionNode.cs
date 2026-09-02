@@ -1,8 +1,9 @@
 ﻿// ExpressionNode.cs
 
 using System.Collections.Concurrent;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
-using SQuan.Helpers.Internals;
 
 namespace SQuan.Helpers.Maui;
 
@@ -12,7 +13,7 @@ namespace SQuan.Helpers.Maui;
 /// The <see cref="ExpressionManager"/> manages a collection of <see cref="ExpressionNode"/>s and their dependencies,
 /// and is responsible for evaluating the expressions and updating the values of the nodes accordingly.
 /// </summary>
-public partial class ExpressionNode : InternalObservableObject
+public partial class ExpressionNode : INotifyPropertyChanged
 {
 	static ILogger? logger;
 
@@ -143,26 +144,42 @@ public partial class ExpressionNode : InternalObservableObject
 	/// <summary>
 	/// Describes the current lifecycle state of the node.
 	/// </summary>
-	[InternalObservableProperty]
 	public partial ExpressionValueKind ValueKind { get; set; } = ExpressionValueKind.Uninitialized;
+	public partial ExpressionValueKind ValueKind
+	{
+		get => field;
+		set => SetPropertyValue(ref field, value);
+	}
 
 	/// <summary>
 	/// The expected type of the node's value, if constrained.
 	/// </summary>
-	[InternalObservableProperty]
 	public partial Type? ValueType { get; set; } = null;
+	public partial Type? ValueType
+	{
+		get => field;
+		set => SetPropertyValue(ref field, value);
+	}
 
 	/// <summary>
 	/// The expression text associated with this node.
 	/// </summary>
-	[InternalObservableProperty]
 	public partial string Expression { get; set; } = string.Empty;
+	public partial string Expression
+	{
+		get => field;
+		set => SetPropertyValue(ref field, value);
+	}
 
 	/// <summary>
 	/// Indicates whether the node's value is deterministic.
 	/// </summary>
-	[InternalObservableProperty]
 	public partial bool IsDeterministic { get; set; } = true;
+	public partial bool IsDeterministic
+	{
+		get => field;
+		set => SetPropertyValue(ref field, value);
+	}
 
 	/// <summary>
 	/// The parsed tokens representing the node's expression in evaluation order.
@@ -182,14 +199,22 @@ public partial class ExpressionNode : InternalObservableObject
 	/// <summary>
 	/// Gets or sets the default expression that is used for initialization when no other value is provided.
 	/// </summary>
-	[InternalObservableProperty]
 	public partial string DefaultExpression { get; set; } = string.Empty;
+	public partial string DefaultExpression
+	{
+		get => field;
+		set => SetPropertyValue(ref field, value);
+	}
 
 	/// <summary>
 	/// Gets or sets a value indicating whether the default expression is deterministic.
 	/// </summary>
-	[InternalObservableProperty]
 	public partial bool IsDefaultExpressionDeterministic { get; set; } = true;
+	public partial bool IsDefaultExpressionDeterministic
+	{
+		get => field;
+		set => SetPropertyValue(ref field, value);
+	}
 
 	/// <summary>
 	/// Gets the list of tokens used for evaluating default expressions.
@@ -335,4 +360,23 @@ public partial class ExpressionNode : InternalObservableObject
 	/// <returns>A <see cref="BindingBase"/> instance that represents the configured binding for the deterministic state.</returns>
 	public BindingBase BindIsDeterministic(BindingMode mode = BindingMode.OneWay, IValueConverter? converter = null, object? converterParameter = null, string? stringFormat = null)
 		=> new Binding(nameof(IsDeterministic), mode, converter, converterParameter, stringFormat, source: this);
+
+	void SetPropertyValue<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+	{
+		if (!EqualityComparer<T>.Default.Equals(field, value))
+		{
+			field = value;
+			OnPropertyChanged(propertyName);
+		}
+	}
+
+	void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+	{
+		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+	}
+
+	/// <summary>
+	/// Occurs when a property value changes, allowing subscribers to be notified of the change.
+	/// </summary>
+	public event PropertyChangedEventHandler? PropertyChanged;
 }
