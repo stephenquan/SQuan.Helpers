@@ -1,5 +1,6 @@
 ﻿// CompareExtension.shared.cs
 
+using System.ComponentModel;
 using System.Globalization;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Converters;
@@ -62,13 +63,30 @@ public partial class CompareExtension : BaseBindableObjectMarkupExtension
 			Mode = BindingMode.OneWay,
 			Converter = new FuncToMultiConverter<IComparable, IComparable, CompareConverter.OperatorType, object?, object?, object?>(
 				(value, comparingValue, comparisonOperator, trueObject, falseObject)
-					=> new CompareConverter
+					=>
 					{
-						ComparingValue = System.Convert.ToDouble(comparingValue, CultureInfo.CurrentCulture),
-						ComparisonOperator = comparisonOperator,
-						TrueObject = trueObject,
-						FalseObject = falseObject,
-					}
-					.ConvertFrom(value, CultureInfo.CurrentCulture)),
+						if (comparingValue
+							is not null
+							&& value is not null
+							&& comparingValue.GetType() != value.GetType()
+							&& TypeDescriptor.GetConverter(value.GetType()) is TypeConverter converter
+							&& converter.CanConvertFrom(comparingValue.GetType())
+							&& converter.ConvertFrom(null, CultureInfo.CurrentCulture, comparingValue) is IComparable _comparingValue)
+						{
+							comparingValue = _comparingValue;
+						}
+						if (value is IComparable _value)
+						{
+							return new CompareConverter
+							{
+								ComparingValue = comparingValue,
+								ComparisonOperator = comparisonOperator,
+								TrueObject = trueObject,
+								FalseObject = falseObject,
+							}
+							.ConvertFrom(_value, CultureInfo.CurrentCulture);
+						}
+						return null;
+					})
 		};
 }

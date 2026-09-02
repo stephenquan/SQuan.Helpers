@@ -19,12 +19,12 @@ public abstract class FuncToMultiConverterBase : IMultiValueConverter
 	/// <returns>The converted result.</returns>
 	protected static object? ConvertResult(object? result, Type targetType, CultureInfo culture)
 	{
-		if (result is string s
-			&& targetType != typeof(string)
+		if (result is not null
+			&& targetType != result.GetType()
 			&& TypeDescriptor.GetConverter(targetType) is TypeConverter typeConverter
-			&& typeConverter.CanConvertFrom(typeof(string)))
+			&& typeConverter.CanConvertFrom(result.GetType()))
 		{
-			return typeConverter.ConvertFrom(null, culture, s);
+			return typeConverter.ConvertFrom(null, culture, result);
 		}
 		return result;
 	}

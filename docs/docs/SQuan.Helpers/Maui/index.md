@@ -46,4 +46,4 @@ xmlns:sqm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
 | [BaseBindableObjectMarkupExtension](BaseBindableObjectMarkupExtension/index.md) | An abstract class to simplify building markup extensions. |
 | [BoolToObjectExtension](BoolToObjectExtension/index.md) | A markup extension for converting a boolean to one of two objects. |
 | [CompareExtension](CompareExtension/index.md) | A markup extension for returning one of two objects based on a comparison. |
-| [RgbaToColorExtension | A markup extension for converting RGBA components to a Color. |
+| [RgbaToColorExtension](RgbaToColorExtension/index.md) | A markup extension for converting RGBA components to a Color. |

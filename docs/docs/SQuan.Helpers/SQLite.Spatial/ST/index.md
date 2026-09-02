@@ -207,14 +207,14 @@ blob ST_ConvexHull(blob ewkb)
 === "SQLite"
 
     ```sql
-    SELECT ST_ConvexHull('POLYGON((0 0, 40 30, 40 0, 0 0))')
+    SELECT ST_ConvexHull(ST_GeomFromText('POLYGON((0 0, 40 30, 40 0, 0 0))'))
     ```
 
 === "C#"
 
     ```c#
-    byte[] geometry = ST.ST_GeomFromText()"POLYGON((0 0, 40 30, 40 0, 0 0))");
-    byte[] boundary = geometry.ST_ConvexHull();
+    byte[] geometry = ST.ST_GeomFromText("POLYGON((0 0, 40 30, 40 0, 0 0))");
+    byte[] convexHull = geometry.ST_ConvexHull();
     ```
 
 ## ST_CoveredBy

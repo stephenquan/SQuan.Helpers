@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `RgbColor` XAML markup extension that builds a Color from its red, green, blue and alpha component values.
+The `RgbaToColor` XAML markup extension that builds a Color from its red, green, blue and alpha component values.
 
 !!! warning "Experimental Feature"
 
@@ -58,7 +58,7 @@ public int Green { get; set; } = 255;
 
 ## Red Property
 
-Gets or sets the Red component. Defaults to 55.
+Gets or sets the Red component. Defaults to 255.
 
 ```c#
 public int Red { get; set; } = 255;
