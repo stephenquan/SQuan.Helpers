@@ -1,7 +1,6 @@
 ﻿// LocalizeGroupBehavior.shared.cs
 
 using System.Globalization;
-using SQuan.Helpers.Internals;
 
 namespace SQuan.Helpers.Maui.Localization;
 
@@ -11,18 +10,35 @@ namespace SQuan.Helpers.Maui.Localization;
 public partial class LocalizeGroupBehavior : Behavior<VisualElement>
 {
 	/// <summary>
+	/// Bindable property for the <see cref="CurrentUICulture"/>.
+	/// </summary>
+	public static readonly BindableProperty CurrentUICultureProperty =
+		BindableProperty.Create(nameof(CurrentUICulture), typeof(CultureInfo), typeof(LocalizeGroupBehavior), null, BindingMode.OneWay);
+
+	/// <summary>
 	/// Gets or sets the current UI culture for localization.
 	/// This property allows you to specify the culture to be used for retrieving localized resources within the scope of this behavior.
 	/// </summary>
-	[InternalBindableProperty(InstanceMethods = false)]
-	public partial CultureInfo? CurrentUICulture { get; set; }
+	public CultureInfo? CurrentUICulture
+	{
+		get => GetValue(CurrentUICultureProperty) as CultureInfo;
+		set => SetValue(CurrentUICultureProperty, value);
+	}
 
+	/// <summary>
+	/// Bindable property for the <see cref="CurrentCulture"/>.
+	/// </summary>
+	public static readonly BindableProperty CurrentCultureProperty =
+		BindableProperty.Create(nameof(CurrentCulture), typeof(CultureInfo), typeof(LocalizeGroupBehavior), null, BindingMode.OneWay);
 	/// <summary>
 	/// Gets or sets the current culture for localization.
 	/// This property allows you to specify the culture to be used for formatting dates, numbers, and other culture-specific data within the scope of this behavior.
 	/// </summary>
-	[InternalBindableProperty(InstanceMethods = false)]
-	public partial CultureInfo? CurrentCulture { get; set; }
+	public CultureInfo? CurrentCulture
+	{
+		get => GetValue(CurrentCultureProperty) as CultureInfo;
+		set => SetValue(CurrentCultureProperty, value);
+	}
 
 	/// <inheritdoc />
 	protected override void OnAttachedTo(VisualElement bindable)

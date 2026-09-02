@@ -2,11 +2,10 @@
 
 using System.Globalization;
 using CommunityToolkit.Maui.Converters;
-using Microsoft.Maui.Controls.Xaml;
 
 namespace SQuan.Helpers.Maui.UnitTests;
 
-public class MarkupExtensionTests : BaseTest
+public partial class MarkupExtensionTests : BaseTest
 {
 	static readonly IServiceProvider emptyServiceProvider = new TestServiceProvider();
 
@@ -103,7 +102,7 @@ public class MarkupExtensionTests : BaseTest
 		Assert.IsType<RgbaToColorConverter>(binding.Converter);
 	}
 
-	sealed class TestMarkupExtension : BaseBindableObjectMarkupExtension
+	sealed partial class TestMarkupExtension : BaseBindableObjectMarkupExtension
 	{
 		public Binding Binding { get; } = new();
 
@@ -123,7 +122,7 @@ public class MarkupExtensionTests : BaseTest
 		public object TargetProperty { get; } = BindableObject.BindingContextProperty;
 	}
 
-	sealed class TestServiceProvider(IProvideValueTarget? provideValueTarget = null) : IServiceProvider
+	sealed partial class TestServiceProvider(IProvideValueTarget? provideValueTarget = null) : IServiceProvider
 	{
 		public object? GetService(Type serviceType)
 			=> serviceType == typeof(IProvideValueTarget) ? provideValueTarget : null;

@@ -1,45 +1,51 @@
 ﻿// AppThemeExtension.cs
 
-using SQuan.Helpers.Internals;
-
 namespace SQuan.Helpers.Maui;
 
 /// <summary>
 /// Provides a markup extension that dynamically resolves a value based on the application's current theme.
 /// </summary>
-public partial class AppThemeExtension : BindableObject, IMarkupExtension<BindingBase>
+public partial class AppThemeExtension : BaseBindableObjectMarkupExtension
 {
+	/// <summary>
+	/// Bindable property for the <see cref="Light"/>.
+	/// </summary>
+	public static readonly BindableProperty LightProperty
+		= BindableProperty.Create(nameof(Light), typeof(object), typeof(AppThemeExtension), default(object));
+
 	/// <summary>
 	/// Gets or sets the value that will be used when the application is in light theme.
 	/// </summary>
-	[InternalBindableProperty(InstanceMethods = false)]
-	public partial object? Light { get; set; }
+	public object? Light
+	{
+		get => GetValue(LightProperty);
+		set => SetValue(LightProperty, value);
+	}
 
 	/// <summary>
 	/// Gets or sets the value that will be used when the application is in dark theme.
 	/// </summary>
-	[InternalBindableProperty(InstanceMethods = false)]
-	public partial object? Dark { get; set; }
+	public static readonly BindableProperty DarkProperty
+		= BindableProperty.Create(nameof(Dark), typeof(object), typeof(AppThemeExtension), default(object));
 
 	/// <summary>
-	/// Provides the value of the markup extension for the specified service provider.
+	/// Gets or sets the value that will be used when the application is in dark theme.
 	/// </summary>
-	/// <remarks>This method is typically called by the XAML processor during object creation to obtain the value of
-	/// the markup extension.</remarks>
-	/// <param name="serviceProvider">An object that provides services for the markup extension.</param>
-	/// <returns>The object value provided by the markup extension. The returned value depends on the implementation of <see
-	/// cref="IMarkupExtension{BindingBase}.ProvideValue(IServiceProvider)"/>.</returns>
-	public object ProvideValue(IServiceProvider serviceProvider)
-		=> (this as IMarkupExtension<BindingBase>).ProvideValue(serviceProvider);
-
-	BindingBase IMarkupExtension<BindingBase>.ProvideValue(IServiceProvider serviceProvider)
+	public object? Dark
 	{
-		if (serviceProvider.GetService(typeof(IProvideValueTarget)) is IProvideValueTarget provideValueTarget && provideValueTarget.TargetObject is BindableObject targetObject)
-		{
-			this.SetBinding(BindableObject.BindingContextProperty, static (BindableObject t) => t.BindingContext, BindingMode.OneWay, source: targetObject);
-		}
+		get => GetValue(DarkProperty);
+		set => SetValue(DarkProperty, value);
+	}
+
+	/// <summary>
+	/// Provides the binding value based on the current application theme.
+	/// </summary>
+	/// <param name="serviceProvider">An object that provides services for the markup extension.</param>
+	/// <returns>The binding value based on the current application theme.</returns>
+	public override BindingBase ProvideBindingValue(IServiceProvider serviceProvider)
+	{
 		return AppThemeBindingBase.Create(
-			BindingBase.Create(static (object o) => o, BindingMode.OneWay, source: Light),
-			BindingBase.Create(static (object o) => o, BindingMode.OneWay, source: Dark));
+			BindingBase.Create(static (AppThemeExtension ctx) => ctx.Light, BindingMode.OneWay, source: this),
+			BindingBase.Create(static (AppThemeExtension ctx) => ctx.Dark, BindingMode.OneWay, source: this));
 	}
 }

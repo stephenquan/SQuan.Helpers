@@ -71,9 +71,10 @@
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="$(MicrosoftExtensionsLocalizationVersion)" />
 	</ItemGroup>
 
+	<!--
 	<ItemGroup>
 		<ProjectReference Include="..\SQuan.Helpers.Internals\SQuan.Helpers.Internals.csproj" />
 		<ProjectReference Include="..\SQuan.Helpers.Internals.SourceGenerators\SQuan.Helpers.Internals.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
 	</ItemGroup>
-
+	-->
 </Project>

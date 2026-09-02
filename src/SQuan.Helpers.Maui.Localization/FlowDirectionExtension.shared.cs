@@ -1,7 +1,5 @@
 ﻿// FlowDirectionExtension.shared.cs
 
-using SQuan.Helpers.Internals;
-
 namespace SQuan.Helpers.Maui.Localization;
 
 /// <summary>
@@ -12,16 +10,34 @@ namespace SQuan.Helpers.Maui.Localization;
 public partial class FlowDirectionExtension : BindableObject, IMarkupExtension<BindingBase>
 {
 	/// <summary>
+	/// Bindable property for the <see cref="LeftToRight"/>.
+	/// </summary>
+	public static readonly BindableProperty LeftToRightProperty
+		= BindableProperty.Create(nameof(LeftToRight), typeof(object), typeof(FlowDirectionExtension), FlowDirection.LeftToRight);
+
+	/// <summary>
 	/// Gets or sets the value to be used when the current text direction is left-to-right.
 	/// </summary>
-	[InternalBindableProperty(InstanceMethods = false)]
-	public partial object? LeftToRight { get; set; } = FlowDirection.LeftToRight;
+	public object? LeftToRight
+	{
+		get => GetValue(LeftToRightProperty) as object;
+		set => SetValue(LeftToRightProperty, value);
+	}
+
+	/// <summary>
+	/// Bindable property for the <see cref="RightToLeft"/>.
+	/// </summary>
+	public static readonly BindableProperty RightToLeftProperty
+		= BindableProperty.Create(nameof(RightToLeft), typeof(object), typeof(FlowDirectionExtension), FlowDirection.RightToLeft);
 
 	/// <summary>
 	/// Gets or sets the value to be used when the current text direction is right-to-left.
 	/// </summary>
-	[InternalBindableProperty(InstanceMethods = false)]
-	public partial object? RightToLeft { get; set; } = FlowDirection.RightToLeft;
+	public object? RightToLeft
+	{
+		get => GetValue(RightToLeftProperty) as object;
+		set => SetValue(RightToLeftProperty, value);
+	}
 
 	/// <summary>
 	/// Provides the value of the markup extension based on the current text direction.

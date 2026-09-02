@@ -1,13 +1,13 @@
 ﻿// LocalizationManager.shared.cs
 
+using System.ComponentModel;
 using System.Globalization;
-using SQuan.Helpers.Internals;
 namespace SQuan.Helpers.Maui.Localization;
 
 /// <summary>
 /// Provides functionality for managing and accessing localized resources.
 /// </summary>
-public partial class LocalizationManager : InternalObservableObject
+public partial class LocalizationManager : INotifyPropertyChanged
 {
 	/// <summary>
 	/// Gets or sets the options for localization behavior in the application.
@@ -19,8 +19,7 @@ public partial class LocalizationManager : InternalObservableObject
 	/// Gets or sets the resolver used to provide localized resources.
 	/// </summary>
 	[Obsolete("This property is not currently used and may be removed in future versions.")]
-	[InternalObservableProperty]
-	public partial LocalizeResolver? Resolver { get; set; }
+	public LocalizeResolver? Resolver { get; set; }
 
 	/// <summary>
 	/// Gets the current instance of the <see cref="LocalizationManager"/>.
@@ -91,4 +90,18 @@ public partial class LocalizationManager : InternalObservableObject
 			? string.Format(currentCulture ?? CultureInfo.CurrentCulture, localizedString, args)
 			: localizedString;
 	}
+
+	void SetProperty<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
+	{
+		if (!Equals(field, value))
+		{
+			field = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+	}
+
+	/// <summary>
+	/// Occurs when a property value changes.
+	/// </summary>
+	public event PropertyChangedEventHandler? PropertyChanged;
 }

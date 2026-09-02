@@ -1,5 +1,6 @@
 // ThemePage.xaml.cs
 
+using CommunityToolkit.Maui.Markup;
 using SQuan.Helpers.Maui;
 
 namespace SQuan.Helpers.Sample;
@@ -16,8 +17,8 @@ public partial class ThemePage : ContentPage
 		logoImage.Bind(
 			Image.SourceProperty,
 			AppThemeBindingBase.Create(
-				BindingBase.Create(static (object o) => o, BindingMode.OneWay, source: Sun),
-				BindingBase.Create(static (object o) => o, BindingMode.OneWay, source: Moon),
+				BindingBase.Create(static (ThemePage ctx) => ctx.Sun, BindingMode.OneWay, source: this),
+				BindingBase.Create(static (ThemePage ctx) => ctx.Moon, BindingMode.OneWay, source: this),
 				this));
 	}
 
