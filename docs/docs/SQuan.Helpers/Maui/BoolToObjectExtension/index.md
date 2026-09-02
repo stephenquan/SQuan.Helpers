@@ -48,7 +48,6 @@ Gets or sets the value that will be returned if the controlling boolean value is
 public object? TrueObject { get; set; }
 ```
 
-
 ## Value Property
 
 Gets or sets a controlling boolean value.
