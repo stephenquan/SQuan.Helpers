@@ -30,7 +30,7 @@
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<PackageProjectUrl>https://github.com/stephenquan/SQuan.Helpers</PackageProjectUrl>
+		<PackageProjectUrl>https://stephenquan.github.io/SQuan.Helpers/Maui/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/stephenquan/SQuan.Helpers</RepositoryUrl>
 		<PackageReleaseNotes>https://github.com/stephenquan/SQuan.Helpers/releases</PackageReleaseNotes>
 		<PackageTags>dotnet,maui,controls,converters,markup extensions,method extensions</PackageTags>
@@ -75,6 +75,7 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Essentials" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="$(MicrosoftExtensionsLoggingDebugVersion)" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="$(CommunityToolkitMauiVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>

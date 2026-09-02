@@ -40,36 +40,6 @@ public partial class LocalizationManager : InternalObservableObject
 	public Func<string, CultureInfo?, string?>? LocalizationProvider { get; set; }
 
 	/// <summary>
-	/// Occurs when the installed UI culture of the application changes.
-	/// </summary>
-	[Obsolete("This event is not currently used and may be removed in future versions.")]
-	public event EventHandler? InstalledUICultureChanged;
-
-	/// <summary>
-	/// Occurs when the current culture of the application changes.
-	/// </summary>
-	[Obsolete("This event is not currently used and may be removed in future versions.")]
-	public event EventHandler? CurrentCultureChanged;
-
-	/// <summary>
-	/// Occurs when the current UI culture of the application changes.
-	/// </summary>
-	[Obsolete("This event is not currently used and may be removed in future versions.")]
-	public event EventHandler? CurrentUICultureChanged;
-
-	/// <summary>Gets or sets a value indicating whether the current UI culture should follow the installed UI culture.</summary>
-	[Obsolete("This property is not currently used and may be removed in future versions.")]
-	[InternalObservableProperty]
-	public partial bool FollowInstalledUICulture { get; set; }
-
-	/// <summary>Gets the current installed UI culture.</summary>
-	[Obsolete("This property is not currently used and may be removed in future versions.")]
-	public CultureInfo InstalledUICulture
-	{
-		get => CultureInfo.InstalledUICulture;
-	}
-
-	/// <summary>
 	/// Gets or sets the current culture used by the application.
 	/// </summary>
 	public CultureInfo CurrentCulture
@@ -88,18 +58,13 @@ public partial class LocalizationManager : InternalObservableObject
 	} = CultureInfo.CurrentUICulture;
 
 	/// <summary>
-	/// Checks for changes in current culture settings.
+	/// Gets a localized string for the specified key using the current UI culture and current culture, with optional formatting arguments.
 	/// </summary>
-	[Obsolete("This method is not currently used and may be removed in future versions.")]
-	public void Poll()
-	{
-	}
-
-	/// <summary>
-	/// Gets the delegate used to resolve localized string resources based on a specified key.
-	/// </summary>
-	[Obsolete("This property is not currently used and may be removed in future versions.")]
-	public LocalizeResolver StringResourceResolver { get; } = new LocalizeResolver((key, culture) => key);
+	/// <param name="key">The key of the string resource.</param>
+	/// <param name="args">Optional arguments for string formatting.</param>
+	/// <returns>The localized string.</returns>
+	public string? GetString(string key, params object?[] args)
+		=> GetString(key, CultureInfo.CurrentUICulture, CultureInfo.CurrentCulture, args);
 
 	/// <summary>
 	/// Gets a localized string for the specified key using the current culture.

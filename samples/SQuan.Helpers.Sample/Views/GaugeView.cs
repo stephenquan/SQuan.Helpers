@@ -15,13 +15,13 @@ public partial class GaugeView : ContentView
 	/// </summary>
 	[BindableProperty(CoerceValueMethodName = nameof(CoerceAngle))]
 	[BindablePropertyInstanceMethods]
-	public partial double Angle { get; set; } = 0;
+	public partial double Angle { get; set; } = 0d;
 
 	/// <summary>
 	/// Gets or sets the minimum angle of the gauge.
 	/// </summary>
 	[BindableProperty]
-	public partial double MaximumAngle { get; set; } = 270;
+	public partial double MaximumAngle { get; set; } = 270d;
 
 	double CoerceAngle(double value)
 	{

@@ -17,7 +17,7 @@ public static class ST
 {
     static byte[] ToEWKB(this Geometry geometry, int srid = 4326);
     public static Geometry SetSRID(this Geometry geometry, int srid);
-    public static Geometry FromEWKB(byte[] ewkb);
+    public static Geometry ToGeometry(byte[] ewkb);
     public static double? ST_Area(this byte[] ewkb);
     public static string ST_AsText(this byte[] ewkb);
     public static byte[] ST_GeomFromText(string text, int srid = 4326);
@@ -113,5 +113,5 @@ foreach (var result in results)
 
 For more information please visit:
 
- - Documentation: https://github.com/stephenquan/SQuan.Helpers/wiki/SQLite.Spatial
+ - Documentation: https://stephenquan.github.io/SQuan.Helpers/SQLite.Spatial/
  - GitHub repository: https://github.com/stephenquan/SQuan.Helpers

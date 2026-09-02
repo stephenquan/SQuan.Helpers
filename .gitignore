@@ -268,3 +268,6 @@ paket-files/
 
 # Benchmarkdot
 BenchmarkDotNet.Artifacts/
+
+# Ignore mkdocs output
+docs/site

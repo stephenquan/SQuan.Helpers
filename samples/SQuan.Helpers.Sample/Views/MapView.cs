@@ -217,7 +217,7 @@ public partial class MapView : SKCanvasView
 			return this;
 		}
 
-		var _geometry = ST.FromEWKB(geometry);
+		var _geometry = ST.ToGeometry(geometry);
 
 		switch (_geometry)
 		{

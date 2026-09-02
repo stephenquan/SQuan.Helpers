@@ -1,6 +1,7 @@
 ﻿// AppBuilderExtensions.cs
 
 using System.Reflection;
+using CommunityToolkit.Maui;
 
 namespace SQuan.Helpers.Maui;
 
@@ -16,6 +17,8 @@ public static class AppBuilderExtensions
 	/// <returns>The configured <see cref="MauiAppBuilder"/> instance.</returns>
 	public static MauiAppBuilder UseSQuanHelpersMaui(this MauiAppBuilder builder)
 	{
+		builder.UseMauiCommunityToolkit();
+
 		Assembly assembly = typeof(LucideIcons).Assembly;
 		builder.ConfigureFonts(fonts =>
 		{

@@ -1,7 +1,4 @@
-# SQuan.Helpers.Maui
+# SQuan.Helpers
 
-## SQuan.Helpers.Maui.Mvvm
-
-Wiki: https://github.com/stephenquan/SQuan.Helpers.Maui/wiki/MVVM
-Releases: https://github.com/stephenquan/SQuan.Helpers.Maui/releases
-NuGet: https://www.nuget.org/packages/SQuan.Helpers.Maui.Mvvm
+  - Documentation: https://stephenquan.github.io/SQuan.Helpers/
+  - Releases: https://github.com/stephenquan/SQuan.Helpers/releases

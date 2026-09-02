@@ -123,7 +123,7 @@ public partial class MainPage : ContentPage
 
 For more information please visit:
 
- - Documentation: https://github.com/stephenquan/SQuan.Helpers/wiki/MVVM
+ - Documentation: https://stephenquan.github.io/SQuan.Helpers/Maui.Mvvm/
  - GitHub repository: https://github.com/stephenquan/SQuan.Helpers
 
 ## Related information
