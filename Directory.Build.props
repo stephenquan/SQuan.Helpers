@@ -30,7 +30,7 @@
     <MicrosoftExtensionsLocalizationVersion>10.0.11</MicrosoftExtensionsLocalizationVersion>
 
     <!-- CommunityToolkits -->
-    <CommunityToolkitMauiVersion>15.0.0</CommunityToolkitMauiVersion>
+    <CommunityToolkitMauiVersion>15.0.1</CommunityToolkitMauiVersion>
     <CommunityToolkitMauiMarkupVersion>8.0.0</CommunityToolkitMauiMarkupVersion>
     <CommunityToolkitMvvmVersion>8.4.2</CommunityToolkitMvvmVersion>
     <NoWarn>$(NoWarn);MCTEXP001</NoWarn>

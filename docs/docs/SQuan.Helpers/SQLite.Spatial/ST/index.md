@@ -2,7 +2,7 @@
 
 ## Overview
 
-The ST static class provide a common set of spatial operations that can be used consistently in both SQLite and C#. Rather than maintaining separate implementations for application code and database queries, developers can work with a familiar set of spatial concepts across both environments.
+The ST static class provides a common set of spatial operations that can be used consistently in both SQLite and C#. Rather than maintaining separate implementations for application code and database queries, developers can work with a familiar set of spatial concepts across both environments.
 
 This unified model makes it easier to move spatial logic between application code and the database. Operations such as creating geometries, calculating distances, testing spatial relationships, and performing geometric transformations can be expressed using the same conceptual API, whether they are executed in-memory through C# or within SQLite queries.
 
@@ -16,8 +16,8 @@ using SQuan.Helpers.SQLite.Spatial;
 
 | Name            | Description                             |
 | --------------- | --------------------------------------- |
-| [ST_Point](#st_point) | Creates a point geometry                |
-| [ST_GeomFromText](#st_geomfromtext) | Creates a geometry using WKT definition |
+| [ST_Point](#st_point) | Creates a point geometry. |
+| [ST_GeomFromText](#st_geomfromtext) | Creates a geometry using WKT definition. |
 
 ## Methods
 
@@ -169,7 +169,7 @@ blob ST_Centroid(blob ewkb)
 
     ```c#
     byte[] geometry = ST.ST_GeomFromText("POLYGON((0 0, 40 30, 40 0, 0 0))");
-    byte[] centroid = square.ST_Centroid();
+    byte[] centroid = geometry.ST_Centroid();
     ```
 
 ## ST_Contains
@@ -228,7 +228,7 @@ integer ST_CoveredBy(blob ewkb, blob other)
 === "SQLite"
 
     ```sql
-    SELECT ST_Contains(
+    SELECT ST_CoveredBy(
                 ST_Point(30, 10),
                 ST_GeomFromText('POLYGON((0 0, 40 30, 40 0, 0 0))'))
     ```

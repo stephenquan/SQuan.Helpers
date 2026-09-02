@@ -72,10 +72,10 @@ public int Red { get; set; } = 255;
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:sqm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui">
     <VerticalStackLayout>
-        <Slider x:Name="redSlider" MinimumValue="0" MaximumVaue="255" Value="255" />
-        <Slider x:Name="greenSlider" MinimumValue="0" MaximumVaue="255" Value="255" />
-        <Slider x:Name="blueSlider" MinimumValue="0" MaximumVaue="255" Value="255" />
-        <Slider x:Name="alphaSlider" MinimumValue="0" MaximumVaue="255" Value="255" />
+        <Slider x:Name="redSlider" MinimumValue="0" MaximumValue="255" Value="255" />
+        <Slider x:Name="greenSlider" MinimumValue="0" MaximumValue="255" Value="255" />
+        <Slider x:Name="blueSlider" MinimumValue="0" MaximumValue="255" Value="255" />
+        <Slider x:Name="alphaSlider" MinimumValue="0" MaximumValue="255" Value="255" />
         <BoxView
             WidthRequest="30"
             HeightRequest="30"

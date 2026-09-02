@@ -84,8 +84,8 @@ public IComparable Value { get; set; }
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:sqm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui">
     <VerticalStackLayout>
-        <Slider x:Name="slider" MinimumValue="0" MaximumVaue="100" Value="20" />
-        <Slider x:Name="slider2" MinimumValue="0" MaximumVaue="100" Value="50" />
+        <Slider x:Name="slider" MinimumValue="0" MaximumValue="100" Value="20" />
+        <Slider x:Name="slider2" MinimumValue="0" MaximumValue="100" Value="50" />
         <BoxView
             WidthRequest="30"
             HeightRequest="30"
