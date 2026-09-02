@@ -37,7 +37,7 @@ BindableObject Localize(
     this BindableObject bindable,
     BindableProperty targetProperty,
     string key,
-    arams object?[] args);
+    params object?[] args);
 ```
 
 ## Example

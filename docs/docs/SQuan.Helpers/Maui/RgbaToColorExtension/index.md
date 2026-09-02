@@ -27,10 +27,10 @@ xmlns:sqm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
 
 | Name        | Description |
 | ---         | ----------- |
-| [Alpha](#alpha-property) | Gets or sets the comparison operator. |
-| [Blue](#blue-property) | Gets or sets the secondary value. |
-| [Green](#green-property) | Gets or sets the false value. |
-| [Red](#red-property) | Gets or sets the true value. |
+| [Alpha](#alpha-property) | Gets or sets the alpha component. |
+| [Blue](#blue-property) | Gets or sets the blue component. |
+| [Green](#green-property) | Gets or sets the green component. |
+| [Red](#red-property) | Gets or sets the red component. |
 
 ## Alpha Property
 

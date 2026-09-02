@@ -4,7 +4,7 @@
 
 The `Compare` markup extension is a XAML-friendly wrapper around the CommunityToolkit.Maui CompareConverter. It simplifies the comparison of values and returns one of two objects, depending on whether the value of the comparison.
 
-Unlike the underlying converter, all properties exposed by the markup extension are bindable. This allows values to be supplied through data bindings and ensures the conversion result automatically updates whenever the source value, ComparisonValue, ComparisonOperator, TrueObject, or FalseObject changes.
+Unlike the underlying converter, all properties exposed by the markup extension are bindable. This allows values to be supplied through data bindings and ensures the conversion result automatically updates whenever the source value, ComparingValue, ComparisonOperator, TrueObject, or FalseObject changes.
 
 !!! warning "Experimental Feature"
 
@@ -21,9 +21,9 @@ xmlns:sqm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
 | Name                | Description                          |
 | ------------------- | ------------------------------------ |
 | ComparisonOperatorProperty | Bindable property for [ComparisonOperator](#comparisonoperator-property) |
-| ComparisonValueProperty | Bindable property for [ComparisonValue](#comparisonvalue-property) |
-| FalseObjectProperty | Bindable property for [FalseValue](#falseobject-property). |
-| TrueObjectProperty | Bindable property for [TrueValue](#trueobject-property). |
+| ComparingValueProperty | Bindable property for [ComparingValue](#comparingvalue-property) |
+| FalseObjectProperty | Bindable property for [FalseObject](#falseobject-property). |
+| TrueObjectProperty | Bindable property for [TrueObject](#trueobject-property). |
 | ValueProperty | Bindable property for [Value](#value-property). |
 
 ## Properties
@@ -31,9 +31,9 @@ xmlns:sqm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
 | Name        | Description |
 | ---         | ----------- |
 | [ComparisonOperator](#comparisonoperator-property) | Gets or sets the comparison operator. |
-| [ComparisonValue](#comparisonvalue-property) | Gets or sets the secondary value. |
-| [FalseObject](#falseobject-property) | Gets or sets the false value. |
-| [TrueObject](#trueobject-property) | Gets or sets the true value. |
+| [ComparingValue](#comparingvalue-property) | Gets or sets the secondary value. |
+| [FalseObject](#falseobject-property) | Gets or sets the false object. |
+| [TrueObject](#trueobject-property) | Gets or sets the true object. |
 | [Value](#value-property) | Gets or sets the primary value. |
 
 ## ComparisonOperator Property
@@ -44,12 +44,12 @@ Gets or sets the comparison type. Defaults to OperatorType.Equal.
 public CompareConverter.OperatorType ComparisonOperator { get; set; } = CompareConverter.OperatorType.Equal;
 ```
 
-## ComparisonValue Property
+## ComparingValue Property
 
 Gets or sets a primary value.
 
 ```c#
-public IComparable Value { get; set; }
+public IComparable ComparingValue { get; set; }
 ```
 
 ## FalseObject Property
@@ -92,7 +92,7 @@ public IComparable Value { get; set; }
             Color="{sqm:Compare Value={Binding Value,
                                                x:DataType=Slider,
                                                Source={Reference slider}},
-                                ComparisonValue={Binding Value,
+                                ComparingValue={Binding Value,
                                                          x:DataType=Slider,
                                                          Source={Reference slider2}},
                                 ComparisonOperator=GreaterOrEqual,

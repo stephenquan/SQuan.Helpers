@@ -25,7 +25,7 @@ boxView.SetBinding(
         Bindings =
         {
             BindingBase.Create(static (Slider s) => s.Value, BindingMode.OneWay, source: redSlider),
-            BindingBase.Create(static (Slider s) => s.Value, BindingMode.OneWay, source: greenlider),
+            BindingBase.Create(static (Slider s) => s.Value, BindingMode.OneWay, source: greenSlider),
             BindingBase.Create(static (Slider s) => s.Value, BindingMode.OneWay, source: blueSlider),
             BindingBase.Create(static (Slider s) => s.Value, BindingMode.OneWay, source: alphaSlider),
         },

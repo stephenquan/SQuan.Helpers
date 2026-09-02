@@ -78,7 +78,7 @@ double ST_Area(blob ewkb)
 === "SQLite"
 
     ```sql
-    SELECT ST_Area('POLYGON((0 0, 40 30, 40 0, 0 0))')
+    SELECT ST_Area(ST_GeomFromText('POLYGON((0 0, 40 30, 40 0, 0 0))'))
     ```
 
 === "C#"

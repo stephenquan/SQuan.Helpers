@@ -51,7 +51,7 @@ LocalizationManager.Current.CurrentCulture = new CultureInfo("fr-FR");
 `LocalizationManager.Current.CurrentUICulture` gets or sets the culture used for retrieving localized strings and other user-facing resources. As a wrapper around `CultureInfo.CurrentUICulture`, it allows applications to change the active UI language at runtime. Changing this value triggers localization notifications, enabling culture-aware components to automatically update throughout the application.
 
 ```c#
-public CultureInfo CultureUICulture { get; set; }
+public CultureInfo CurrentUICulture { get; set; }
 ```
 
 Example

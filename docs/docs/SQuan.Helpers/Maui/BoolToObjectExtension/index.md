@@ -4,7 +4,7 @@
 
 The `BoolToObject` markup extension is a XAML-friendly wrapper around the CommunityToolkit.Maui BoolToObjectConverter. It simplifies converting a bool value into one of two objects, depending on whether the value is true or false.
 
-Unlike the underlying converter, all properties exposed by the markup extension are bindable. This allows values to be supplied through data bindings and ensures the conversion result automatically updates whenever the source value, TrueValue, or FalseValue changes.
+Unlike the underlying converter, all properties exposed by the markup extension are bindable. This allows values to be supplied through data bindings and ensures the conversion result automatically updates whenever the source value, TrueObject, or FalseObject changes.
 
 !!! warning "Experimental Feature"
 
@@ -37,7 +37,7 @@ xmlns:sqm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
 Gets or sets the value that will be returned if the controlling boolean value is false.
 
 ```c#
-public object? FalseValue { get; set; }
+public object? FalseObject { get; set; }
 ```
 
 ## TrueObject Property
