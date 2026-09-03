@@ -24,7 +24,7 @@ public partial class InputExtras
 
 	static object OnCoerceInputMask(BindableObject bindable, object value)
 	{
-		if (bindable is VisualElement element)
+		if (bindable is InputView element)
 		{
 			var behavior = element.GetOrCreateBehavior<InputExtrasBehavior>();
 			behavior.InputMask = (InputMask)value;
