@@ -13,19 +13,19 @@
             <Label Text="Entry (integer only input)" />
             <Entry
                 sqm:InputExtras.BorderThickness="1"
-                sqm:InputExtras.InputMask="Integer"
+                sqm:InputExtras.InputMode="Integer"
                 Keyboard="Numeric" />
 
             <Label Text="Entry (decimal only input)" />
             <Entry
                 sqm:InputExtras.BorderThickness="1"
-                sqm:InputExtras.InputMask="Decimal"
+                sqm:InputExtras.InputMode="Decimal"
                 Keyboard="Numeric" />
 
             <Label Text="Entry (license plate AAA999)" />
             <Entry
                 sqm:InputExtras.BorderThickness="1"
-                sqm:InputExtras.InputMask="Pattern"
+                sqm:InputExtras.InputMode="Pattern"
                 sqm:InputExtras.InputPattern="^([A-Za-z]{0,2}|[A-Za-z]{3}[0-9]{0,3})$"
                 Keyboard="Default" />
 
@@ -35,21 +35,21 @@
             <Label Text="Editor (integer only input)" />
             <Editor
                 sqm:InputExtras.BorderThickness="1"
-                sqm:InputExtras.InputMask="Integer"
+                sqm:InputExtras.InputMode="Integer"
                 Keyboard="Numeric" />
 
             <Label Text="Editor (decimal only input)" />
             <Editor
                 sqm:InputExtras.BorderThickness="1"
-                sqm:InputExtras.InputMask="Decimal"
+                sqm:InputExtras.InputMode="Decimal"
                 Keyboard="Numeric" />
 
             <Label Text="Editor (license plate AAA999)" />
             <Editor
                 sqm:InputExtras.BorderThickness="1"
-                sqm:InputExtras.InputMask="Pattern"
+                sqm:InputExtras.InputMode="Pattern"
                 sqm:InputExtras.InputPattern="^([A-Za-z]{0,2}|[A-Za-z]{3}[0-9]{0,3})$"
-                Keyboard="Numeric" />
+                Keyboard="Default" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

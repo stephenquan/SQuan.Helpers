@@ -53,7 +53,7 @@ public partial class InputMaskBehavior : Behavior<InputView>
 
 		if (!string.IsNullOrEmpty(Regex))
 		{
-			InputExtras.SetInputMask(view, InputMode.Pattern);
+			InputExtras.SetInputMode(view, InputMode.Pattern);
 			InputExtras.SetInputPattern(view, Regex);
 			return;
 		}
@@ -61,12 +61,12 @@ public partial class InputMaskBehavior : Behavior<InputView>
 		if (!string.IsNullOrEmpty(Keys))
 		{
 			var escapedKeys = System.Text.RegularExpressions.Regex.Escape(Keys);
-			InputExtras.SetInputMask(view, InputMode.Pattern);
+			InputExtras.SetInputMode(view, InputMode.Pattern);
 			InputExtras.SetInputPattern(view, $"^[{escapedKeys}]*$");
 			return;
 		}
 
-		InputExtras.SetInputMask(view, InputMode.None);
+		InputExtras.SetInputMode(view, InputMode.None);
 		InputExtras.SetInputPattern(view, string.Empty);
 	}
 }
