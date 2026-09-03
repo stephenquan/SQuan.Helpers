@@ -13,6 +13,8 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 {
 	UIKit.UITextField? textField;
 	UIKit.UITextView? textView;
+	UIKit.UIColor? backgroundColor;
+	UIKit.UITextBorderStyle borderStyle = UIKit.UITextBorderStyle.RoundedRect;
 	//UIKit.IUITextFieldDelegate? originalTextFieldDelegate;
 	//BlockingTextFieldDelegate? blockingTextFieldDelegate;
 	//UIKit.IUITextViewDelegate? originalTextViewDelegate;
@@ -46,6 +48,8 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 		//}
 		if (platformView is UIKit.UITextField textField)
 		{
+			this.backgroundColor = textField.BackgroundColor;
+			this.borderStyle = textField.BorderStyle;
 			this.textField = textField;
 			UpdateBorderThickness();
 		}
@@ -115,6 +119,16 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 		if (textField is not null)
 		{
 			textField.Layer.BorderWidth = (System.Runtime.InteropServices.NFloat)BorderThickness;
+			if (BorderThickness == 0)
+			{
+				textField.BackgroundColor = UIKit.UIColor.Clear;
+				textField.BorderStyle = UIKit.UITextBorderStyle.None;
+			}
+			else
+			{
+				textField.BackgroundColor = backgroundColor;
+				textField.BorderStyle = borderStyle;
+			}
 		}
 		if (textView is not null)
 		{
