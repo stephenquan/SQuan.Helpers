@@ -3,8 +3,10 @@
     x:Class="SQuan.Helpers.Sample.BorderlessPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SQuan.Helpers.Sample"
     xmlns:sqm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
-    Title="Borderless Demo">
+    Title="Borderless Demo"
+    x:DataType="local:BorderlessPage">
     <ContentPage.Resources>
         <Style TargetType="Entry">
             <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#ffe, Dark=#553}" />
@@ -15,25 +17,20 @@
     </ContentPage.Resources>
     <ScrollView>
         <VerticalStackLayout Padding="30" Spacing="30">
-            <Label Text="Entry" />
-            <Entry />
+            <Label Text="Border Thickness" />
 
-            <Label Text="Entry (borderless)" />
-            <Entry>
-                <Entry.Behaviors>
-                    <sqm:BorderlessBehavior />
-                </Entry.Behaviors>
-            </Entry>
+            <HorizontalStackLayout Spacing="10">
+                <Button Clicked="OnThicknessClicked" Text="0" />
+                <Button Clicked="OnThicknessClicked" Text="1" />
+                <Button Clicked="OnThicknessClicked" Text="2" />
+                <Button Clicked="OnThicknessClicked" Text="3" />
+            </HorizontalStackLayout>
+
+            <Label Text="Entry" />
+            <Entry sqm:InputExtras.BorderThickness="{Binding BorderThickness}" />
 
             <Label Text="Editor" />
-            <Editor />
-
-            <Label Text="Editor (borderless)" />
-            <Editor>
-                <Editor.Behaviors>
-                    <sqm:BorderlessBehavior />
-                </Editor.Behaviors>
-            </Editor>
+            <Editor sqm:InputExtras.BorderThickness="{Binding BorderThickness}" AutoSize="TextChanges" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
