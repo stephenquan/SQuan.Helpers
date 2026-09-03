@@ -27,7 +27,7 @@
                 sqm:InputExtras.BorderThickness="1"
                 sqm:InputExtras.InputMask="Pattern"
                 sqm:InputExtras.InputPattern="^([A-Za-z]{0,2}|[A-Za-z]{3}[0-9]{0,3})$"
-                Keyboard="Numeric" />
+                Keyboard="Default" />
 
             <Label Text="Editor (unrestricted)" />
             <Editor />
