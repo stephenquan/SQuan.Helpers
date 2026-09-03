@@ -48,13 +48,14 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 		//}
 		if (platformView is UIKit.UITextField textField)
 		{
-			this.backgroundColor = textField.BackgroundColor;
-			this.borderStyle = textField.BorderStyle;
+			backgroundColor = textField.BackgroundColor;
+			borderStyle = textField.BorderStyle;
 			this.textField = textField;
 			UpdateBorderThickness();
 		}
 		else if (platformView is UIKit.UITextView textView)
 		{
+			backgroundColor = textView.BackgroundColor;
 			this.textView = textView;
 			UpdateBorderThickness();
 		}
@@ -63,8 +64,17 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 	/// <inheritdoc />
 	protected override void OnDetachedFrom(InputView bindable, UIKit.UIView platformView)
 	{
-		textField = null;
-		textView = null;
+		if (textField is not null)
+		{
+			textField.BackgroundColor = backgroundColor;ß
+			textField.BorderStyle = borderStyle;
+			textField = null;
+		}
+		if (textView is not null)
+		{
+			textView.BackgroundColor = backgroundColor;
+			textView = null;
+		}
 	}
 
 	//		case UIKit.UITextField textField:
@@ -119,20 +129,13 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 		if (textField is not null)
 		{
 			textField.Layer.BorderWidth = (System.Runtime.InteropServices.NFloat)BorderThickness;
-			if (BorderThickness == 0)
-			{
-				textField.BackgroundColor = UIKit.UIColor.Clear;
-				textField.BorderStyle = UIKit.UITextBorderStyle.None;
-			}
-			else
-			{
-				textField.BackgroundColor = backgroundColor;
-				textField.BorderStyle = borderStyle;
-			}
+			textField.BackgroundColor = BorderThickness == 0 ? UIKit.UIColor.Clear : backgroundColor;
+			textField.BorderStyle = BorderThickness == 0 ? UIKit.UITextBorderStyle.None : borderStyle;
 		}
 		if (textView is not null)
 		{
 			textView.Layer.BorderWidth = (System.Runtime.InteropServices.NFloat)BorderThickness;
+			textView.BackgroundColor = BorderThickness == 0 ? UIKit.UIColor.Clear : backgroundColor;
 		}
 	}
 
