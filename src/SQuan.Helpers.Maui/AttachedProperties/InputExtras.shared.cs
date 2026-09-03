@@ -7,14 +7,14 @@ namespace SQuan.Helpers.Maui;
 /// <summary>
 /// Provides the InputExtras attached property.
 /// </summary>
-[AttachedBindableProperty<double>("BorderThickness", DefaultValue = 1.0, CoerceValueMethodName = nameof(OnCoerceBorderThicnkess))]
+[AttachedBindableProperty<double>("BorderThickness", DefaultValue = 1.0, CoerceValueMethodName = nameof(OnCoerceBorderThickness))]
 [AttachedBindableProperty<InputMask>("InputMask", DefaultValue = InputMask.None, CoerceValueMethodName = nameof(OnCoerceInputMask))]
 [AttachedBindableProperty<string>("InputPattern", DefaultValue = "", CoerceValueMethodName = nameof(OnCoerceInputPattern))]
 public partial class InputExtras
 {
-	static object OnCoerceBorderThicnkess(BindableObject bindable, object value)
+	static object OnCoerceBorderThickness(BindableObject bindable, object value)
 	{
-		if (bindable is VisualElement element)
+		if (bindable is InputView element)
 		{
 			var behavior = element.GetOrCreateBehavior<InputExtrasBehavior>();
 			behavior.BorderThickness = (double)value;
