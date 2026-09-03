@@ -6,6 +6,7 @@ namespace SQuan.Helpers.Maui;
 public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 {
 	Microsoft.UI.Xaml.Controls.TextBox? textBox;
+
 	/// <inheritdoc />
 	protected override void OnAttachedTo(InputView bindable, Microsoft.UI.Xaml.FrameworkElement platformView)
 	{
@@ -13,38 +14,40 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 
 		if (platformView is Microsoft.UI.Xaml.Controls.TextBox textBox)
 		{
+			textBox.BeforeTextChanging += TextBox_BeforeTextChanging;
 			this.textBox = textBox;
 			UpdateBorderThickness();
 		}
-
-		//if (platformView is Microsoft.UI.Xaml.Controls.TextBox textBox)
-		//{
-		//	textBox.BeforeTextChanging += TextBox_BeforeTextChanging;
-		//}
-		//if (platformView is Microsoft.UI.Xaml.Controls.TextBox textBox)
-		//{
-		//	textBox.BorderThickness = new Microsoft.UI.Xaml.Thickness(0);
-		//	textBox.Resources["TextControlBorderThemeThickness"] = new Microsoft.UI.Xaml.Thickness(0);
-		//	textBox.Resources["TextControlBorderThemeThicknessFocused"] = new Microsoft.UI.Xaml.Thickness(0);
-		//}
 	}
 
 	/// <inheritdoc />
 	protected override void OnDetachedFrom(InputView bindable, Microsoft.UI.Xaml.FrameworkElement platformView)
 	{
 		base.OnDetachedFrom(bindable, platformView);
-		this.textBox = null;
+
+		if (textBox is not null)
+		{
+			textBox.BeforeTextChanging -= TextBox_BeforeTextChanging;
+			textBox = null;
+		}
 	}
 
-	//void TextBox_BeforeTextChanging(TextBox sender, TextBoxBeforeTextChangingEventArgs args)
-	//{
-	//	if (this.Regex is string regex
-	//		&& !string.IsNullOrEmpty(regex)
-	//		&& !System.Text.RegularExpressions.Regex.IsMatch(args.NewText, regex))
-	//	{
-	//		args.Cancel = true;
-	//	}
-	//}
+	void TextBox_BeforeTextChanging(Microsoft.UI.Xaml.Controls.TextBox sender, Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs args)
+	{
+		switch (MaskMode)
+		{
+			case InputMaskMode.None:
+				return;
+			case InputMaskMode.Integer:
+				args.Cancel = !string.IsNullOrEmpty(args.NewText) && !IntegerRegex().IsMatch(args.NewText);
+				return;
+			case InputMaskMode.Decimal:
+				args.Cancel = !string.IsNullOrEmpty(args.NewText) && !DecimalRegex().IsMatch(args.NewText);
+				return;
+			default:
+				break;
+		}
+	}
 
 	partial void UpdateBorderThickness()
 	{
@@ -54,5 +57,9 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 			textBox.Resources["TextControlBorderThemeThickness"] = new Microsoft.UI.Xaml.Thickness(BorderThickness);
 			textBox.Resources["TextControlBorderThemeThicknessFocused"] = new Microsoft.UI.Xaml.Thickness(BorderThickness);
 		}
+	}
+
+	partial void UpdateMaskMode()
+	{
 	}
 }

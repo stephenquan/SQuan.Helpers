@@ -6,8 +6,11 @@ namespace SQuan.Helpers.Maui;
 public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 {
 	//string? oldText;
-	//Android.Text.Method.IKeyListener? originalKeyListener;
+
 	Android.Widget.EditText? editText;
+	Android.Text.Method.IKeyListener? keyListener;
+	Android.Text.Method.DigitsKeyListener integerKeyListener = Android.Text.Method.DigitsKeyListener.GetInstance("-0123456789");
+	Android.Text.Method.DigitsKeyListener decimalKeyListener = Android.Text.Method.DigitsKeyListener.GetInstance("-0123456789.,");
 
 	/// <inheritdoc />
 	protected override void OnAttachedTo(InputView bindable, Android.Views.View platformView)
@@ -16,22 +19,19 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 		if (platformView is Android.Widget.EditText editText)
 		{
 			this.editText = editText;
+			keyListener = editText.KeyListener;
 			UpdateBorderThickness();
+			UpdateMaskMode();
 		}
-		//	originalKeyListener = editText.KeyListener;
-		//	editText.BeforeTextChanged += EditText_BeforeTextChanged;
-		//	editText.TextChanged += EditText_TextChanged;
-		//	if (this.Keys is string keys && !string.IsNullOrEmpty(keys))
-		//	{
-		//		editText.KeyListener = Android.Text.Method.DigitsKeyListener.GetInstance(keys);
-		//	}
-		//}
-		//platformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
 	}
 
 	protected override void OnDetachedFrom(InputView bindable, Android.Views.View platformView)
 	{
-		editText = null;
+		if (editText is not null)
+		{
+			editText.KeyListener = keyListener;
+			editText = null;
+		}
 	}
 
 	///// <inheritdoc />
@@ -66,22 +66,39 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 
 	partial void UpdateBorderThickness()
 	{
-		if (editText is not null)
+		if (editText is null)
 		{
-			if (BorderThickness == 0)
-			{
-				this.Dispatcher.Dispatch(() =>
-				{
-					editText.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
-				});
-			}
-			else
-			{
-				this.Dispatcher.Dispatch(() =>
-				{
-					editText.BackgroundTintList = null;
-				});
-			}
+			return;
 		}
+
+		if (BorderThickness == 0)
+		{
+			this.Dispatcher.Dispatch(() =>
+			{
+				editText.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+			});
+			return;
+		}
+
+		this.Dispatcher.Dispatch(() =>
+		{
+			editText.BackgroundTintList = null;
+		});
+	}
+
+	partial void UpdateMaskMode()
+	{
+		if (editText is null)
+		{
+			return;
+		}
+
+		editText.KeyListener = MaskMode switch
+		{
+			InputMaskMode.None => keyListener,
+			InputMaskMode.Integer => integerKeyListener,
+			InputMaskMode.Decimal => decimalKeyListener,
+			_ => keyListener
+		};
 	}
 }

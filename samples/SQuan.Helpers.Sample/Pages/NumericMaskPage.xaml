@@ -10,21 +10,28 @@
             <Label Text="Entry" />
             <Entry />
 
-            <Label Text="Entry (numeric only input)" />
-            <Entry Keyboard="Numeric">
-                <Entry.Behaviors>
+            <Label Text="Entry (integer only input)" />
+            <Entry sqm:InputExtras.MaskMode="Integer" Keyboard="Numeric">
+                <!--<Entry.Behaviors>
                     <sqm:InputMaskBehavior Keys="0123456789" Regex="^[-]?[\d]*[\.]?[\d]*$" />
-                </Entry.Behaviors>
+                </Entry.Behaviors>-->
+            </Entry>
+
+            <Label Text="Entry (decimal only input)" />
+            <Entry sqm:InputExtras.MaskMode="Decimal" Keyboard="Numeric">
+                <!--<Entry.Behaviors>
+                    <sqm:InputMaskBehavior Keys="0123456789" Regex="^[-]?[\d]*[\.]?[\d]*$" />
+                </Entry.Behaviors>-->
             </Entry>
 
             <Label Text="Editor" />
             <Editor />
 
-            <Label Text="Editor (numeric only input)" />
-            <Editor Keyboard="Numeric">
-                <Editor.Behaviors>
+            <Label Text="Editor (integer only input)" />
+            <Editor sqm:InputExtras.MaskMode="Integer" Keyboard="Numeric">
+                <!--<Editor.Behaviors>
                     <sqm:InputMaskBehavior Keys="0123456789" Regex="^[-]?[\d]*[\.]?[\d]*$" />
-                </Editor.Behaviors>
+                </Editor.Behaviors>-->
             </Editor>
         </VerticalStackLayout>
     </ScrollView>

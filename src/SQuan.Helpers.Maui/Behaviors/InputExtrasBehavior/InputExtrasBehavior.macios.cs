@@ -121,4 +121,8 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 			textView.Layer.BorderWidth = (System.Runtime.InteropServices.NFloat)BorderThickness;
 		}
 	}
+
+	partial void UpdateMaskMode()
+	{
+	}
 }
