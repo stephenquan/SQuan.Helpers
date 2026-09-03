@@ -45,7 +45,12 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 				args.Cancel = !string.IsNullOrEmpty(args.NewText) && !DecimalRegex().IsMatch(args.NewText);
 				return;
 			case InputMode.Pattern:
-				args.Cancel = !string.IsNullOrEmpty(args.NewText) && !string.IsNullOrEmpty(InputPattern) && !System.Text.RegularExpressions.Regex.IsMatch(args.NewText, InputPattern);
+				if (string.IsNullOrEmpty(args.NewText) || string.IsNullOrEmpty(InputPattern))
+				{
+					return;
+				}
+				try { args.Cancel = !System.Text.RegularExpressions.Regex.IsMatch(args.NewText, InputPattern); }
+				catch (ArgumentException) { args.Cancel = false; }
 				return;
 			default:
 				break;
