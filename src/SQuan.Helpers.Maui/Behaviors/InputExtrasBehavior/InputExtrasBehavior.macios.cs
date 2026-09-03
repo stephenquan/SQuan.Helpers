@@ -119,7 +119,14 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 				case InputMode.Decimal:
 					return DecimalRegex().IsMatch(oldText.Substring(0, (int)range.Location) + replacementString + oldText.Substring((int)(range.Location + range.Length)));
 				case InputMode.Pattern:
-					return System.Text.RegularExpressions.Regex.IsMatch(oldText.Substring(0, (int)range.Location) + replacementString + oldText.Substring((int)(range.Location + range.Length)), owner.InputPattern ?? string.Empty);
+					try
+					{
+						return System.Text.RegularExpressions.Regex.IsMatch(oldText.Substring(0, (int)range.Location) + replacementString + oldText.Substring((int)(range.Location + range.Length)), owner.InputPattern ?? string.Empty);
+					}
+					catch (ArgumentException)
+					{
+						return true;
+					}
 			}
 			return true;
 		}
