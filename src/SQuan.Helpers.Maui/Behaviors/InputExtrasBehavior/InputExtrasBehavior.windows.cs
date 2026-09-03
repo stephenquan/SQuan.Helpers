@@ -3,7 +3,7 @@
 namespace SQuan.Helpers.Maui;
 
 /// <inheritdoc />
-public partial class InputExtrasBehavior : PlatformBehavior<InputView>
+partial class InputExtrasBehavior : PlatformBehavior<InputView>
 {
 	Microsoft.UI.Xaml.Controls.TextBox? textBox;
 
@@ -23,26 +23,29 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 	/// <inheritdoc />
 	protected override void OnDetachedFrom(InputView bindable, Microsoft.UI.Xaml.FrameworkElement platformView)
 	{
-		base.OnDetachedFrom(bindable, platformView);
-
 		if (textBox is not null)
 		{
 			textBox.BeforeTextChanging -= TextBox_BeforeTextChanging;
 			textBox = null;
 		}
+
+		base.OnDetachedFrom(bindable, platformView);
 	}
 
 	void TextBox_BeforeTextChanging(Microsoft.UI.Xaml.Controls.TextBox sender, Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs args)
 	{
-		switch (MaskMode)
+		switch (InputMask)
 		{
-			case InputMaskMode.None:
+			case InputMask.None:
 				return;
-			case InputMaskMode.Integer:
+			case InputMask.Integer:
 				args.Cancel = !string.IsNullOrEmpty(args.NewText) && !IntegerRegex().IsMatch(args.NewText);
 				return;
-			case InputMaskMode.Decimal:
+			case InputMask.Decimal:
 				args.Cancel = !string.IsNullOrEmpty(args.NewText) && !DecimalRegex().IsMatch(args.NewText);
+				return;
+			case InputMask.Pattern:
+				args.Cancel = !string.IsNullOrEmpty(args.NewText) && !string.IsNullOrEmpty(InputPattern) && !System.Text.RegularExpressions.Regex.IsMatch(args.NewText, InputPattern);
 				return;
 			default:
 				break;
@@ -59,7 +62,7 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 		}
 	}
 
-	partial void UpdateMaskMode()
+	partial void UpdateInputMask()
 	{
 	}
 }

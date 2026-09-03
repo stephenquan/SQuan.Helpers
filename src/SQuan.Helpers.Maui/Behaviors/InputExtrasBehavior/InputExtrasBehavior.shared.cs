@@ -6,9 +6,9 @@ using CommunityToolkit.Maui;
 namespace SQuan.Helpers.Maui;
 
 /// <summary>
-/// 
+/// Represents a behavior that provides additional features for input view controls, such as border thickness and input masking.
 /// </summary>
-public partial class InputExtrasBehavior : PlatformBehavior<InputView>
+partial class InputExtrasBehavior : PlatformBehavior<InputView>
 {
 	/// <summary>
 	/// Gets or sets the border thickness of the input view control.
@@ -19,45 +19,29 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 	/// <summary>
 	/// Gets or sets the input mask mode for the input view control.
 	/// </summary>
-	[BindableProperty(PropertyChangedMethodName = nameof(OnMaskModeChanged))]
-	public partial InputMaskMode MaskMode { get; set; } = InputMaskMode.None;
+	[BindableProperty(PropertyChangedMethodName = nameof(OnInputMaskChanged))]
+	public partial InputMask InputMask { get; set; } = InputMask.None;
+
+	/// <summary>
+	/// Gets or sets the input pattern for the input view control.
+	/// </summary>
+	[BindableProperty]
+	public partial string InputPattern { get; set; } = string.Empty;
 
 	[GeneratedRegex("^[-]?\\d*$")]
-	private static partial Regex IntegerRegex();
+	internal static partial Regex IntegerRegex();
 
 	[GeneratedRegex("^[-]?\\d*([.,]\\d*)?$")]
-	private static partial Regex DecimalRegex();
+	internal static partial Regex DecimalRegex();
 
 
 	static void OnBorderThicknessChanged(BindableObject bindable, object oldValue, object newValue)
 		=> ((InputExtrasBehavior)bindable).UpdateBorderThickness();
 
-	static void OnMaskModeChanged(BindableObject bindable, object oldValue, object newValue)
-		=> ((InputExtrasBehavior)bindable).UpdateMaskMode();
+	static void OnInputMaskChanged(BindableObject bindable, object oldValue, object newValue)
+		=> ((InputExtrasBehavior)bindable).UpdateInputMask();
 
 	partial void UpdateBorderThickness();
 
-	partial void UpdateMaskMode();
-}
-
-
-/// <summary>
-/// Defines the input extras mask mode for the InputExtrasBehavior.
-/// </summary>
-public enum InputMaskMode
-{
-	/// <summary>
-	/// No input mask is applied.
-	/// </summary>
-	None = 0,
-
-	/// <summary>
-	/// Only integer input is allowed.
-	/// </summary>
-	Integer,
-
-	/// <summary>
-	/// Only decimal input is allowed.
-	/// </summary>
-	Decimal,
+	partial void UpdateInputMask();
 }

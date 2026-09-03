@@ -1,14 +1,15 @@
 ﻿// InputExtrasBehavior.android.cs
 
+using System.Text.RegularExpressions;
+
 namespace SQuan.Helpers.Maui;
 
 /// <inheritdoc />
-public partial class InputExtrasBehavior : PlatformBehavior<InputView>
+partial class InputExtrasBehavior : PlatformBehavior<InputView>
 {
-	//string? oldText;
-
 	Android.Widget.EditText? editText;
-	Android.Text.Method.IKeyListener? keyListener;
+	Android.Text.Method.IKeyListener? originalKeyListener;
+	string originalText = string.Empty;
 	Android.Text.Method.DigitsKeyListener integerKeyListener = Android.Text.Method.DigitsKeyListener.GetInstance("-0123456789");
 	Android.Text.Method.DigitsKeyListener decimalKeyListener = Android.Text.Method.DigitsKeyListener.GetInstance("-0123456789.,");
 
@@ -19,9 +20,11 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 		if (platformView is Android.Widget.EditText editText)
 		{
 			this.editText = editText;
-			keyListener = editText.KeyListener;
+			originalKeyListener = editText.KeyListener;
+			editText.BeforeTextChanged += EditText_BeforeTextChanged;
+			editText.TextChanged += EditText_TextChanged;
 			UpdateBorderThickness();
-			UpdateMaskMode();
+			UpdateInputMask();
 		}
 	}
 
@@ -29,40 +32,61 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 	{
 		if (editText is not null)
 		{
-			editText.KeyListener = keyListener;
+			editText.BeforeTextChanged -= EditText_BeforeTextChanged;
+			editText.TextChanged -= EditText_TextChanged;
+			editText.KeyListener = originalKeyListener;
 			editText = null;
+		}
+		base.OnDetachedFrom(bindable, platformView);
+	}
+
+	void EditText_BeforeTextChanged(object? sender, Android.Text.TextChangedEventArgs e)
+	{
+		originalText = e.Text?.ToString() ?? string.Empty;
+	}
+
+	void EditText_TextChanged(object? sender, Android.Text.TextChangedEventArgs e)
+	{
+		switch (InputMask)
+		{
+			case InputMask.None:
+				return;
+			case InputMask.Integer:
+				RevertIfNotMatchPattern(sender, e.Text?.ToString() ?? string.Empty, IntegerRegex());
+				return;
+			case InputMask.Decimal:
+				RevertIfNotMatchPattern(sender, e.Text?.ToString() ?? string.Empty, DecimalRegex());
+				return;
+			case InputMask.Pattern:
+				RevertIfNotMatchPattern(sender, e.Text?.ToString() ?? string.Empty, InputPattern ?? string.Empty);
+				break;
+			default:
+				break;
 		}
 	}
 
-	///// <inheritdoc />
-	//protected override void OnDetachedFrom(InputView bindable, Android.Views.View platformView)
-	//{
-	//	if (platformView is Android.Widget.EditText editText)
-	//	{
-	//		editText.BeforeTextChanged -= EditText_BeforeTextChanged;
-	//		editText.TextChanged -= EditText_TextChanged;
-	//		editText.KeyListener = originalKeyListener;
-	//	}
-	//	base.OnDetachedFrom(bindable, platformView);
-	//}
+	void RevertIfNotMatchPattern(object? sender, string newText, Regex regex)
+	{
+		if (sender is Android.Widget.EditText editText
+			&& !string.IsNullOrEmpty(newText)
+			&& !regex.IsMatch(newText))
+		{
+			editText.Text = originalText;
+			editText.SetSelection(editText?.Text?.Length ?? 0);
+		}
+	}
 
-	//void EditText_BeforeTextChanged(object? sender, Android.Text.TextChangedEventArgs e)
-	//{
-	//	oldText = e.Text?.ToString() ?? string.Empty;
-	//}
-
-	//void EditText_TextChanged(object? sender, Android.Text.TextChangedEventArgs e)
-	//{
-	//	if (sender is Android.Widget.EditText editText
-	//		&& editText.Text is string newText
-	//		&& this.Regex is string regex
-	//		&& !string.IsNullOrEmpty(regex)
-	//		&& !System.Text.RegularExpressions.Regex.IsMatch(newText, regex))
-	//	{
-	//		editText.Text = oldText;
-	//		editText.SetSelection(editText?.Text?.Length ?? 0);
-	//	}
-	//}
+	void RevertIfNotMatchPattern(object? sender, string newText, string pattern)
+	{
+		if (sender is Android.Widget.EditText editText
+			&& !string.IsNullOrEmpty(newText)
+			&& !string.IsNullOrEmpty(pattern)
+			&& !Regex.IsMatch(newText, pattern))
+		{
+			editText.Text = originalText;
+			editText.SetSelection(editText?.Text?.Length ?? 0);
+		}
+	}
 
 	partial void UpdateBorderThickness()
 	{
@@ -86,19 +110,19 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 		});
 	}
 
-	partial void UpdateMaskMode()
+	partial void UpdateInputMask()
 	{
 		if (editText is null)
 		{
 			return;
 		}
 
-		editText.KeyListener = MaskMode switch
+		editText.KeyListener = InputMask switch
 		{
-			InputMaskMode.None => keyListener,
-			InputMaskMode.Integer => integerKeyListener,
-			InputMaskMode.Decimal => decimalKeyListener,
-			_ => keyListener
+			InputMask.None => originalKeyListener,
+			InputMask.Integer => integerKeyListener,
+			InputMask.Decimal => decimalKeyListener,
+			_ => originalKeyListener
 		};
 	}
 }

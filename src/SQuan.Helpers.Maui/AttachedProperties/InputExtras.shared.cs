@@ -8,7 +8,8 @@ namespace SQuan.Helpers.Maui;
 /// Provides the InputExtras attached property.
 /// </summary>
 [AttachedBindableProperty<double>("BorderThickness", DefaultValue = 1.0, CoerceValueMethodName = nameof(OnCoerceBorderThicnkess))]
-[AttachedBindableProperty<InputMaskMode>("MaskMode", DefaultValue = InputMaskMode.None, CoerceValueMethodName = nameof(OnCoerceMaskMode))]
+[AttachedBindableProperty<InputMask>("InputMask", DefaultValue = InputMask.None, CoerceValueMethodName = nameof(OnCoerceInputMask))]
+[AttachedBindableProperty<string>("InputPattern", DefaultValue = "", CoerceValueMethodName = nameof(OnCoerceInputPattern))]
 public partial class InputExtras
 {
 	static object OnCoerceBorderThicnkess(BindableObject bindable, object value)
@@ -21,37 +22,23 @@ public partial class InputExtras
 		return value;
 	}
 
-	static object OnCoerceMaskMode(BindableObject bindable, object value)
+	static object OnCoerceInputMask(BindableObject bindable, object value)
 	{
 		if (bindable is VisualElement element)
 		{
 			var behavior = element.GetOrCreateBehavior<InputExtrasBehavior>();
-			behavior.MaskMode = (InputMaskMode)value;
+			behavior.InputMask = (InputMask)value;
 		}
 		return value;
 	}
-}
 
-/// <summary>
-/// Provides extension methods for VisualElement.
-/// </summary>
-public static class VisualElementExtensions
-{
-	/// <summary>
-	/// Gets an existing behavior of type T from the VisualElement or creates a new one if it doesn't exist.
-	/// </summary>
-	/// <typeparam name="T">The type of the behavior.</typeparam>
-	/// <param name="element">The VisualElement to get or create the behavior for.</param>
-	/// <returns>The existing or newly created behavior of type T.</returns>
-	public static T GetOrCreateBehavior<T>(this VisualElement element) where T : Behavior, new()
+	static object OnCoerceInputPattern(BindableObject bindable, object value)
 	{
-		if (element.Behaviors.OfType<T>().FirstOrDefault() is T behavior)
+		if (bindable is VisualElement element)
 		{
-			return behavior;
+			var behavior = element.GetOrCreateBehavior<InputExtrasBehavior>();
+			behavior.InputPattern = (string)value;
 		}
-
-		behavior = new T();
-		element.Behaviors.Add(behavior);
-		return behavior;
+		return value;
 	}
 }

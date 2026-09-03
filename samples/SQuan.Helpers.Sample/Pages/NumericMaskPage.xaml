@@ -7,32 +7,49 @@
     Title="Numeric Mask Demo">
     <ScrollView>
         <VerticalStackLayout Padding="30" Spacing="30">
-            <Label Text="Entry" />
+            <Label Text="Entry (unrestricted)" />
             <Entry />
 
             <Label Text="Entry (integer only input)" />
-            <Entry sqm:InputExtras.MaskMode="Integer" Keyboard="Numeric">
-                <!--<Entry.Behaviors>
-                    <sqm:InputMaskBehavior Keys="0123456789" Regex="^[-]?[\d]*[\.]?[\d]*$" />
-                </Entry.Behaviors>-->
-            </Entry>
+            <Entry
+                sqm:InputExtras.BorderThickness="1"
+                sqm:InputExtras.InputMask="Integer"
+                Keyboard="Numeric" />
 
             <Label Text="Entry (decimal only input)" />
-            <Entry sqm:InputExtras.MaskMode="Decimal" Keyboard="Numeric">
-                <!--<Entry.Behaviors>
-                    <sqm:InputMaskBehavior Keys="0123456789" Regex="^[-]?[\d]*[\.]?[\d]*$" />
-                </Entry.Behaviors>-->
-            </Entry>
+            <Entry
+                sqm:InputExtras.BorderThickness="1"
+                sqm:InputExtras.InputMask="Decimal"
+                Keyboard="Numeric" />
 
-            <Label Text="Editor" />
+            <Label Text="Entry (license plate AAA999)" />
+            <Entry
+                sqm:InputExtras.BorderThickness="1"
+                sqm:InputExtras.InputMask="Pattern"
+                sqm:InputExtras.InputPattern="^([A-Za-z]{0,2}|[A-Za-z]{3}[0-9]{0,3})$"
+                Keyboard="Numeric" />
+
+            <Label Text="Editor (unrestricted)" />
             <Editor />
 
             <Label Text="Editor (integer only input)" />
-            <Editor sqm:InputExtras.MaskMode="Integer" Keyboard="Numeric">
-                <!--<Editor.Behaviors>
-                    <sqm:InputMaskBehavior Keys="0123456789" Regex="^[-]?[\d]*[\.]?[\d]*$" />
-                </Editor.Behaviors>-->
-            </Editor>
+            <Editor
+                sqm:InputExtras.BorderThickness="1"
+                sqm:InputExtras.InputMask="Integer"
+                Keyboard="Numeric" />
+
+            <Label Text="Editor (decimal only input)" />
+            <Editor
+                sqm:InputExtras.BorderThickness="1"
+                sqm:InputExtras.InputMask="Decimal"
+                Keyboard="Numeric" />
+
+            <Label Text="Editor (license plate AAA999)" />
+            <Editor
+                sqm:InputExtras.BorderThickness="1"
+                sqm:InputExtras.InputMask="Pattern"
+                sqm:InputExtras.InputPattern="^([A-Za-z]{0,2}|[A-Za-z]{3}[0-9]{0,3})$"
+                Keyboard="Numeric" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

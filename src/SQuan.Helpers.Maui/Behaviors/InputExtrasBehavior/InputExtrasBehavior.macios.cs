@@ -9,53 +9,33 @@ namespace SQuan.Helpers.Maui;
 	"Design",
 	"CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable",
 	Justification = "This behavior does not own delegate lifetimes. UIKit owns delegates; they are swapped and released in OnAttachedTo/OnDetachedFrom.")]
-public partial class InputExtrasBehavior : PlatformBehavior<InputView>
+partial class InputExtrasBehavior : PlatformBehavior<InputView>
 {
 	UIKit.UITextField? textField;
 	UIKit.UITextView? textView;
-	UIKit.UIColor? backgroundColor;
-	UIKit.UITextBorderStyle borderStyle = UIKit.UITextBorderStyle.RoundedRect;
-	//UIKit.IUITextFieldDelegate? originalTextFieldDelegate;
-	//BlockingTextFieldDelegate? blockingTextFieldDelegate;
-	//UIKit.IUITextViewDelegate? originalTextViewDelegate;
-	//BlockingTextViewDelegate? blockingTextViewDelegate;
+	UIKit.UIColor? originalBackgroundColor;
+	UIKit.UITextBorderStyle originalBorderStyle = UIKit.UITextBorderStyle.RoundedRect;
+	UIKit.IUITextFieldDelegate? originalTextFieldDelegate;
+	UIKit.IUITextViewDelegate? originalTextViewDelegate;
 
 	/// <inheritdoc />
 	protected override void OnAttachedTo(InputView bindable, UIKit.UIView platformView)
 	{
 		base.OnAttachedTo(bindable, platformView);
-		//switch (platformView)
-		//{
-		//	case UIKit.UITextField textField:
-		//		originalTextFieldDelegate = textField.Delegate;
-		//		blockingTextFieldDelegate = new BlockingTextFieldDelegate(this, textField);
-		//		textField.Delegate = blockingTextFieldDelegate;
-		//		break;
-		//	case UIKit.UITextView textView:
-		//		originalTextViewDelegate = textView.Delegate;
-		//		blockingTextViewDelegate = new BlockingTextViewDelegate(this, textView);
-		//		textView.Delegate = blockingTextViewDelegate;
-		//		break;
-		//}
-		//switch (platformView)
-		//{
-		//	case UIKit.UITextField textField:
-		//		textField.Layer.BorderWidth = 0;
-		//		break;
-		//	case UIKit.UITextView textView:
-		//		textView.Layer.BorderWidth = 0;
-		//		break;
-		//}
 		if (platformView is UIKit.UITextField textField)
 		{
-			backgroundColor = textField.BackgroundColor;
-			borderStyle = textField.BorderStyle;
+			originalBackgroundColor = textField.BackgroundColor;
+			originalBorderStyle = textField.BorderStyle;
+			originalTextFieldDelegate = textField.Delegate;
+			textField.Delegate = new BlockingTextFieldDelegate(this, textField);
 			this.textField = textField;
 			UpdateBorderThickness();
 		}
 		else if (platformView is UIKit.UITextView textView)
 		{
-			backgroundColor = textView.BackgroundColor;
+			originalBackgroundColor = textView.BackgroundColor;
+			originalTextViewDelegate = textView.Delegate;
+			textView.Delegate = new BlockingTextViewDelegate(this, textView);
 			this.textView = textView;
 			UpdateBorderThickness();
 		}
@@ -66,80 +46,82 @@ public partial class InputExtrasBehavior : PlatformBehavior<InputView>
 	{
 		if (textField is not null)
 		{
-			textField.BackgroundColor = backgroundColor;ß
-			textField.BorderStyle = borderStyle;
+			textField.BackgroundColor = originalBackgroundColor;
+			textField.BorderStyle = originalBorderStyle;
+			if (originalTextFieldDelegate is not null)
+			{
+				textField.Delegate = originalTextFieldDelegate;
+				originalTextFieldDelegate = null;
+			}
 			textField = null;
 		}
+
 		if (textView is not null)
 		{
-			textView.BackgroundColor = backgroundColor;
+			textView.BackgroundColor = originalBackgroundColor;
+			if (originalTextViewDelegate is not null)
+			{
+				textView.Delegate = originalTextViewDelegate;
+				originalTextViewDelegate = null;
+			}
 			textView = null;
 		}
+
+		base.OnDetachedFrom(bindable, platformView);
 	}
-
-	//		case UIKit.UITextField textField:
-	//			if (originalTextFieldDelegate is not null)
-	//			{
-	//				textField.Delegate = originalTextFieldDelegate;
-	//				originalTextFieldDelegate = null;
-	//			}
-	//			blockingTextFieldDelegate = null;
-	//			break;
-	//		case UIKit.UITextView textView:
-	//			if (originalTextViewDelegate is not null)
-	//			{
-	//				textView.Delegate = originalTextViewDelegate;
-	//				originalTextViewDelegate = null;
-	//			}
-	//			blockingTextViewDelegate = null;
-	//			break;
-	//	}
-	//	base.OnDetachedFrom(bindable, platformView);
-	//}
-
-	//class BlockingTextFieldDelegate : UIKit.UITextFieldDelegate
-	//{
-	//	InputMaskBehavior owner;
-	//	public BlockingTextFieldDelegate(InputMaskBehavior owner, UIKit.UITextField view) => this.owner = owner;
-	//	public override bool ShouldChangeCharacters(UIKit.UITextField textField, Foundation.NSRange range, string replacementString) => BlockingTextHelper.ShouldChangeText(owner, textField.Text ?? string.Empty, range, replacementString);
-	//}
-
-	//class BlockingTextViewDelegate : UIKit.UITextViewDelegate
-	//{
-	//	InputMaskBehavior owner;
-	//	public BlockingTextViewDelegate(InputMaskBehavior owner, UIKit.UITextView view) => this.owner = owner;
-	//	public override bool ShouldChangeText(UIKit.UITextView textView, Foundation.NSRange range, string replacementString) => BlockingTextHelper.ShouldChangeText(owner, textView.Text ?? string.Empty, range, replacementString);
-	//}
-
-	//static class BlockingTextHelper
-	//{
-	//	public static bool ShouldChangeText(InputMaskBehavior owner, string oldText, Foundation.NSRange range, string replacementString)
-	//	{
-	//		if (owner.Regex is string regex && !string.IsNullOrEmpty(regex))
-	//		{
-	//			string newText = oldText.Substring(0, (int)range.Location) + replacementString + oldText.Substring((int)(range.Location + range.Length));
-	//			return System.Text.RegularExpressions.Regex.IsMatch(newText, regex);
-	//		}
-	//		return true;
-	//	}
-	//}
 
 	partial void UpdateBorderThickness()
 	{
 		if (textField is not null)
 		{
 			textField.Layer.BorderWidth = (System.Runtime.InteropServices.NFloat)BorderThickness;
-			textField.BackgroundColor = BorderThickness == 0 ? UIKit.UIColor.Clear : backgroundColor;
-			textField.BorderStyle = BorderThickness == 0 ? UIKit.UITextBorderStyle.None : borderStyle;
+			textField.BackgroundColor = BorderThickness == 0 ? UIKit.UIColor.Clear : originalBackgroundColor;
+			textField.BorderStyle = BorderThickness == 0 ? UIKit.UITextBorderStyle.None : originalBorderStyle;
 		}
+
 		if (textView is not null)
 		{
 			textView.Layer.BorderWidth = (System.Runtime.InteropServices.NFloat)BorderThickness;
-			textView.BackgroundColor = BorderThickness == 0 ? UIKit.UIColor.Clear : backgroundColor;
+			textView.BackgroundColor = BorderThickness == 0 ? UIKit.UIColor.Clear : originalBackgroundColor;
 		}
 	}
 
-	partial void UpdateMaskMode()
+	partial void UpdateInputMask()
 	{
+	}
+
+	class BlockingTextFieldDelegate : UIKit.UITextFieldDelegate
+	{
+		InputExtrasBehavior owner;
+		public BlockingTextFieldDelegate(InputExtrasBehavior owner, UIKit.UITextField view) => this.owner = owner;
+		public override bool ShouldChangeCharacters(UIKit.UITextField textField, Foundation.NSRange range, string replacementString)
+			=> BlockingTextHelper.ShouldChangeText(owner, textField.Text ?? string.Empty, range, replacementString);
+	}
+
+	class BlockingTextViewDelegate : UIKit.UITextViewDelegate
+	{
+		InputExtrasBehavior owner;
+		public BlockingTextViewDelegate(InputExtrasBehavior owner, UIKit.UITextView view) => this.owner = owner;
+		public override bool ShouldChangeText(UIKit.UITextView textView, Foundation.NSRange range, string replacementString)
+			=> BlockingTextHelper.ShouldChangeText(owner, textView.Text ?? string.Empty, range, replacementString);
+	}
+
+	static class BlockingTextHelper
+	{
+		public static bool ShouldChangeText(InputExtrasBehavior owner, string oldText, Foundation.NSRange range, string replacementString)
+		{
+			switch (owner.InputMask)
+			{
+				case InputMask.None:
+					return true;
+				case InputMask.Integer:
+					return IntegerRegex().IsMatch(oldText.Substring(0, (int)range.Location) + replacementString + oldText.Substring((int)(range.Location + range.Length)));
+				case InputMask.Decimal:
+					return DecimalRegex().IsMatch(oldText.Substring(0, (int)range.Location) + replacementString + oldText.Substring((int)(range.Location + range.Length)));
+				case InputMask.Pattern:
+					return System.Text.RegularExpressions.Regex.IsMatch(oldText.Substring(0, (int)range.Location) + replacementString + oldText.Substring((int)(range.Location + range.Length)), owner.InputPattern ?? string.Empty);
+			}
+			return true;
+		}
 	}
 }
