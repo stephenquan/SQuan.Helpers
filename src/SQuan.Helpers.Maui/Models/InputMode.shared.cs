@@ -5,7 +5,7 @@ namespace SQuan.Helpers.Maui;
 /// <summary>
 /// Defines the input extras mask mode for the InputExtrasBehavior.
 /// </summary>
-public enum InputMask
+public enum InputMode
 {
 	/// <summary>
 	/// No input mask is applied.

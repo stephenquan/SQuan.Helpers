@@ -47,17 +47,17 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 
 	void EditText_TextChanged(object? sender, Android.Text.TextChangedEventArgs e)
 	{
-		switch (InputMask)
+		switch (InputMode)
 		{
-			case InputMask.None:
+			case InputMode.None:
 				return;
-			case InputMask.Integer:
+			case InputMode.Integer:
 				RevertIfNotMatchPattern(sender, e.Text?.ToString() ?? string.Empty, IntegerRegex());
 				return;
-			case InputMask.Decimal:
+			case InputMode.Decimal:
 				RevertIfNotMatchPattern(sender, e.Text?.ToString() ?? string.Empty, DecimalRegex());
 				return;
-			case InputMask.Pattern:
+			case InputMode.Pattern:
 				RevertIfNotMatchPattern(sender, e.Text?.ToString() ?? string.Empty, InputPattern ?? string.Empty);
 				break;
 			default:
@@ -117,11 +117,11 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 			return;
 		}
 
-		editText.KeyListener = InputMask switch
+		editText.KeyListener = InputMode switch
 		{
-			InputMask.None => originalKeyListener,
-			InputMask.Integer => integerKeyListener,
-			InputMask.Decimal => decimalKeyListener,
+			InputMode.None => originalKeyListener,
+			InputMode.Integer => integerKeyListener,
+			InputMode.Decimal => decimalKeyListener,
 			_ => originalKeyListener
 		};
 	}

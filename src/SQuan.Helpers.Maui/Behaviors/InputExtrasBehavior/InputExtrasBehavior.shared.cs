@@ -20,7 +20,7 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 	/// Gets or sets the input mask mode for the input view control.
 	/// </summary>
 	[BindableProperty(PropertyChangedMethodName = nameof(OnInputMaskChanged))]
-	public partial InputMask InputMask { get; set; } = InputMask.None;
+	public partial InputMode InputMode { get; set; } = InputMode.None;
 
 	/// <summary>
 	/// Gets or sets the input pattern for the input view control.

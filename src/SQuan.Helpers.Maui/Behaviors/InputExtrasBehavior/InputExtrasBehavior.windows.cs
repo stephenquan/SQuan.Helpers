@@ -34,17 +34,17 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 
 	void TextBox_BeforeTextChanging(Microsoft.UI.Xaml.Controls.TextBox sender, Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs args)
 	{
-		switch (InputMask)
+		switch (InputMode)
 		{
-			case InputMask.None:
+			case InputMode.None:
 				return;
-			case InputMask.Integer:
+			case InputMode.Integer:
 				args.Cancel = !string.IsNullOrEmpty(args.NewText) && !IntegerRegex().IsMatch(args.NewText);
 				return;
-			case InputMask.Decimal:
+			case InputMode.Decimal:
 				args.Cancel = !string.IsNullOrEmpty(args.NewText) && !DecimalRegex().IsMatch(args.NewText);
 				return;
-			case InputMask.Pattern:
+			case InputMode.Pattern:
 				args.Cancel = !string.IsNullOrEmpty(args.NewText) && !string.IsNullOrEmpty(InputPattern) && !System.Text.RegularExpressions.Regex.IsMatch(args.NewText, InputPattern);
 				return;
 			default:

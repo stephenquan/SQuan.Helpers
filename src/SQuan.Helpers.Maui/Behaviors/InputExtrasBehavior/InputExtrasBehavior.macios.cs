@@ -110,15 +110,15 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 	{
 		public static bool ShouldChangeText(InputExtrasBehavior owner, string oldText, Foundation.NSRange range, string replacementString)
 		{
-			switch (owner.InputMask)
+			switch (owner.InputMode)
 			{
-				case InputMask.None:
+				case InputMode.None:
 					return true;
-				case InputMask.Integer:
+				case InputMode.Integer:
 					return IntegerRegex().IsMatch(oldText.Substring(0, (int)range.Location) + replacementString + oldText.Substring((int)(range.Location + range.Length)));
-				case InputMask.Decimal:
+				case InputMode.Decimal:
 					return DecimalRegex().IsMatch(oldText.Substring(0, (int)range.Location) + replacementString + oldText.Substring((int)(range.Location + range.Length)));
-				case InputMask.Pattern:
+				case InputMode.Pattern:
 					return System.Text.RegularExpressions.Regex.IsMatch(oldText.Substring(0, (int)range.Location) + replacementString + oldText.Substring((int)(range.Location + range.Length)), owner.InputPattern ?? string.Empty);
 			}
 			return true;
