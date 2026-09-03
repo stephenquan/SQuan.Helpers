@@ -35,6 +35,8 @@ public partial class InputMaskBehavior : Behavior<InputView>
 	/// <inheritdoc/>
 	protected override void OnDetachingFrom(InputView bindable)
 	{
+		InputExtras.SetInputMode(bindable, InputMode.None);
+		InputExtras.SetInputPattern(bindable, string.Empty);
 		view = null;
 		base.OnDetachingFrom(bindable);
 	}
