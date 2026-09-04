@@ -8,10 +8,20 @@ namespace SQuan.Helpers.Maui;
 [Obsolete("BorderlessBehavior is deprecated. Please use attached property InputExtras.BorderThickness and set to 0 instead.")]
 public partial class BorderlessBehavior : Behavior<InputView>
 {
+	double originalBorderThickness = 1;
+
 	/// <inheritdoc/>
 	protected override void OnAttachedTo(InputView bindable)
 	{
 		base.OnAttachedTo(bindable);
+		originalBorderThickness = InputExtras.GetBorderThickness(bindable);
 		InputExtras.SetBorderThickness(bindable, 0);
+	}
+
+	/// <inheritdoc/>
+	protected override void OnDetachingFrom(BindableObject bindable)
+	{
+		InputExtras.SetBorderThickness(bindable, originalBorderThickness);
+		base.OnDetachingFrom(bindable);
 	}
 }

@@ -23,20 +23,24 @@ public partial class InputMaskBehavior : Behavior<InputView>
 	public partial string Keys { get; set; } = string.Empty;
 
 	InputView? view;
+	InputMode originalInputMode = InputMode.None;
+	string originalInputPattern = string.Empty;
 
 	/// <inheritdoc/>
 	protected override void OnAttachedTo(InputView bindable)
 	{
 		base.OnAttachedTo(bindable);
 		view = bindable;
+		originalInputMode = InputExtras.GetInputMode(bindable);
+		originalInputPattern = InputExtras.GetInputPattern(bindable);
 		Apply();
 	}
 
 	/// <inheritdoc/>
 	protected override void OnDetachingFrom(InputView bindable)
 	{
-		InputExtras.SetInputMode(bindable, InputMode.None);
-		InputExtras.SetInputPattern(bindable, string.Empty);
+		InputExtras.SetInputMode(bindable, originalInputMode);
+		InputExtras.SetInputPattern(bindable, originalInputPattern);
 		view = null;
 		base.OnDetachingFrom(bindable);
 	}
