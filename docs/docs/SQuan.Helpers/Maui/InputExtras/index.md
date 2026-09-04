@@ -1,4 +1,4 @@
-# InputExtras Attached Property
+# InputExtras Attached Properties
 
 ## Overview
 

@@ -5,7 +5,7 @@ using CommunityToolkit.Maui;
 namespace SQuan.Helpers.Maui;
 
 /// <summary>
-/// Provides the InputExtras attached property.
+/// Provides the InputExtras attached properties.
 /// </summary>
 [AttachedBindableProperty<double>("BorderThickness", DefaultValue = 1.0, CoerceValueMethodName = nameof(OnCoerceBorderThickness))]
 [AttachedBindableProperty<InputMode>("InputMode", DefaultValue = InputMode.None, CoerceValueMethodName = nameof(OnCoerceInputMode))]

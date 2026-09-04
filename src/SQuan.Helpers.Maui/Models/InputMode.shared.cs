@@ -3,12 +3,12 @@
 namespace SQuan.Helpers.Maui;
 
 /// <summary>
-/// Defines the input extras mask mode for the InputExtrasBehavior.
+/// Defines how text input is constrained when using the InputExtras.InputMode attached property.
 /// </summary>
 public enum InputMode
 {
 	/// <summary>
-	/// No input mask is applied.
+	/// No input mode is applied.
 	/// </summary>
 	None = 0,
 
