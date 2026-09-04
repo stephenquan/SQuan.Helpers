@@ -12,14 +12,20 @@ namespace SQuan.Helpers.Maui;
 [AttachedBindableProperty<string>("InputPattern", DefaultValue = "", CoerceValueMethodName = nameof(OnCoerceInputPattern))]
 public partial class InputExtras
 {
-	static object OnCoerceBorderThickness(BindableObject bindable, object value) => OnCoerceValue(bindable, value, (behavior, v) => behavior.BorderThickness = (double)v);
-	static object OnCoerceInputMode(BindableObject bindable, object value) => OnCoerceValue(bindable, value, (behavior, v) => behavior.InputMode = (InputMode)v);
-	static object OnCoerceInputPattern(BindableObject bindable, object value) => OnCoerceValue(bindable, value, (behavior, v) => behavior.InputPattern = (string)v);
-	static object OnCoerceValue(BindableObject bindable, object value, Action<InputExtrasBehavior, object> apply)
+	static object OnCoerceBorderThickness(BindableObject bindable, object value)
+		=> OnCoerceValue<double>(bindable, value, (b, v) => b.BorderThickness = v);
+
+	static object OnCoerceInputMode(BindableObject bindable, object value)
+		=> OnCoerceValue<InputMode>(bindable, value, (b, v) => b.InputMode = v);
+
+	static object OnCoerceInputPattern(BindableObject bindable, object value)
+		=> OnCoerceValue<string>(bindable, value, (b, v) => b.InputPattern = v);
+
+	static object OnCoerceValue<T>(BindableObject bindable, object value, Action<InputExtrasBehavior, T> apply)
 	{
-		if (bindable is VisualElement element)
+		if (bindable is InputView inputView && value is T valueT)
 		{
-			apply(element.GetOrCreateBehavior<InputExtrasBehavior>(), value);
+			apply(inputView.GetOrCreateBehavior<InputExtrasBehavior>(), valueT);
 		}
 		return value;
 	}
