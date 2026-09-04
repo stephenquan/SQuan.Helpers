@@ -32,9 +32,9 @@ The `InputExtras.BorderThickness` attached property, when set to zero (0), will 
 
 The `InputExtras.InputMode` attached property can be set to
  - `InputMode.None` (no filtering applied)
- - `InputMode.Integer` (only support entering of integers)
- - `InputMode.Decimal` (only support entering of decimals)
- - `InputMode.Pattern` (allow a custom define pattern)
+ - `InputMode.Integer` (supports entering of integers)
+ - `InputMode.Decimal` (supports entering of decimals)
+ - `InputMode.Pattern` (allows a custom define pattern)
 
 The implementation makes use of platform implementation to ensure that the characters are optimally blocked. On Android platform, you may observe additional TextChanged events as a correction is applied to reverse invalid input. On other platforms, the invalid input is filtered earlier.
 
@@ -57,7 +57,7 @@ The `InputExtras.InputPattern` attached property is checked only when the `Input
         <Entry
             sqm:InputExtras.BorderThickness="1"
             sqm:InputExtras.InputMode="Decimal"
-            Placeholder="Enter an decimal."
+            Placeholder="Enter a decimal."
             Keyboard="Numeric" />
 
         <Entry
@@ -65,7 +65,7 @@ The `InputExtras.InputPattern` attached property is checked only when the `Input
             sqm:InputExtras.InputMode="Pattern"
             sqm:InputExtras.InputPattern="^([A-Za-z]{0,2}|[A-Za-z]{3}[0-9]{0,3})$"
             Placeholder="Enter a license plate (AAA999)."
-            Keyboard="Numeric" />
+            Keyboard="Default" />
     </VerticalStackLayout>
 </ContentPage>
 ```

@@ -78,10 +78,24 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 
 	void RevertIfNotMatchPattern(object? sender, string newText, string pattern)
 	{
-		if (sender is Android.Widget.EditText editText
-			&& !string.IsNullOrEmpty(newText)
-			&& !string.IsNullOrEmpty(pattern)
-			&& !Regex.IsMatch(newText, pattern))
+		if (sender is not Android.Widget.EditText editText
+			|| string.IsNullOrEmpty(newText)
+			|| string.IsNullOrEmpty(pattern))
+		{
+			return;
+		}
+
+		bool isMatch = false;
+		try
+		{
+			isMatch = Regex.IsMatch(newText, pattern);
+		}
+		catch (ArgumentException)
+		{
+			return;
+		}
+
+		if (!isMatch)
 		{
 			editText.Text = originalText;
 			editText.SetSelection(editText?.Text?.Length ?? 0);
@@ -95,18 +109,20 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 			return;
 		}
 
+		var localEditText = editText;
+
 		if (BorderThickness == 0)
 		{
 			this.Dispatcher.Dispatch(() =>
 			{
-				editText.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+				localEditText.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
 			});
 			return;
 		}
 
 		this.Dispatcher.Dispatch(() =>
 		{
-			editText.BackgroundTintList = null;
+			localEditText.BackgroundTintList = null;
 		});
 	}
 

@@ -1,4 +1,4 @@
-// InputMask.shared.cs
+// InputMode.shared.cs
 
 namespace SQuan.Helpers.Maui;
 
