@@ -31,6 +31,7 @@ xmlns:sqm="clr-namespace:SQuan.Helpers.Maui;assembly=SQuan.Helpers.Maui"
 | Name | Description |
 | ---- | -- |
 | [AspectView](AspectView/index.md) | Keeps content scaled to a fixed aspect ratio. |
+| [InputExtras](InputExtras/index.md) | Contains attached properties for InputViews. |
 
 ## Converters
 
