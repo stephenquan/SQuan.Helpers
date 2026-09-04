@@ -6,6 +6,11 @@ namespace SQuan.Helpers.Maui;
 partial class InputExtrasBehavior : PlatformBehavior<InputView>
 {
 	Microsoft.UI.Xaml.Controls.TextBox? textBox;
+	Microsoft.UI.Xaml.Thickness? originalBorderThickness;
+	object? originalTextControlBorderThemeThickness;
+	object? originalTextControlBorderThemeThicknessFocused;
+	const string kTextControlBorderThemeThickness = "TextControlBorderThemeThickness";
+	const string kTextControlBorderThemeThicknessFocused = "TextControlBorderThemeThicknessFocused";
 
 	/// <inheritdoc />
 	protected override void OnAttachedTo(InputView bindable, Microsoft.UI.Xaml.FrameworkElement platformView)
@@ -16,6 +21,9 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 		{
 			textBox.BeforeTextChanging += TextBox_BeforeTextChanging;
 			this.textBox = textBox;
+			originalBorderThickness = textBox.BorderThickness;
+			textBox.Resources.TryGetValue(kTextControlBorderThemeThickness, out originalTextControlBorderThemeThickness);
+			textBox.Resources.TryGetValue(kTextControlBorderThemeThicknessFocused, out originalTextControlBorderThemeThicknessFocused);
 			UpdateBorderThickness();
 		}
 	}
@@ -26,6 +34,12 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 		if (textBox is not null)
 		{
 			textBox.BeforeTextChanging -= TextBox_BeforeTextChanging;
+			textBox.Resources[kTextControlBorderThemeThickness] = originalTextControlBorderThemeThickness;
+			textBox.Resources[kTextControlBorderThemeThicknessFocused] = originalTextControlBorderThemeThicknessFocused;
+			if (originalBorderThickness.HasValue)
+			{
+				textBox.BorderThickness = originalBorderThickness.Value;
+			}
 			textBox = null;
 		}
 
@@ -62,8 +76,8 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 		if (textBox is not null)
 		{
 			textBox.BorderThickness = new Microsoft.UI.Xaml.Thickness(BorderThickness);
-			textBox.Resources["TextControlBorderThemeThickness"] = new Microsoft.UI.Xaml.Thickness(BorderThickness);
-			textBox.Resources["TextControlBorderThemeThicknessFocused"] = new Microsoft.UI.Xaml.Thickness(BorderThickness);
+			textBox.Resources[kTextControlBorderThemeThickness] = new Microsoft.UI.Xaml.Thickness(BorderThickness);
+			textBox.Resources[kTextControlBorderThemeThicknessFocused] = new Microsoft.UI.Xaml.Thickness(BorderThickness);
 		}
 	}
 

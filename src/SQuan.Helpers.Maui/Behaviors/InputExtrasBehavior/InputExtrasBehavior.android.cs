@@ -1,6 +1,7 @@
 ﻿// InputExtrasBehavior.android.cs
 
 using System.Text.RegularExpressions;
+using Android.Content.Res;
 
 namespace SQuan.Helpers.Maui;
 
@@ -10,6 +11,7 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 	Android.Widget.EditText? editText;
 	Android.Text.Method.IKeyListener? originalKeyListener;
 	string originalText = string.Empty;
+	ColorStateList? originalBorderTintList;
 	Android.Text.Method.DigitsKeyListener integerKeyListener = Android.Text.Method.DigitsKeyListener.GetInstance("-0123456789");
 	Android.Text.Method.DigitsKeyListener decimalKeyListener = Android.Text.Method.DigitsKeyListener.GetInstance("-0123456789.,");
 
@@ -20,6 +22,7 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 		if (platformView is Android.Widget.EditText editText)
 		{
 			this.editText = editText;
+			originalBorderTintList = editText.BackgroundTintList;
 			originalKeyListener = editText.KeyListener;
 			editText.BeforeTextChanged += EditText_BeforeTextChanged;
 			editText.TextChanged += EditText_TextChanged;
@@ -35,6 +38,7 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 			editText.BeforeTextChanged -= EditText_BeforeTextChanged;
 			editText.TextChanged -= EditText_TextChanged;
 			editText.KeyListener = originalKeyListener;
+			editText.BackgroundTintList = originalBorderTintList;
 			editText = null;
 		}
 		base.OnDetachedFrom(bindable, platformView);
@@ -122,7 +126,7 @@ partial class InputExtrasBehavior : PlatformBehavior<InputView>
 
 		this.Dispatcher.Dispatch(() =>
 		{
-			localEditText.BackgroundTintList = null;
+			localEditText.BackgroundTintList = originalBorderTintList;
 		});
 	}
 
