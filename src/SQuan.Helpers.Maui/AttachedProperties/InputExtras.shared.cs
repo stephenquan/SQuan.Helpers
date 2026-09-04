@@ -13,7 +13,13 @@ namespace SQuan.Helpers.Maui;
 public partial class InputExtras
 {
 	static object OnCoerceBorderThickness(BindableObject bindable, object value)
-		=> OnCoerceValue<double>(bindable, value, (b, v) => b.BorderThickness = v);
+	{
+		if (value is double d && d < 0)
+		{
+			value = 0d;
+		}
+		return OnCoerceValue<double>(bindable, value, (b, v) => b.BorderThickness = v);
+	}
 
 	static object OnCoerceInputMode(BindableObject bindable, object value)
 		=> OnCoerceValue<InputMode>(bindable, value, (b, v) => b.InputMode = v);
