@@ -19,7 +19,7 @@ public partial class BorderlessBehavior : Behavior<InputView>
 	}
 
 	/// <inheritdoc/>
-	protected override void OnDetachingFrom(BindableObject bindable)
+	protected override void OnDetachingFrom(InputView bindable)
 	{
 		InputExtras.SetBorderThickness(bindable, originalBorderThickness);
 		base.OnDetachingFrom(bindable);
