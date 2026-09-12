@@ -31,7 +31,7 @@
     <MicrosoftCodeAnalysisAnalyzersVersion>5.6.0</MicrosoftCodeAnalysisAnalyzersVersion>
     <MicrosoftCodeAnalysisCSharpVersion>5.6.0</MicrosoftCodeAnalysisCSharpVersion>
     <MicrosoftNETTestSdkVersion>18.10.0</MicrosoftNETTestSdkVersion>
-    <MicrosoftTestingExtensionsCodeCoverageVersion>18.11.0</MicrosoftTestingExtensionsCodeCoverageVersion>
+    <MicrosoftTestingExtensionsCodeCoverageVersion>18.11.2</MicrosoftTestingExtensionsCodeCoverageVersion>
     <MicrosoftDataSqliteVersion>10.0.12</MicrosoftDataSqliteVersion>
     <SystemRuntimeCachingVersion>10.0.12</SystemRuntimeCachingVersion>
 
