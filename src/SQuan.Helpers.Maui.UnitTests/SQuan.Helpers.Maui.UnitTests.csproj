@@ -17,7 +17,7 @@
     <PackageReference Include="CommunityToolkit.Maui.Markup" Version="$(CommunityToolkitMauiMarkupVersion)" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
     <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="$(MicrosoftTestingExtensionsCodeCoverageVersion)" />
-    <PackageReference Include="xunit.v3.mtp-v2" Version="4.0.0" />
+    <PackageReference Include="xunit.v3.mtp-v2" Version="$(XunitV3MtpV2Version)" />
   </ItemGroup>
 
   <ItemGroup>
