@@ -30,7 +30,7 @@
     <MicrosoftExtensionsLocalizationVersion>10.0.12</MicrosoftExtensionsLocalizationVersion>
     <MicrosoftCodeAnalysisAnalyzersVersion>5.6.0</MicrosoftCodeAnalysisAnalyzersVersion>
     <MicrosoftCodeAnalysisCSharpVersion>5.6.0</MicrosoftCodeAnalysisCSharpVersion>
-    <MicrosoftNETTestSdkVersion>18.10.0</MicrosoftNETTestSdkVersion>
+    <MicrosoftNETTestSdkVersion>18.10.1</MicrosoftNETTestSdkVersion>
     <MicrosoftTestingExtensionsCodeCoverageVersion>18.11.2</MicrosoftTestingExtensionsCodeCoverageVersion>
     <MicrosoftDataSqliteVersion>10.0.12</MicrosoftDataSqliteVersion>
     <SystemRuntimeCachingVersion>10.0.12</SystemRuntimeCachingVersion>
