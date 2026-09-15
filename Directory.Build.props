@@ -44,6 +44,7 @@
     <!-- 3rd party libs -->
     <GitVersionMsBuildVersion>6.8.2</GitVersionMsBuildVersion>
     <SkiaSharpViewsMauiControlsVersion>4.152.0</SkiaSharpViewsMauiControlsVersion>
+    <XunitV3MtpV2Version>4.0.1</XunitV3MtpV2Version>
 
     <!-- https://learn.microsoft.com/dotnet/core/deploying/native-aot/?tabs=net8plus%2Cwindows -->
     <StripSymbols>false</StripSymbols>
