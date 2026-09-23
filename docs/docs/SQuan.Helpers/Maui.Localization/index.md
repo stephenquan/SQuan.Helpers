@@ -43,9 +43,9 @@ For your .NET MAUI project create the neutral resource file in the format `<Full
 
 The for each language, create localized resource files in the format `<FullTypeName><.Locale>.resx` (e.g. to add translations for French, German and Chinese, you will need to create AppStrings.fr.resx, AppStrings.de.resx and AppStrings.zh.resx respectively). In Visual Studio, this is a manual process, which means, you will need to supply the translation strings for each locale you wish to support. There are some tools such as ResXManager that can automate this process using 3rd-party APIs some of which may require an API key to access.
 
-## Set LocalizationProvider
+### LocalizationProvider
 
-LocalizationManager will need you to set the LocalizationProvider to perform string lookups. You can do this by using your ResourceManager's GetString function. For example:
+You will need to set [LocalizationManager.Current.LocalizationProvider](LocalizationManager/index.md#localizationprovider-property) so that it can perform string lookups. You can use a ResourceManager's GetString function. For example:
 
 ```c# hl_lines="22-23"
 // MauiProgram.cs
@@ -82,9 +82,9 @@ public static class MauiProgram
 
 ```
 
-## XAML Localize markup extension
+### Localize markup extension
 
-The `Localize` markup extension convenient wires up translatable text to your .NET MAUI application. For example:
+The [Localize](LocalizeExtension/index.md) XAML markup extension provides a convenient way to bind translatable text in XAML. For example:
 
 ```xml hl_lines="6-7 11-13"
 <!-- MainPage.xaml -->
@@ -105,9 +105,9 @@ The `Localize` markup extension convenient wires up translatable text to your .N
 </ContentPage>
 ```
 
-### Fluent C# Localize extension method
+### Localize extension method
 
-Use `Localize` extension method in C# to create culture-aware bindings to your string resources. For example:
+The [Localize](LocalizeExtensionMethods/index.md) C# extension method provides a conveient way to bind translable text in C#. For example:
 
 ```c# hl_lines="22 24"
 // MainPage.xaml.cs
@@ -142,9 +142,9 @@ public partial class MainPage : ContentPage
 
 ### Runtime culture switching
 
-Use `CultureUICulture` from `LocalizationManager` to change culture at runtime. Because this is an observable property, changing its value will trigger localization updates throughout the application.
+Set [LocalizationManager.Current.CurrentUICulture](LocalizationManager/index.md#currentuiculture-property) and [LocalizationManager.Current.CurrentCulture](LocalizationManager/index.md#currentculture-property) to change both the translated text and the formatting of numbers, dates, and currency values. Because these properties are observable, updating them automatically refreshes any bound content throughout the application.
 
-```
-// Switch to French.
-LocalizationManager.Current.CurrentUICulture = new CultureInfo("fr-FR");
+```c#
+LocalizationManager.Current.CurrentUICulture = new CultureInfo("fr-FR"); // French text
+LocalizationManager.Current.CurrentCulture = new CultureInfo("fr-FR"); // France/Euro formatting for numbers, dates and currency.
 ```

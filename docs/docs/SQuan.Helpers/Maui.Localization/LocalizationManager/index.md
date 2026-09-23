@@ -73,12 +73,17 @@ Example
 
 ```c#
 // Use a ResourceManager to provide localized strings.
-LocalizationManager.Current.LocalizationProvider = AppStrings.ResourceManager.GetString;
+LocalizationManager.Current.LocalizationProvider
+    = AppStrings.ResourceManager.GetString;
 ```
 
+See Also
+
+ - [Understanding LocalizationProvider](../Concepts/Understanding%20LocalizationProvider/index.md)
+ 
 ## GetString Method
 
-GetString() retrieves a localized string using the configured LocalizationProvider. The method supports composite string formatting by accepting format arguments and can optionally use the supplied currentUICulture and currentCulture values when resolving and formatting the result. If no cultures are provided, the application-wide CurrentUICulture and CurrentCulture values are used, allowing localized strings and culture-sensitive formatting to be resolved consistently throughout the application.
+`LocalizationManager.Current.GetString()` retrieves a localized string using the configured [LocalizationManager.Current.LocalizationProvider](#localizationprovider-property). The method supports composite string formatting by accepting format arguments and can optionally use the supplied currentUICulture and currentCulture values when resolving and formatting the result. If no cultures are provided, the application-wide CurrentUICulture and CurrentCulture values are used, allowing localized strings and culture-sensitive formatting to be resolved consistently throughout the application.
 
 ```c#
 string? GetString(string key, params object[] args);
