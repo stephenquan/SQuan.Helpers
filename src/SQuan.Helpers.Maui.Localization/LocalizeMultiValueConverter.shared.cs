@@ -1,5 +1,6 @@
 ﻿// LocalizeMultiValueConverter.shared.cs
 
+using System.ComponentModel;
 using System.Globalization;
 
 namespace SQuan.Helpers.Maui.Localization;
@@ -24,16 +25,65 @@ class LocalizeMultiValueConverter : IMultiValueConverter
 	/// Returns an empty string if the input values are invalid or do not meet the required conditions.</returns>
 	public object? Convert(object?[] values, Type targetType, object? parameter, CultureInfo culture)
 	{
-		if (values.Length >= 4
-			&& values[0] is string key
-			&& !string.IsNullOrEmpty(key)
-			&& values[1] is CultureInfo currentUICulture
-			&& values[2] is CultureInfo currentCulture
-			&& values[3] is object?[] args)
+		object? result = null;
+
+		if (values.Length >= 7
+			&& values[2] is CultureInfo currentUICulture
+			&& values[3] is CultureInfo currentCulture
+			&& values[4] is object?[] args)
 		{
-			return LocalizationManager.Current.GetString(key, currentUICulture, currentCulture, args);
+			if (values[5] is IValueConverter valueConverter)
+			{
+				if (args.Length >= 1)
+				{
+					args = new object?[] { valueConverter.Convert(args[0], typeof(object), values[6], culture) };
+				}
+			}
+			else if (values[5] is IMultiValueConverter multiValueConverter)
+			{
+				args = new object?[] { multiValueConverter.Convert(args, typeof(object), values[6], culture) };
+			}
+
+			if (values[1] is Func<CultureInfo, object> localizationProvider)
+			{
+				var localizedValue = localizationProvider(currentUICulture);
+				if (localizedValue is string localizedString)
+				{
+					result = LocalizationManager.Current.GetString(localizedString, currentUICulture, currentCulture, args);
+				}
+				else
+				{
+					result = localizedValue;
+				}
+			}
+			else if (values[0] is string key && !string.IsNullOrEmpty(key))
+			{
+				result = LocalizationManager.Current.GetString(key, currentUICulture, currentCulture, args);
+			}
+			else if (args.Length == 1)
+			{
+				result = args[0];
+			}
+			else
+			{
+				result = args;
+			}
 		}
-		return string.Empty;
+
+		if (targetType.IsValueType)
+		{
+			if (result is null)
+			{
+				return Activator.CreateInstance(targetType);
+			}
+			else if (TypeDescriptor.GetConverter(targetType) is TypeConverter converter
+				&& converter.CanConvertFrom(result.GetType()))
+			{
+				return converter.ConvertFrom(result);
+			}
+		}
+
+		return result;
 	}
 
 	/// <summary>

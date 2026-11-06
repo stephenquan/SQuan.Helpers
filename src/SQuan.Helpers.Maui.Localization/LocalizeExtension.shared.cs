@@ -1,7 +1,5 @@
 ﻿// LocalizeExtension.shared.cs
 
-using System.Globalization;
-
 namespace SQuan.Helpers.Maui.Localization;
 
 /// <summary>
@@ -9,23 +7,8 @@ namespace SQuan.Helpers.Maui.Localization;
 /// </summary>
 [ContentProperty(nameof(Key))]
 [RequireService([typeof(IReferenceProvider), typeof(IProvideValueTarget)])]
-public partial class LocalizeExtension : BindableObject, IMarkupExtension<BindingBase>
+public partial class LocalizeExtension : LocalizeBuilder, IMarkupExtension<BindingBase>
 {
-	/// <summary>
-	/// Bindable property for <see cref="Key"/>.
-	/// </summary>
-	public static readonly BindableProperty KeyProperty =
-		BindableProperty.Create(nameof(Key), typeof(string), typeof(LocalizeExtension), default(string));
-
-	/// <summary>
-	/// Gets or sets the localization key for the string to be translated.
-	/// </summary>
-	public string Key
-	{
-		get => (string)GetValue(KeyProperty);
-		set => SetValue(KeyProperty, value);
-	}
-
 	/// <summary>
 	/// Bindable property for <see cref="X0"/>.
 	/// </summary>
@@ -37,7 +20,7 @@ public partial class LocalizeExtension : BindableObject, IMarkupExtension<Bindin
 	/// </summary>
 	public object? X0
 	{
-		get => GetValue(X0Property) as object;
+		get => GetValue(X0Property);
 		set => SetValue(X0Property, value);
 	}
 
@@ -52,7 +35,7 @@ public partial class LocalizeExtension : BindableObject, IMarkupExtension<Bindin
 	/// </summary>
 	public object? X1
 	{
-		get => GetValue(X1Property) as object;
+		get => GetValue(X1Property);
 		set => SetValue(X1Property, value);
 	}
 
@@ -67,7 +50,7 @@ public partial class LocalizeExtension : BindableObject, IMarkupExtension<Bindin
 	/// </summary>
 	public object? X2
 	{
-		get => GetValue(X2Property) as object;
+		get => GetValue(X2Property);
 		set => SetValue(X2Property, value);
 	}
 
@@ -82,7 +65,7 @@ public partial class LocalizeExtension : BindableObject, IMarkupExtension<Bindin
 	/// </summary>
 	public object? X3
 	{
-		get => GetValue(X3Property) as object;
+		get => GetValue(X3Property);
 		set => SetValue(X3Property, value);
 	}
 
@@ -97,7 +80,7 @@ public partial class LocalizeExtension : BindableObject, IMarkupExtension<Bindin
 	/// </summary>
 	public object? X4
 	{
-		get => GetValue(X4Property) as object;
+		get => GetValue(X4Property);
 		set => SetValue(X4Property, value);
 	}
 
@@ -112,7 +95,7 @@ public partial class LocalizeExtension : BindableObject, IMarkupExtension<Bindin
 	/// </summary>
 	public object? X5
 	{
-		get => GetValue(X5Property) as object;
+		get => GetValue(X5Property);
 		set => SetValue(X5Property, value);
 	}
 
@@ -127,7 +110,7 @@ public partial class LocalizeExtension : BindableObject, IMarkupExtension<Bindin
 	/// </summary>
 	public object? X6
 	{
-		get => GetValue(X6Property) as object;
+		get => GetValue(X6Property);
 		set => SetValue(X6Property, value);
 	}
 
@@ -142,7 +125,7 @@ public partial class LocalizeExtension : BindableObject, IMarkupExtension<Bindin
 	/// </summary>
 	public object? X7
 	{
-		get => GetValue(X7Property) as object;
+		get => GetValue(X7Property);
 		set => SetValue(X7Property, value);
 	}
 
@@ -157,7 +140,7 @@ public partial class LocalizeExtension : BindableObject, IMarkupExtension<Bindin
 	/// </summary>
 	public object? X8
 	{
-		get => GetValue(X8Property) as object;
+		get => GetValue(X8Property);
 		set => SetValue(X8Property, value);
 	}
 
@@ -172,41 +155,9 @@ public partial class LocalizeExtension : BindableObject, IMarkupExtension<Bindin
 	/// </summary>
 	public object? X9
 	{
-		get => GetValue(X9Property) as object;
+		get => GetValue(X9Property);
 		set => SetValue(X9Property, value);
 	}
-
-	/// <summary>
-	/// Bindable property for <see cref="InternalCurrentUICulture"/>.
-	/// </summary>
-	public static readonly BindableProperty InternalCurrentUICultureProperty =
-		BindableProperty.Create(nameof(InternalCurrentUICulture), typeof(CultureInfo), typeof(LocalizeExtension), default(CultureInfo));
-
-	/// <summary>
-	/// Gets or sets the current culture to be used for localization.
-	/// </summary>
-	public CultureInfo? InternalCurrentUICulture
-	{
-		get => GetValue(InternalCurrentUICultureProperty) as CultureInfo;
-		set => SetValue(InternalCurrentUICultureProperty, value);
-	}
-
-	/// <summary>
-	/// Bindable property for <see cref="InternalCurrentCulture"/>.
-	/// </summary>
-	public static readonly BindableProperty InternalCurrentCultureProperty =
-		BindableProperty.Create(nameof(InternalCurrentCulture), typeof(CultureInfo), typeof(LocalizeExtension), default(CultureInfo));
-
-	/// <summary>
-	/// Gets or sets the current culture to be used for localization.
-	/// </summary>
-	public CultureInfo? InternalCurrentCulture
-	{
-		get => GetValue(InternalCurrentCultureProperty) as CultureInfo;
-		set => SetValue(InternalCurrentCultureProperty, value);
-	}
-
-	BindableObject? targetObject;
 
 	/// <summary>
 	/// Provides a binding object based on the specified service provider.
@@ -220,73 +171,40 @@ public partial class LocalizeExtension : BindableObject, IMarkupExtension<Bindin
 		if (serviceProvider.GetService(typeof(IProvideValueTarget)) is IProvideValueTarget provideValueTarget
 			&& provideValueTarget.TargetObject is BindableObject targetObject)
 		{
-			this.targetObject = targetObject;
+			this.TargetObject = targetObject;
 			if (!IsSet(BindingContextProperty))
 			{
 				this.SetBinding(BindingContextProperty, static (BindableObject t) => t.BindingContext, BindingMode.OneWay, source: targetObject);
 			}
 		}
 
-		return new MultiBinding
-		{
-			Bindings =
+		this.SetBinding(
+			LocalizeBuilder.ArgsProperty,
+			new MultiBinding
 			{
-				BindingBase.Create(static (LocalizeExtension ctx) => ctx.Key, BindingMode.OneWay, source: this),
-				new MultiBinding
+				Bindings = new (BindableProperty argProperty, Func<BindingBase> argBinding)[]
 				{
-					Bindings =
-					{
-						BindingBase.Create(static (LocalizeExtension ctx) => ctx.InternalCurrentUICulture, BindingMode.OneWay, source: this),
-						BindingBase.Create(static (LocalizationManager lm) => lm.CurrentUICulture, BindingMode.OneWay, source: LocalizationManager.Current)
-					},
-					Mode = BindingMode.OneWay,
-					Converter = new SelectCultureMultiValueConverter(),
-				},
-				new MultiBinding
-				{
-					Bindings =
-					{
-						BindingBase.Create(static (LocalizeExtension ctx) => ctx.InternalCurrentCulture, BindingMode.OneWay, source: this),
-						BindingBase.Create(static (LocalizationManager lm) => lm.CurrentCulture, BindingMode.OneWay, source: LocalizationManager.Current)
-					},
-					Mode = BindingMode.OneWay,
-					Converter = new SelectCultureMultiValueConverter(),
-				},
-				new MultiBinding
-				{
-					Bindings =
-					{
-						new Binding("X0", BindingMode.OneWay, source: this),
-						new Binding("X1", BindingMode.OneWay, source: this),
-						new Binding("X2", BindingMode.OneWay, source: this),
-						new Binding("X3", BindingMode.OneWay, source: this),
-						new Binding("X4", BindingMode.OneWay, source: this),
-						new Binding("X5", BindingMode.OneWay, source: this),
-						new Binding("X6", BindingMode.OneWay, source: this),
-						new Binding("X7", BindingMode.OneWay, source: this),
-						new Binding("X8", BindingMode.OneWay, source: this),
-						new Binding("X9", BindingMode.OneWay, source: this)
-					},
-					Mode = BindingMode.OneWay,
-					Converter = new PassThruMultiValueConverter()
-				},
-			},
-			Mode = BindingMode.OneWay,
-			Converter = new LocalizeMultiValueConverter()
-		};
+					(X0Property, () => BindingBase.Create(static (LocalizeExtension ctx) => ctx.X0, BindingMode.OneWay, source: this)),
+					(X1Property, () => BindingBase.Create(static (LocalizeExtension ctx) => ctx.X1, BindingMode.OneWay, source: this)),
+					(X2Property, () => BindingBase.Create(static (LocalizeExtension ctx) => ctx.X2, BindingMode.OneWay, source: this)),
+					(X3Property, () => BindingBase.Create(static (LocalizeExtension ctx) => ctx.X3, BindingMode.OneWay, source: this)),
+					(X4Property, () => BindingBase.Create(static (LocalizeExtension ctx) => ctx.X4, BindingMode.OneWay, source: this)),
+					(X5Property, () => BindingBase.Create(static (LocalizeExtension ctx) => ctx.X5, BindingMode.OneWay, source: this)),
+					(X6Property, () => BindingBase.Create(static (LocalizeExtension ctx) => ctx.X6, BindingMode.OneWay, source: this)),
+					(X7Property, () => BindingBase.Create(static (LocalizeExtension ctx) => ctx.X7, BindingMode.OneWay, source: this)),
+					(X8Property, () => BindingBase.Create(static (LocalizeExtension ctx) => ctx.X8, BindingMode.OneWay, source: this)),
+					(X9Property, () => BindingBase.Create(static (LocalizeExtension ctx) => ctx.X9, BindingMode.OneWay, source: this))
+				}
+				.TakeWhile((arg) => this.IsSet(arg.argProperty))
+				.Select((arg) => arg.argBinding())
+				.ToList(),
+				Mode = BindingMode.OneWay,
+				Converter = new PassThruMultiValueConverter()
+			});
+
+		return Build();
 	}
 
 	object IMarkupExtension.ProvideValue(IServiceProvider serviceProvider)
 		=> (this as IMarkupExtension<BindingBase>).ProvideValue(serviceProvider);
-
-	/// <inheritdoc/>
-	protected override void OnBindingContextChanged()
-	{
-		base.OnBindingContextChanged();
-		if (targetObject is VisualElement targetElement && targetElement.GetLocalizeBehavior() is LocalizeGroupBehavior behavior)
-		{
-			this.SetBinding(InternalCurrentUICultureProperty, static (LocalizeGroupBehavior b) => b.CurrentUICulture, BindingMode.OneWay, source: behavior);
-			this.SetBinding(InternalCurrentCultureProperty, static (LocalizeGroupBehavior b) => b.CurrentCulture, BindingMode.OneWay, source: behavior);
-		}
-	}
 }

@@ -7,20 +7,33 @@
     xmlns:local="clr-namespace:SQuan.Helpers.Sample"
     xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="{i18n:Localize 'PAG_LOCALIZE_DEMO'}"
-    x:DataType="local:LocalizePage"
-    FlowDirection="{i18n:FlowDirection}">
+    x:DataType="local:LocalizePage">
 
     <ScrollView>
         <VerticalStackLayout Padding="30,30,30,200" Spacing="25">
-            <Image
-                Aspect="AspectFit"
+            <Grid
                 HeightRequest="185"
                 HorizontalOptions="Start"
-                ScaleX="{i18n:FlowDirection LeftToRight=-1,
-                                            RightToLeft=1}"
-                SemanticProperties.Description="dot net bot in a hovercraft number nine"
-                Source="dotnet_bot.png" />
+                WidthRequest="480">
+                <Image
+                    x:Name="DotNetBotImage"
+                    Aspect="AspectFit"
+                    HorizontalOptions="Start"
+                    SemanticProperties.Description="dot net bot in a hovercraft number nine"
+                    Source="dotnet_bot.png" />
 
+                <Button Clicked="OnAspect" Opacity="0.2" />
+            </Grid>
+
+            <Label
+                HorizontalOptions="Start"
+                Text="{i18n:Localize X0={Binding Aspect,
+                                                 x:DataType=Image,
+                                                 Source={Reference DotNetBotImage}},
+                                     Converter={x:Static local:LocalizePage.AspectToTextConverter}}"
+                VerticalOptions="Start" />
+
+            <!--
             <Label
                 x:Name="HelloLabel"
                 HorizontalOptions="Start"
@@ -28,6 +41,14 @@
                 SemanticProperties.HeadingLevel="Level1"
                 Style="{StaticResource Headline}"
                 Text="{i18n:Localize LBL_HELLO}" />
+            -->
+
+            <Label
+                x:Name="HelloLabel"
+                HorizontalOptions="Start"
+                HorizontalTextAlignment="Start"
+                SemanticProperties.HeadingLevel="Level1"
+                Style="{StaticResource Headline}" />
 
             <Label
                 HorizontalOptions="Start"

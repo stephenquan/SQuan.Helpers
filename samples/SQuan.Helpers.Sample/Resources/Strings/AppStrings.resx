@@ -132,6 +132,15 @@
   <data name="LBL_HELLO" xml:space="preserve">
     <value>Hello, World!</value>
   </data>
+  <data name="LBL_IMAGE_ASPECT_ASPECT_FILL" xml:space="preserve">
+    <value>Image aspect: Aspect Fill</value>
+  </data>
+  <data name="LBL_IMAGE_ASPECT_ASPECT_FIT" xml:space="preserve">
+    <value>Image aspect: Aspect Fit</value>
+  </data>
+  <data name="LBL_IMAGE_ASPECT_FILL" xml:space="preserve">
+    <value>Image aspect: Fill</value>
+  </data>
   <data name="LBL_RESULT" xml:space="preserve">
     <value>Result: {0}</value>
   </data>

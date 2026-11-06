@@ -132,6 +132,15 @@
   <data name="LBL_HELLO" xml:space="preserve">
     <value>你好，世界！</value>
   </data>
+  <data name="LBL_IMAGE_ASPECT_ASPECT_FILL" xml:space="preserve">
+    <value>图像显示方式：纵横比填充</value>
+  </data>
+  <data name="LBL_IMAGE_ASPECT_ASPECT_FIT" xml:space="preserve">
+    <value>图像显示方式：纵横比适应</value>
+  </data>
+  <data name="LBL_IMAGE_ASPECT_FILL" xml:space="preserve">
+    <value>图像显示方式：拉伸填充</value>
+  </data>
   <data name="LBL_RESULT" xml:space="preserve">
     <value>结果：{0}</value>
   </data>

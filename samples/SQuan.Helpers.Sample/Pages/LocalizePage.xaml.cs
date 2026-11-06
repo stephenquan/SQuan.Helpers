@@ -2,6 +2,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using CommunityToolkit.Maui.Markup;
 using SQuan.Helpers.Maui;
 using SQuan.Helpers.Maui.Localization;
 using SQuan.Helpers.Maui.Mvvm;
@@ -42,12 +43,15 @@ public partial class LocalizePage : ContentPage
 				return FormContext.GetIText(key, culture ?? CultureInfo.CurrentUICulture);
 			}
 
-			return AppStrings.ResourceManager.GetString(key, culture ?? CultureInfo.CurrentUICulture);
+			return AppStrings.ResourceManager.GetString(key, culture ?? CultureInfo.CurrentUICulture) ?? key;
 		};
 
 		BindingContext = this;
 
 		InitializeComponent();
+
+		HelloLabel.Localize(Label.TextProperty, _ => AppStrings.LBL_HELLO);
+		this.Localize(ContentPage.FlowDirectionProperty, currentUICulture => CultureToFlowDirection(currentUICulture));
 	}
 
 	protected override void OnAppearing()
@@ -101,4 +105,28 @@ public partial class LocalizePage : ContentPage
 			"ar-AR" => cultureEN,
 			_ => cultureFR,
 		};
+
+	void OnAspect(object sender, EventArgs e)
+	{
+		DotNetBotImage.Aspect = DotNetBotImage.Aspect switch
+		{
+			Aspect.AspectFit => Aspect.AspectFill,
+			Aspect.AspectFill => Aspect.Fill,
+			_ => Aspect.AspectFit,
+		};
+	}
+
+	public static string? AspectToText(Aspect aspect)
+		=> aspect switch
+		{
+			Aspect.AspectFit => AppStrings.LBL_IMAGE_ASPECT_ASPECT_FIT,
+			Aspect.AspectFill => AppStrings.LBL_IMAGE_ASPECT_ASPECT_FILL,
+			Aspect.Fill => AppStrings.LBL_IMAGE_ASPECT_FILL,
+			_ => null,
+		};
+
+	public static FuncConverter<Aspect, string?> AspectToTextConverter { get; } = new(AspectToText);
+
+	public static FlowDirection CultureToFlowDirection(CultureInfo culture)
+		=> culture.TextInfo.IsRightToLeft ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 }
