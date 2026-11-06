@@ -18,22 +18,22 @@
     <NuGetAuditMode>all</NuGetAuditMode>
 
     <!-- MAUI Specific -->
-    <MauiVersion>10.0.110</MauiVersion>
-    <MauiPackageVersion>10.0.110</MauiPackageVersion>
+    <MauiVersion>10.0.120</MauiVersion>
+    <MauiPackageVersion>10.0.120</MauiPackageVersion>
     <NextMauiPackageVersion>10.0.0</NextMauiPackageVersion>
     <MauiStrictXamlCompilation>true</MauiStrictXamlCompilation>
     <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
     <MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
 
     <!-- Other Microsoft libs -->
-    <MicrosoftExtensionsLoggingDebugVersion>10.0.12</MicrosoftExtensionsLoggingDebugVersion>
-    <MicrosoftExtensionsLocalizationVersion>10.0.12</MicrosoftExtensionsLocalizationVersion>
+    <MicrosoftExtensionsLoggingDebugVersion>10.0.14</MicrosoftExtensionsLoggingDebugVersion>
+    <MicrosoftExtensionsLocalizationVersion>10.0.14</MicrosoftExtensionsLocalizationVersion>
     <MicrosoftCodeAnalysisAnalyzersVersion>5.6.0</MicrosoftCodeAnalysisAnalyzersVersion>
     <MicrosoftCodeAnalysisCSharpVersion>5.6.0</MicrosoftCodeAnalysisCSharpVersion>
-    <MicrosoftNETTestSdkVersion>18.10.1</MicrosoftNETTestSdkVersion>
-    <MicrosoftTestingExtensionsCodeCoverageVersion>18.11.2</MicrosoftTestingExtensionsCodeCoverageVersion>
-    <MicrosoftDataSqliteVersion>10.0.12</MicrosoftDataSqliteVersion>
-    <SystemRuntimeCachingVersion>10.0.12</SystemRuntimeCachingVersion>
+    <MicrosoftNETTestSdkVersion>18.11.0</MicrosoftNETTestSdkVersion>
+    <MicrosoftTestingExtensionsCodeCoverageVersion>18.12.0</MicrosoftTestingExtensionsCodeCoverageVersion>
+    <MicrosoftDataSqliteVersion>10.0.14</MicrosoftDataSqliteVersion>
+    <SystemRuntimeCachingVersion>10.0.14</SystemRuntimeCachingVersion>
 
     <!-- CommunityToolkits -->
     <CommunityToolkitMauiVersion>15.0.1</CommunityToolkitMauiVersion>
@@ -43,8 +43,11 @@
 
     <!-- 3rd party libs -->
     <GitVersionMsBuildVersion>6.8.2</GitVersionMsBuildVersion>
-    <SkiaSharpViewsMauiControlsVersion>4.153.0</SkiaSharpViewsMauiControlsVersion>
-    <XunitV3MtpV2Version>4.0.1</XunitV3MtpV2Version>
+    <SkiaSharpViewsMauiControlsVersion>4.155.0</SkiaSharpViewsMauiControlsVersion>
+    <XunitV3MtpV2Version>4.0.2</XunitV3MtpV2Version>
+    <XunitVersion>2.9.3</XunitVersion>
+    <XunitRunnerVisualStudioVersion>4.0.1</XunitRunnerVisualStudioVersion>
+
     <CoverletCollectorVersion>10.1.0</CoverletCollectorVersion>
 
     <!-- https://learn.microsoft.com/dotnet/core/deploying/native-aot/?tabs=net8plus%2Cwindows -->
