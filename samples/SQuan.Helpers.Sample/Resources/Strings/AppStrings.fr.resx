@@ -132,6 +132,15 @@
   <data name="LBL_HELLO" xml:space="preserve">
     <value>Bonjour, le monde !</value>
   </data>
+  <data name="LBL_IMAGE_ASPECT_ASPECT_FILL" xml:space="preserve">
+    <value>Mode d'affichage de l'image : Remplissage avec recadrage</value>
+  </data>
+  <data name="LBL_IMAGE_ASPECT_ASPECT_FIT" xml:space="preserve">
+    <value>Aspect de l'image : Ajustement de l'aspect</value>
+  </data>
+  <data name="LBL_IMAGE_ASPECT_FILL" xml:space="preserve">
+    <value>Mode d'affichage de l'image : Étirer pour remplir</value>
+  </data>
   <data name="LBL_RESULT" xml:space="preserve">
     <value>Résultat : {0}</value>
   </data>

@@ -21,10 +21,12 @@ public static class LocalizeExtensionMethods
 	/// <param name="args">Optional arguments to format the localized string.</param>
 	/// <returns>The <see cref="BindableObject"/> with the applied localization binding, allowing for method chaining.</returns>
 	public static BindableObject Localize(this BindableObject bindable, BindableProperty targetProperty, string key, params object?[] args)
-	{
-		bindable.SetBinding(targetProperty, LocalizeBindingBase.Create(key, args));
-		return bindable;
-	}
+		=> Localize(bindable, targetProperty, new LocalizeBuilder
+		{
+			TargetObject = bindable,
+			Key = key
+		}
+		.SetArgs(args));
 
 	/// <summary>
 	/// Applies a localized binding to the specified bindable property of a <see cref="BindableObject"/>.
@@ -38,24 +40,58 @@ public static class LocalizeExtensionMethods
 	/// localized string, if applicable.</param>
 	/// <returns>The <see cref="BindableObject"/> with the applied localized binding, allowing for method chaining.</returns>
 	public static BindableObject Localize(this BindableObject bindable, BindableProperty targetProperty, BindingBase keyBinding, params object?[] args)
-	{
-		bindable.SetBinding(targetProperty, LocalizeBindingBase.Create(keyBinding, args));
-		return bindable;
-	}
+		=> Localize(bindable, targetProperty, new LocalizeBuilder
+		{
+			TargetObject = bindable
+		}
+		.SetKeyBinding(keyBinding)
+		.SetArgs(args));
 
 	/// <summary>
 	/// Applies a localized binding to the specified bindable property of a <see cref="BindableObject"/> using a custom localization provider.
 	/// </summary>
-	/// <typeparam name="TProvider">The type of the localization provider.</typeparam>
 	/// <param name="bindable">The <see cref="BindableObject"/> to which the localized binding will be applied.</param>
 	/// <param name="targetProperty">The <see cref="BindableProperty"/> that will receive the localized value.</param>
 	/// <param name="localizationProvider">A function that provides localized content based on the current culture.</param>
 	/// <param name="args">Optional arguments to format the localized value. These arguments will be used to replace placeholders in the
 	/// localized string, if applicable.</param>
 	/// <returns>The <see cref="BindableObject"/> with the applied localized binding, allowing for method chaining.</returns>
-	public static BindableObject Localize<TProvider>(this BindableObject bindable, BindableProperty targetProperty, Func<CultureInfo, TProvider> localizationProvider, params object?[] args)
+	public static BindableObject Localize(this BindableObject bindable, BindableProperty targetProperty, Func<CultureInfo, object> localizationProvider, params object?[] args)
+		=> Localize(bindable, targetProperty, new LocalizeBuilder
+		{
+			TargetObject = bindable,
+			LocalizationProvider = localizationProvider,
+		}
+		.SetArgs(args));
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="bindable"></param>
+	/// <param name="targetProperty"></param>
+	/// <param name="localizationProvider"></param>
+	/// <param name="converter"></param>
+	/// <param name="args"></param>
+	/// <returns></returns>
+	public static BindableObject Localize(this BindableObject bindable, BindableProperty targetProperty, Func<CultureInfo, object> localizationProvider, IValueConverter converter, params object?[] args)
+		=> Localize(bindable, targetProperty, new LocalizeBuilder
+		{
+			TargetObject = bindable,
+			LocalizationProvider = localizationProvider,
+			Converter = converter,
+		}
+		.SetArgs(args));
+
+	/// <summary>
+	/// Applies a localized binding to the specified bindable property of a <see cref="BindableObject"/> using a <see cref="LocalizeBuilder"/> instance.
+	/// </summary>
+	/// <param name="bindable">The <see cref="BindableObject"/> to which the localized binding will be applied.</param>
+	/// <param name="targetProperty">The <see cref="BindableProperty"/> that will receive the localized value.</param>
+	/// <param name="parameters">The <see cref="LocalizeBuilder"/> instance containing localization information.</param>
+	/// <returns>The <see cref="BindableObject"/> with the applied localized binding, allowing for method chaining.</returns>
+	public static BindableObject Localize(this BindableObject bindable, BindableProperty targetProperty, LocalizeBuilder parameters)
 	{
-		bindable.SetBinding(targetProperty, LocalizeBindingBase.Create(localizationProvider, args));
+		bindable.SetBinding(targetProperty, parameters.Build());
 		return bindable;
 	}
 

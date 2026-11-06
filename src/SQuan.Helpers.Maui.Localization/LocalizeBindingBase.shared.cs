@@ -70,6 +70,16 @@ public static class LocalizeBindingBase
 		};
 
 	/// <summary>
+	/// Creates a binding for localized content using the specified <see cref="LocalizeBuilder"/> instance.
+	/// </summary>
+	/// <param name="parameters">The <see cref="LocalizeBuilder"/> instance containing the localization parameters.</param>
+	/// <returns></returns>
+	static BindingBase Create(LocalizeBuilder parameters)
+	{
+		return parameters.Build();
+	}
+
+	/// <summary>
 	/// Coerces an array of objects into a list of <see cref="BindingBase"/> instances.
 	/// If an object is already a <see cref="BindingBase"/>, it is added directly to the list; otherwise, a new <see cref="BindingBase"/> is created for the object.
 	/// </summary>
