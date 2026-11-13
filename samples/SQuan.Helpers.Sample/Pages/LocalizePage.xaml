@@ -19,7 +19,7 @@
                     x:Name="DotNetBotImage"
                     Aspect="AspectFit"
                     HorizontalOptions="Start"
-                    SemanticProperties.Description="dot net bot in a hovercraft number nine"
+                    SemanticProperties.Description="dot net bot riding a rocket"
                     Source="dotnet_bot.png" />
 
                 <Button Clicked="OnAspect" Opacity="0.2" />

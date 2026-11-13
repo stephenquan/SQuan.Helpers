@@ -106,7 +106,7 @@ public partial class LocalizePage : ContentPage
 			_ => cultureFR,
 		};
 
-	void OnAspect(object sender, EventArgs e)
+	void OnAspect(object? sender, EventArgs e)
 	{
 		DotNetBotImage.Aspect = DotNetBotImage.Aspect switch
 		{

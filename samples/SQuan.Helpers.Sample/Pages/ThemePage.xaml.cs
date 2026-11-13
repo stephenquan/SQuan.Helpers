@@ -22,7 +22,7 @@ public partial class ThemePage : ContentPage
 				this));
 	}
 
-	void OnToggleTheme(object sender, EventArgs e)
+	void OnToggleTheme(object? sender, EventArgs e)
 	{
 		ArgumentNullException.ThrowIfNull(Application.Current);
 		Application.Current.UserAppTheme = Application.Current.UserAppTheme switch

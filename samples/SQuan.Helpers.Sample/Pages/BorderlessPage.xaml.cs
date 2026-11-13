@@ -18,7 +18,7 @@ public partial class BorderlessPage : ContentPage
 		InitializeComponent();
 	}
 
-	void OnThicknessClicked(object sender, EventArgs e)
+	void OnThicknessClicked(object? sender, EventArgs e)
 	{
 		if (sender is Button button && double.TryParse(button.Text, out double thickness))
 		{

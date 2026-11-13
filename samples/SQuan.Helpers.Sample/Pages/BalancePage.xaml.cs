@@ -22,7 +22,7 @@ public partial class BalancePage : ContentPage
 		InitializeComponent();
 	}
 
-	void ChangeCulture(object sender, EventArgs e)
+	void ChangeCulture(object? sender, EventArgs e)
 	{
 		cultureIndex = (cultureIndex + 1) % SupportedCultures.Count;
 		OnPropertyChanged(nameof(CurrentCulture));
