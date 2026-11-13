@@ -44,7 +44,7 @@ public partial class SearchPage : ContentPage
 		};
 	}
 
-	async void OnSearchClicked(object sender, EventArgs e)
+	async void OnSearchClicked(object? sender, EventArgs e)
 	{
 		IsSearching = true;
 		cts = new CancellationTokenSource();
@@ -136,7 +136,7 @@ public partial class SearchPage : ContentPage
 		}
 	}
 
-	void OnCancelClicked(object sender, EventArgs e)
+	void OnCancelClicked(object? sender, EventArgs e)
 	{
 		if (cts is not null)
 		{

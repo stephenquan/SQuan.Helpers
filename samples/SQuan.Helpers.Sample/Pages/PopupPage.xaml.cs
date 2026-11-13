@@ -29,17 +29,23 @@ public partial class PopupPage : ContentPage
 		InitializeComponent();
 	}
 
-	async void OnIntPopup(object sender, EventArgs e)
+	async void OnIntPopup(object? sender, EventArgs e)
 	{
-		Button btn = (Button)sender;
+		if (sender is not Button btn)
+		{
+			return;
+		}
 		var pi = new SamplePopup<int>();
 		IPopupResult<int> ri = await this.ShowPopupAsync<int>(pi);
 		btn.Text = ri.Result.ToString();
 	}
 
-	async void OnDblPopup(object sender, EventArgs e)
+	async void OnDblPopup(object? sender, EventArgs e)
 	{
-		Button btn = (Button)sender;
+		if (sender is not Button btn)
+		{
+			return;
+		}
 		var pi = new SamplePopup<double>();
 		IPopupResult<double> ri = await this.ShowPopupAsync<double>(pi);
 		btn.Text = ri.Result.ToString();

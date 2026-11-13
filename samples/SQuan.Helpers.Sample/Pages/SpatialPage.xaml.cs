@@ -82,7 +82,7 @@ public partial class SpatialPage : ContentPage
 		});
 	}
 
-	void mapView_PaintSurface(object sender, SkiaSharp.Views.Maui.SKPaintSurfaceEventArgs e)
+	void mapView_PaintSurface(object? sender, SkiaSharp.Views.Maui.SKPaintSurfaceEventArgs e)
 	{
 		if (!loaded)
 		{
@@ -132,8 +132,8 @@ public partial class SpatialPage : ContentPage
 				Color.FromArgb(item.Color)))
 			.Count();
 
-	void OnReset(object sender, EventArgs e) => mapView.SetMapExtent(-125, 24.3, -66.9, 49.4);
-	void OnZoomIn(object sender, EventArgs e) => mapView.Zoom(2.0);
-	void OnZoomOut(object sender, EventArgs e) => mapView.Zoom(0.5);
-	void OnMapTapped(object sender, MapViewEventArgs e) => mapView.PanTo(e.MapPoint);
+	void OnReset(object? sender, EventArgs e) => mapView.SetMapExtent(-125, 24.3, -66.9, 49.4);
+	void OnZoomIn(object? sender, EventArgs e) => mapView.Zoom(2.0);
+	void OnZoomOut(object? sender, EventArgs e) => mapView.Zoom(0.5);
+	void OnMapTapped(object? sender, MapViewEventArgs e) => mapView.PanTo(e.MapPoint);
 }

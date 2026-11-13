@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <NoWarn>NETSDK1023</NoWarn>
-    <NetVersion>net10.0</NetVersion>
+    <NetVersion>net11.0</NetVersion>
     <LangVersion>preview</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
@@ -18,32 +18,32 @@
     <NuGetAuditMode>all</NuGetAuditMode>
 
     <!-- MAUI Specific -->
-    <MauiVersion>10.0.130</MauiVersion>
-    <MauiPackageVersion>10.0.130</MauiPackageVersion>
+    <MauiVersion>11.0.10</MauiVersion>
+    <MauiPackageVersion>11.0.10</MauiPackageVersion>
     <NextMauiPackageVersion>10.0.0</NextMauiPackageVersion>
     <MauiStrictXamlCompilation>true</MauiStrictXamlCompilation>
     <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
     <MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
 
     <!-- Other Microsoft libs -->
-    <MicrosoftExtensionsLoggingDebugVersion>10.0.15</MicrosoftExtensionsLoggingDebugVersion>
-    <MicrosoftExtensionsLocalizationVersion>10.0.15</MicrosoftExtensionsLocalizationVersion>
+    <MicrosoftExtensionsLoggingDebugVersion>11.0.0</MicrosoftExtensionsLoggingDebugVersion>
+    <MicrosoftExtensionsLocalizationVersion>11.0.0</MicrosoftExtensionsLocalizationVersion>
     <MicrosoftCodeAnalysisAnalyzersVersion>5.6.0</MicrosoftCodeAnalysisAnalyzersVersion>
     <MicrosoftCodeAnalysisCSharpVersion>5.6.0</MicrosoftCodeAnalysisCSharpVersion>
     <MicrosoftNETTestSdkVersion>18.12.0</MicrosoftNETTestSdkVersion>
     <MicrosoftTestingExtensionsCodeCoverageVersion>18.12.0</MicrosoftTestingExtensionsCodeCoverageVersion>
-    <MicrosoftDataSqliteVersion>10.0.15</MicrosoftDataSqliteVersion>
-    <SystemRuntimeCachingVersion>10.0.15</SystemRuntimeCachingVersion>
+    <MicrosoftDataSqliteVersion>11.0.0</MicrosoftDataSqliteVersion>
+    <SystemRuntimeCachingVersion>11.0.0</SystemRuntimeCachingVersion>
 
     <!-- CommunityToolkits -->
-    <CommunityToolkitMauiVersion>16.0.0</CommunityToolkitMauiVersion>
-    <CommunityToolkitMauiMarkupVersion>8.0.0</CommunityToolkitMauiMarkupVersion>
+    <CommunityToolkitMauiVersion>17.0.0</CommunityToolkitMauiVersion>
+    <CommunityToolkitMauiMarkupVersion>9.0.0</CommunityToolkitMauiMarkupVersion>
     <CommunityToolkitMvvmVersion>8.4.2</CommunityToolkitMvvmVersion>
     <NoWarn>$(NoWarn);MCTEXP001</NoWarn>
 
     <!-- 3rd party libs -->
     <GitVersionMsBuildVersion>6.8.2</GitVersionMsBuildVersion>
-    <SkiaSharpViewsMauiControlsVersion>4.155.0</SkiaSharpViewsMauiControlsVersion>
+    <SkiaSharpViewsMauiControlsVersion>4.156.0</SkiaSharpViewsMauiControlsVersion>
     <XunitV3MtpV2Version>4.0.3</XunitV3MtpV2Version>
     <XunitVersion>2.9.3</XunitVersion>
     <XunitRunnerVisualStudioVersion>4.0.1</XunitRunnerVisualStudioVersion>

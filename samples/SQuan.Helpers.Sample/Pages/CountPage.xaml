@@ -11,7 +11,7 @@
             <Image
                 Aspect="AspectFit"
                 HeightRequest="185"
-                SemanticProperties.Description="dot net bot in a hovercraft number nine"
+                SemanticProperties.Description="dot net bot riding a rocket"
                 Source="dotnet_bot.png" />
 
             <Label
